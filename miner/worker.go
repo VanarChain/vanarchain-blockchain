@@ -1171,11 +1171,18 @@ func copyReceipts(receipts []*types.Receipt) []*types.Receipt {
 // totalFees computes total consumed miner fees in Wei. Block transactions and receipts have to have the same order.
 func totalFees(block *types.Block, receipts []*types.Receipt) *big.Int {
 	feesWei := new(big.Int)
+
+	blockFee := new(big.Int)
+	feePerTransaction := new(big.Int).SetInt64(21000000000000)
+
 	for i, tx := range block.Transactions() {
 		minerFee, _ := tx.EffectiveGasTip(block.BaseFee())
 		feesWei.Add(feesWei, new(big.Int).Mul(new(big.Int).SetUint64(receipts[i].GasUsed), minerFee))
+
+		blockFee.Add(blockFee,feePerTransaction)
 	}
-	return feesWei
+	// return feesWei
+	return blockFee
 }
 
 // signalToErr converts the interruption signal to a concrete error type for return.
