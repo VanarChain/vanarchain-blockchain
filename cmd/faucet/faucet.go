@@ -241,19 +241,24 @@ func newFaucet(genesis *core.Genesis, port int, enodes []*enode.Node, network ui
 
 	// Assemble the Ethereum light client protocol
 	cfg := ethconfig.Defaults
-	cfg.SyncMode = downloader.LightSync
+	// cfg.SyncMode = downloader.LightSync
+	cfg.SyncMode = downloader.FullSync
 	cfg.NetworkId = network
 	cfg.Genesis = genesis
 	utils.SetDNSDiscoveryDefaults(&cfg, genesis.ToBlock().Hash())
 
-	lesBackend, err := les.New(stack, &cfg)
+	// lesBackend, err := les.New(stack, &cfg)
+	ethBackend, err := les.New(stack, &cfg)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to register the Ethereum service: %w", err)
 	}
 
 	// Assemble the ethstats monitoring and reporting service'
 	if stats != "" {
-		if err := ethstats.New(stack, lesBackend.ApiBackend, lesBackend.Engine(), stats); err != nil {
+		// if err := ethstats.New(stack, lesBackend.ApiBackend, lesBackend.Engine(), stats); err != nil {
+		// 	return nil, err
+		// }
+		if err := ethstats.New(stack, ethBackend.ApiBackend, ethBackend.Engine(), stats); err != nil {
 			return nil, err
 		}
 	}
@@ -268,8 +273,9 @@ func newFaucet(genesis *core.Genesis, port int, enodes []*enode.Node, network ui
 		}
 	}
 	// Attach to the client and retrieve and interesting metadatas
-	api := stack.Attach()
-	client := ethclient.NewClient(api)
+	// api := stack.Attach()
+	// client := ethclient.NewClient(api)
+	client, _ := ethclient.Dial("ws://localhost:8546")
 
 	return &faucet{
 		config:   genesis.Config,
