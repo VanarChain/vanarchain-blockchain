@@ -1816,7 +1816,7 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 		SetDNSDiscoveryDefaults(cfg, params.GoerliGenesisHash)
 	case ctx.Bool(VanarTestnetFlag.Name):
 		if !ctx.IsSet(NetworkIdFlag.Name) {
-			cfg.NetworkId = 9882005
+			cfg.NetworkId = 6703333
 		}
 		cfg.Genesis = core.DefaultVanarTestnetGenesisBlock()
 		SetDNSDiscoveryDefaults(cfg, params.VanarTestnetGenesisHash)
