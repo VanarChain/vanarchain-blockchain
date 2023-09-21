@@ -56,12 +56,12 @@ var GoerliBootnodes = []string{
 	"enode://d2b720352e8216c9efc470091aa91ddafc53e222b32780f505c817ceef69e01d5b0b0797b69db254c586f493872352f5a022b4d8479a00fc92ec55f9ad46a27e@88.99.70.182:30303",
 }
 
-var VanarTestnetBootnodes = []string{
+var VanguardBootnodes = []string{
 	//"enode://741eada911eaa0c6cadf1352760fa71ceee5f4a0fed7bc2a9ec5eac48da8660a6866aad95c689f32d4bb329ea2c53598b79bd150c0e288165bdbcd3573a33740@35.212.84.250:30303",
 	//"enode://21d40d4bc61879eae417354a8b5a2b4059a3316429c31605f162b24e8c404199245703f2eb530ae3d64d4c670057d5b927f488698b723a4eaea56929a444fb79@35.212.33.181:30303",
 	//"enode://ada58f96fb64ed6d8c85a34d6f268d29736e6d8ae85d15b2215c84428612e266f41a953d024d7aa8c24db2c99750f6ff7998c21572acc53b7b8741d91df5a066@35.212.111.56:30303",
 	"enode://4cf1abc23ebc89aca12c6bdb823b5d74236ee2759ffd92c11e05be50e181167c27eca3b7b6a8e3b13dd407033e316a7c797bb45b2b196b15576f02cc2ff967f8@bootnode1-testnet.vanarchain.com:30303",
-"enode://4cf1abc23ebc89aca12c6bdb823b5d74236ee2759ffd92c11e05be50e181167c27eca3b7b6a8e3b13dd407033e316a7c797bb45b2b196b15576f02cc2ff967f8@bootnode2-testnet.vanarchain.com:30303",
+	"enode://4cf1abc23ebc89aca12c6bdb823b5d74236ee2759ffd92c11e05be50e181167c27eca3b7b6a8e3b13dd407033e316a7c797bb45b2b196b15576f02cc2ff967f8@bootnode2-testnet.vanarchain.com:30303",
 
 }
 
@@ -97,8 +97,8 @@ func KnownDNSNetwork(genesis common.Hash, protocol string) string {
 		net = "goerli"
 	case SepoliaGenesisHash:
 		net = "sepolia"
-	case VanarTestnetGenesisHash:
-		net = "vanarTestnet"
+	case VanguardGenesisHash:
+		net = "vanguardTestnet"
 	default:
 		return ""
 	}

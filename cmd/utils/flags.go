@@ -155,9 +155,9 @@ var (
 		Usage:    "Sepolia network: pre-configured proof-of-work test network",
 		Category: flags.EthCategory,
 	}
-	VanarTestnetFlag = &cli.BoolFlag{
-		Name:     "vanarTestnet",
-		Usage:    "VanarTestnet network: pre-configured proof-of-authority test network",
+	VanguardFlag = &cli.BoolFlag{
+		Name:     "vanguard",
+		Usage:    "Vanguard network: pre-configured proof-of-authority test network",
 		Category: flags.EthCategory,
 	}
 
@@ -957,7 +957,7 @@ var (
 	TestnetFlags = []cli.Flag{
 		GoerliFlag,
 		SepoliaFlag,
-		VanarTestnetFlag,
+		VanguardFlag,
 	}
 	// NetworkFlags is the flag group of all built-in supported networks.
 	NetworkFlags = append([]cli.Flag{MainnetFlag}, TestnetFlags...)
@@ -988,8 +988,8 @@ func MakeDataDir(ctx *cli.Context) string {
 		if ctx.Bool(SepoliaFlag.Name) {
 			return filepath.Join(path, "sepolia")
 		}
-		if ctx.Bool(VanarTestnetFlag.Name) {
-			return filepath.Join(path, "vanarTestnet")
+		if ctx.Bool(VanguardFlag.Name) {
+			return filepath.Join(path, "vanguard")
 		}
 		return path
 	}
@@ -1041,8 +1041,8 @@ func setBootstrapNodes(ctx *cli.Context, cfg *p2p.Config) {
 		urls = params.SepoliaBootnodes
 	case ctx.Bool(GoerliFlag.Name):
 		urls = params.GoerliBootnodes
-	case ctx.Bool(VanarTestnetFlag.Name):
-		urls = params.VanarTestnetBootnodes
+	case ctx.Bool(VanguardFlag.Name):
+		urls = params.VanguardBootnodes
 	}
 
 	// don't apply defaults if BootstrapNodes is already set
@@ -1491,8 +1491,8 @@ func SetDataDir(ctx *cli.Context, cfg *node.Config) {
 		cfg.DataDir = filepath.Join(node.DefaultDataDir(), "goerli")
 	case ctx.Bool(SepoliaFlag.Name) && cfg.DataDir == node.DefaultDataDir():
 		cfg.DataDir = filepath.Join(node.DefaultDataDir(), "sepolia")
-	case ctx.Bool(VanarTestnetFlag.Name) && cfg.DataDir == node.DefaultDataDir():
-		cfg.DataDir = filepath.Join(node.DefaultDataDir(), "vanarTestnet")
+	case ctx.Bool(VanguardFlag.Name) && cfg.DataDir == node.DefaultDataDir():
+		cfg.DataDir = filepath.Join(node.DefaultDataDir(), "vanguard")
 	}
 }
 
@@ -1649,7 +1649,7 @@ func CheckExclusive(ctx *cli.Context, args ...interface{}) {
 // SetEthConfig applies eth-related command line flags to the config.
 func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 	// Avoid conflicting network flags
-	CheckExclusive(ctx, MainnetFlag, DeveloperFlag, GoerliFlag, SepoliaFlag, VanarTestnetFlag)
+	CheckExclusive(ctx, MainnetFlag, DeveloperFlag, GoerliFlag, SepoliaFlag, VanguardFlag)
 	CheckExclusive(ctx, LightServeFlag, SyncModeFlag, "light")
 	CheckExclusive(ctx, DeveloperFlag, ExternalSignerFlag) // Can't use both ephemeral unlocked and external signer
 
@@ -1814,12 +1814,12 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 		}
 		cfg.Genesis = core.DefaultGoerliGenesisBlock()
 		SetDNSDiscoveryDefaults(cfg, params.GoerliGenesisHash)
-	case ctx.Bool(VanarTestnetFlag.Name):
+	case ctx.Bool(VanguardFlag.Name):
 		if !ctx.IsSet(NetworkIdFlag.Name) {
 			cfg.NetworkId = 6703333
 		}
-		cfg.Genesis = core.DefaultVanarTestnetGenesisBlock()
-		SetDNSDiscoveryDefaults(cfg, params.VanarTestnetGenesisHash)
+		cfg.Genesis = core.DefaultVanguardGenesisBlock()
+		SetDNSDiscoveryDefaults(cfg, params.VanguardGenesisHash)
 	case ctx.Bool(DeveloperFlag.Name):
 		if !ctx.IsSet(NetworkIdFlag.Name) {
 			cfg.NetworkId = 1337
@@ -2144,8 +2144,8 @@ func MakeGenesis(ctx *cli.Context) *core.Genesis {
 		genesis = core.DefaultSepoliaGenesisBlock()
 	case ctx.Bool(GoerliFlag.Name):
 		genesis = core.DefaultGoerliGenesisBlock()
-	case ctx.Bool(VanarTestnetFlag.Name):
-		genesis = core.DefaultVanarTestnetGenesisBlock()
+	case ctx.Bool(VanguardFlag.Name):
+		genesis = core.DefaultVanguardGenesisBlock()
 	case ctx.Bool(DeveloperFlag.Name):
 		Fatalf("Developer chains are ephemeral")
 	}

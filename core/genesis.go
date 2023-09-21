@@ -198,8 +198,8 @@ func CommitGenesisState(db ethdb.Database, triedb *trie.Database, blockhash comm
 			genesis = DefaultGoerliGenesisBlock()
 		case params.SepoliaGenesisHash:
 			genesis = DefaultSepoliaGenesisBlock()
-		case params.VanarTestnetGenesisHash:
-			genesis = DefaultVanarTestnetGenesisBlock()
+		case params.VanguardGenesisHash:
+			genesis = DefaultVanguardGenesisBlock()
 		}
 
 		if genesis != nil {
@@ -436,8 +436,8 @@ func (g *Genesis) configOrDefault(ghash common.Hash) *params.ChainConfig {
 		return params.SepoliaChainConfig
 	case ghash == params.GoerliGenesisHash:
 		return params.GoerliChainConfig
-	case ghash == params.VanarTestnetGenesisHash:
-		return params.VanarTestnetChainConfig
+	case ghash == params.VanguardGenesisHash:
+		return params.VanguardChainConfig
 	default:
 		return params.AllEthashProtocolChanges
 	}
@@ -578,14 +578,14 @@ func DefaultSepoliaGenesisBlock() *Genesis {
 	}
 }
 
-// DefaultVanarTestnetGenesisBlock returns the VanarTestnet network genesis block.
-func DefaultVanarTestnetGenesisBlock() *Genesis {
+// DefaultVanguardGenesisBlock returns the Vanguard network genesis block.
+func DefaultVanguardGenesisBlock() *Genesis {
 	return &Genesis{
-		Config:     params.VanarTestnetChainConfig,
+		Config:     params.VanguardChainConfig,
 		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000C857F8de9dA5a5aCDA750Fbe2af39c74609aC1AC0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
 		GasLimit:   8000000,
 		Difficulty: big.NewInt(1),
-		Alloc:      decodePrealloc(vanarTestnetAllocData),
+		Alloc:      decodePrealloc(vanguardAllocData),
 	}
 }
 
