@@ -67,7 +67,7 @@ var VanguardBootnodes = []string{
 }
 
 var TestnetBootnodes = []string{
-	// "enode://f20f138ac6fecbc84d3ce72b2580113eb4fdea9486cb602349671be27aaf7c678a70a9cee3efcfd2f467b3cd0fb44c3296430018bd6c7cd56abdd28829127a01@bootnode-testnet.vanarchain.com:30303",
+	"enode://f20f138ac6fecbc84d3ce72b2580113eb4fdea9486cb602349671be27aaf7c678a70a9cee3efcfd2f467b3cd0fb44c3296430018bd6c7cd56abdd28829127a01@bootnode-testnet.vanarchain.com:30303",
 }
 
 var V5Bootnodes = []string{
