@@ -200,6 +200,8 @@ func CommitGenesisState(db ethdb.Database, triedb *trie.Database, blockhash comm
 			genesis = DefaultSepoliaGenesisBlock()
 		case params.VanguardGenesisHash:
 			genesis = DefaultVanguardGenesisBlock()
+		case params.TestnetGenesisHash:
+			genesis = DefaultTestnetGenesisBlock()
 		}
 
 		if genesis != nil {
@@ -438,6 +440,8 @@ func (g *Genesis) configOrDefault(ghash common.Hash) *params.ChainConfig {
 		return params.GoerliChainConfig
 	case ghash == params.VanguardGenesisHash:
 		return params.VanguardChainConfig
+	case ghash == params.TestnetGenesisHash:
+		return params.TestnetChainConfig
 	default:
 		return params.AllEthashProtocolChanges
 	}
@@ -586,6 +590,17 @@ func DefaultVanguardGenesisBlock() *Genesis {
 		GasLimit:   8000000,
 		Difficulty: big.NewInt(1),
 		Alloc:      decodePrealloc(vanguardAllocData),
+	}
+}
+
+// DefaultTestnetGenesisBlock returns the Testnet network genesis block.
+func DefaultTestnetGenesisBlock() *Genesis {
+	return &Genesis{
+		Config:     params.TestnetChainConfig,
+		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000C857F8de9dA5a5aCDA750Fbe2af39c74609aC1AC0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+		GasLimit:   8000000,
+		Difficulty: big.NewInt(1),
+		Alloc:      decodePrealloc(testnetAllocData),
 	}
 }
 

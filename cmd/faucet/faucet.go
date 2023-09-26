@@ -88,6 +88,7 @@ var (
 	goerliFlag  = flag.Bool("goerli", false, "Initializes the faucet with Görli network config")
 	sepoliaFlag = flag.Bool("sepolia", false, "Initializes the faucet with Sepolia network config")
 	vanguardFlag = flag.Bool("vanguard", false, "Initializes the faucet with Vanguard network config")
+	testnetFlag = flag.Bool("testnet", false, "Initializes the faucet with Testnet network config")
 )
 
 var (
@@ -140,7 +141,7 @@ func main() {
 		log.Crit("Failed to render the faucet template", "err", err)
 	}
 	// Load and parse the genesis block requested by the user
-	genesis, err := getGenesis(*genesisFlag, *goerliFlag, *sepoliaFlag, *vanguardFlag)
+	genesis, err := getGenesis(*genesisFlag, *goerliFlag, *sepoliaFlag, *vanguardFlag, *testnetFlag)
 	if err != nil {
 		log.Crit("Failed to parse genesis config", "err", err)
 	}
@@ -882,7 +883,7 @@ func authNoAuth(url string) (string, string, common.Address, error) {
 }
 
 // getGenesis returns a genesis based on input args
-func getGenesis(genesisFlag string, goerliFlag bool, sepoliaFlag bool, vanguardFlag bool) (*core.Genesis, error) {
+func getGenesis(genesisFlag string, goerliFlag bool, sepoliaFlag bool, vanguardFlag bool, testnetFlag bool) (*core.Genesis, error) {
 	switch {
 	case genesisFlag != "":
 		var genesis core.Genesis
@@ -894,6 +895,8 @@ func getGenesis(genesisFlag string, goerliFlag bool, sepoliaFlag bool, vanguardF
 		return core.DefaultSepoliaGenesisBlock(), nil
 	case vanguardFlag:
 		return core.DefaultVanguardGenesisBlock(), nil
+	case testnetFlag:
+		return core.DefaultTestnetGenesisBlock(), nil
 	default:
 		return nil, errors.New("no genesis flag provided")
 	}

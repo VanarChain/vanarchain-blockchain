@@ -64,7 +64,11 @@ var VanguardBootnodes = []string{
 	//"enode://a0887bf2f2e2dda814c710767dae7aee30695e90a8de54f5655b9f2e3d389257959b65991a5900246a3d422acc8bc96f7ac1188e350f8569df473f68b03d2006@34.105.244.117:30303",	
 	"enode://bfe747af336911ac305ce58abfe5e3da2d3f4bc0fa46d2eccc0b51f3cc43f8cc28b27b463072db8d71c2d5c09e7ecd87a81d24299b0730d951e6c0f2fae684b3@bootnode1-vanguard.vanarchain.com:30303",
 	"enode://a0887bf2f2e2dda814c710767dae7aee30695e90a8de54f5655b9f2e3d389257959b65991a5900246a3d422acc8bc96f7ac1188e350f8569df473f68b03d2006@bootnode2-vanguard.vanarchain.com:30303",
-	}
+}
+
+var TestnetBootnodes = []string{
+	"enode://f20f138ac6fecbc84d3ce72b2580113eb4fdea9486cb602349671be27aaf7c678a70a9cee3efcfd2f467b3cd0fb44c3296430018bd6c7cd56abdd28829127a01@bootnode-testnet.vanarchain.com:30303",
+}
 
 var V5Bootnodes = []string{
 	// Teku team's bootnode
@@ -100,6 +104,8 @@ func KnownDNSNetwork(genesis common.Hash, protocol string) string {
 		net = "sepolia"
 	case VanguardGenesisHash:
 		net = "vanguardTestnet"
+	case TestnetGenesisHash:
+		net = "testnetTestnet"
 	default:
 		return ""
 	}
