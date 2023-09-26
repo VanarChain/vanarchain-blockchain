@@ -1052,7 +1052,7 @@ func setBootstrapNodes(ctx *cli.Context, cfg *p2p.Config) {
 		urls = params.GoerliBootnodes
 	case ctx.Bool(VanguardFlag.Name):
 		urls = params.VanguardBootnodes
-	}
+	
 	case ctx.Bool(TestnetFlag.Name):
 		urls = params.TestnetBootnodes
 	}
