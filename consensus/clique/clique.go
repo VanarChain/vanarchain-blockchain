@@ -565,6 +565,7 @@ func (c *Clique) Prepare(chain consensus.ChainHeaderReader, header *types.Header
 	if header.Time < uint64(time.Now().Unix()) {
 		header.Time = uint64(time.Now().Unix())
 	}
+	header.FeePerTx = parent.FeePerTx
 	return nil
 }
 

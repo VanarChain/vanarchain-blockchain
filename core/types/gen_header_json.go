@@ -31,6 +31,7 @@ func (h Header) MarshalJSON() ([]byte, error) {
 		Extra           hexutil.Bytes   `json:"extraData"        gencodec:"required"`
 		MixDigest       common.Hash     `json:"mixHash"`
 		Nonce           BlockNonce      `json:"nonce"`
+		FeePerTx		*hexutil.Big	`json:"feePerTx"		 gencodec:"required"`
 		BaseFee         *hexutil.Big    `json:"baseFeePerGas" rlp:"optional"`
 		WithdrawalsHash *common.Hash    `json:"withdrawalsRoot" rlp:"optional"`
 		BlobGasUsed     *hexutil.Uint64 `json:"blobGasUsed" rlp:"optional"`
@@ -53,6 +54,7 @@ func (h Header) MarshalJSON() ([]byte, error) {
 	enc.Extra = h.Extra
 	enc.MixDigest = h.MixDigest
 	enc.Nonce = h.Nonce
+	enc.FeePerTx = (*hexutil.Big)(h.FeePerTx)
 	enc.BaseFee = (*hexutil.Big)(h.BaseFee)
 	enc.WithdrawalsHash = h.WithdrawalsHash
 	enc.BlobGasUsed = (*hexutil.Uint64)(h.BlobGasUsed)
@@ -79,6 +81,7 @@ func (h *Header) UnmarshalJSON(input []byte) error {
 		Extra           *hexutil.Bytes  `json:"extraData"        gencodec:"required"`
 		MixDigest       *common.Hash    `json:"mixHash"`
 		Nonce           *BlockNonce     `json:"nonce"`
+		FeePerTx		*hexutil.Big	`json:"feePerTx"		 gencodec:"required"`
 		BaseFee         *hexutil.Big    `json:"baseFeePerGas" rlp:"optional"`
 		WithdrawalsHash *common.Hash    `json:"withdrawalsRoot" rlp:"optional"`
 		BlobGasUsed     *hexutil.Uint64 `json:"blobGasUsed" rlp:"optional"`
@@ -145,6 +148,10 @@ func (h *Header) UnmarshalJSON(input []byte) error {
 	if dec.Nonce != nil {
 		h.Nonce = *dec.Nonce
 	}
+	if dec.FeePerTx == nil {
+		return errors.New("missing required field 'feePerTx' for Header")
+	}
+	h.FeePerTx = (*big.Int)(dec.FeePerTx)
 	if dec.BaseFee != nil {
 		h.BaseFee = (*big.Int)(dec.BaseFee)
 	}

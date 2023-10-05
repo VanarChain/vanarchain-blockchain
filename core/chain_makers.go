@@ -385,6 +385,7 @@ func makeHeader(chain consensus.ChainReader, parent *types.Block, state *state.S
 		GasLimit: parent.GasLimit(),
 		Number:   new(big.Int).Add(parent.Number(), common.Big1),
 		Time:     time,
+		FeePerTx: new(big.Int).Set(parent.FeePerTx()),
 	}
 	if chain.Config().IsLondon(header.Number) {
 		header.BaseFee = eip1559.CalcBaseFee(chain.Config(), parent.Header())
