@@ -1121,13 +1121,13 @@ func totalFees(block *types.Block, receipts []*types.Receipt) *big.Int {
 	feesWei := new(big.Int)
 
 	blockFee := new(big.Int)
-	feePerTransaction := new(big.Int).SetInt64(21000000000000)
+	feePerTransaction := block.Header().FeePerTx
 
 	for i, tx := range block.Transactions() {
 		minerFee, _ := tx.EffectiveGasTip(block.BaseFee())
 		feesWei.Add(feesWei, new(big.Int).Mul(new(big.Int).SetUint64(receipts[i].GasUsed), minerFee))
 
-		blockFee.Add(blockFee,feePerTransaction)
+		blockFee.Add(blockFee, feePerTransaction)
 	}
 	// return feesWei
 	return blockFee

@@ -136,6 +136,7 @@ func testCallTracer(tracerName string, dirPath string, t *testing.T) {
 					Difficulty:  (*big.Int)(test.Context.Difficulty),
 					GasLimit:    uint64(test.Context.GasLimit),
 					BaseFee:     test.Genesis.BaseFee,
+					FeePerTx:    test.Genesis.FeePerTx,
 				}
 				triedb, _, statedb = tests.MakePreState(rawdb.NewMemoryDatabase(), test.Genesis.Alloc, false, rawdb.HashScheme)
 			)
@@ -278,6 +279,7 @@ func TestInternals(t *testing.T) {
 			Time:        5,
 			Difficulty:  big.NewInt(0x30000),
 			GasLimit:    uint64(6000000),
+			FeePerTx:    big.NewInt(0x30000),
 		}
 	)
 	mkTracer := func(name string, cfg json.RawMessage) tracers.Tracer {

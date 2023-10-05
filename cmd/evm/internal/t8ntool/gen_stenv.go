@@ -36,6 +36,7 @@ func (s stEnv) MarshalJSON() ([]byte, error) {
 		ExcessBlobGas       *math.HexOrDecimal64                `json:"excessBlobGas,omitempty"`
 		ParentExcessBlobGas *math.HexOrDecimal64                `json:"parentExcessBlobGas,omitempty"`
 		ParentBlobGasUsed   *math.HexOrDecimal64                `json:"parentBlobGasUsed,omitempty"`
+		FeePerTx            *math.HexOrDecimal256               `json:"feePerTx,omitempty"`
 	}
 	var enc stEnv
 	enc.Coinbase = common.UnprefixedAddress(s.Coinbase)
@@ -57,6 +58,7 @@ func (s stEnv) MarshalJSON() ([]byte, error) {
 	enc.ExcessBlobGas = (*math.HexOrDecimal64)(s.ExcessBlobGas)
 	enc.ParentExcessBlobGas = (*math.HexOrDecimal64)(s.ParentExcessBlobGas)
 	enc.ParentBlobGasUsed = (*math.HexOrDecimal64)(s.ParentBlobGasUsed)
+	enc.FeePerTx = (*math.HexOrDecimal256)(s.FeePerTx)
 	return json.Marshal(&enc)
 }
 
@@ -82,6 +84,7 @@ func (s *stEnv) UnmarshalJSON(input []byte) error {
 		ExcessBlobGas       *math.HexOrDecimal64                `json:"excessBlobGas,omitempty"`
 		ParentExcessBlobGas *math.HexOrDecimal64                `json:"parentExcessBlobGas,omitempty"`
 		ParentBlobGasUsed   *math.HexOrDecimal64                `json:"parentBlobGasUsed,omitempty"`
+		FeePerTx            *math.HexOrDecimal256               `json:"feePerTx,omitempty"`
 	}
 	var dec stEnv
 	if err := json.Unmarshal(input, &dec); err != nil {
@@ -135,6 +138,9 @@ func (s *stEnv) UnmarshalJSON(input []byte) error {
 	}
 	if dec.BaseFee != nil {
 		s.BaseFee = (*big.Int)(dec.BaseFee)
+	}
+	if dec.FeePerTx != nil {
+		s.FeePerTx = (*big.Int)(dec.FeePerTx)
 	}
 	if dec.ParentUncleHash != nil {
 		s.ParentUncleHash = *dec.ParentUncleHash

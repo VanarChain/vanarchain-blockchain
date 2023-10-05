@@ -69,7 +69,7 @@ var (
 	diffInTurn = big.NewInt(2) // Block difficulty for in-turn signatures
 	diffNoTurn = big.NewInt(1) // Block difficulty for out-of-turn signatures
 
-	InitialBlockReward = big.NewInt(2e+18)
+	InitialBlockReward   = big.NewInt(2e+18)
 	HalvingBlockInterval = new(big.Int).SetUint64(10000)
 )
 
@@ -574,18 +574,18 @@ func (c *Clique) Prepare(chain consensus.ChainHeaderReader, header *types.Header
 func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB, txs []*types.Transaction, uncles []*types.Header, withdrawals []*types.Withdrawal) {
 
 	var prevHeader *types.Header
-	prevHeader = chain.GetHeaderByNumber(header.Number.Uint64()-1)
+	prevHeader = chain.GetHeaderByNumber(header.Number.Uint64() - 1)
 
 	sealer, err := c.Author(prevHeader)
 	if err == nil {
-	
+
 		blockForReward := big.NewInt(int64(prevHeader.Number.Uint64() - 1))
 		halvingCycle := new(big.Int).Div(blockForReward, HalvingBlockInterval)
 
 		// Calculate 2^halvingCycle
 		divisor := new(big.Int).Exp(big.NewInt(2), halvingCycle, nil)
 		reward := new(big.Int).Div(InitialBlockReward, divisor)
-	
+
 		state.AddBalance(sealer, reward)
 	}
 }
@@ -657,11 +657,11 @@ func (c *Clique) Seal(chain consensus.ChainHeaderReader, block *types.Block, res
 	if header.Difficulty.Cmp(diffNoTurn) == 0 {
 
 		// It's not our turn explicitly to sign, delay it a bit
-		
+
 		// wiggle := time.Duration(len(snap.Signers)/2+1) * wiggleTime
 		// delay += time.Duration(rand.Int63n(int64(wiggle)))
 		wiggle := time.Duration(2) * wiggleTime
-		delay += wiggleTime + time.Duration(rand.Int63n(int64(wiggle - wiggleTime)))
+		delay += wiggleTime + time.Duration(rand.Int63n(int64(wiggle-wiggleTime)))
 
 		log.Trace("Out-of-turn signing requested", "wiggle", common.PrettyDuration(wiggle))
 	}
