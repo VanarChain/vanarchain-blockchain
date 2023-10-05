@@ -260,7 +260,8 @@ func (st *StateTransition) buyGas() error {
 	}
 	st.gasRemaining += st.msg.GasLimit
 
-	subFee := new(big.Int).SetInt64(21000000000000)
+	fmt.Println("subfee freeperTx ==>", st.evm.Context.FeePerTx)
+	subFee := st.evm.Context.FeePerTx
 	st.initialGas = st.msg.GasLimit
 	// st.state.SubBalance(st.msg.From, mgval)
 	st.state.SubBalance(st.msg.From, subFee)
@@ -438,7 +439,7 @@ func (st *StateTransition) TransitionDb() (*ExecutionResult, error) {
 		fee := new(big.Int).SetUint64(st.gasUsed())
 		fee.Mul(fee, effectiveTip)
 		// st.state.AddBalance(st.evm.Context.Coinbase, fee)
-		fixedFee := new(big.Int).SetInt64(21000000000000)
+		fixedFee := st.evm.Context.FeePerTx
 		st.state.AddBalance(st.evm.Context.Coinbase, fixedFee)
 	}
 

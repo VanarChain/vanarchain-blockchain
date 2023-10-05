@@ -69,7 +69,7 @@ var (
 	diffInTurn = big.NewInt(2) // Block difficulty for in-turn signatures
 	diffNoTurn = big.NewInt(1) // Block difficulty for out-of-turn signatures
 
-	InitialBlockReward = big.NewInt(2e+18)
+	InitialBlockReward   = big.NewInt(2e+18)
 	HalvingBlockInterval = new(big.Int).SetUint64(1000)
 )
 

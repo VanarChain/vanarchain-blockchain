@@ -19,6 +19,7 @@ package legacypool
 
 import (
 	"errors"
+	"fmt"
 	"math"
 	"math/big"
 	"sort"
@@ -633,13 +634,15 @@ func (pool *LegacyPool) validateTx(tx *types.Transaction, local bool) error {
 		ExistingCost: func(addr common.Address, nonce uint64) *big.Int {
 			if list := pool.pending[addr]; list != nil {
 				if tx := list.txs.Get(nonce); tx != nil {
-					return tx.Cost()
+					return tx.Cost(*pool.currentHead.Load().FeePerTx)
 				}
 			}
 			return nil
 		},
 	}
-	if err := txpool.ValidateTransactionWithState(tx, pool.signer, opts); err != nil {
+	//fmt.Println("pooling current block base fee using pool chain ==>", pool.chain.CurrentBlock().BaseFee)
+	fmt.Println("pooling current block base fee using pool current head ==>", pool.currentHead.Load().FeePerTx)
+	if err := txpool.ValidateTransactionWithState(tx, pool.signer, opts, *pool.currentHead.Load().FeePerTx); err != nil {
 		return err
 	}
 	return nil
@@ -760,7 +763,7 @@ func (pool *LegacyPool) add(tx *types.Transaction, local bool) (replaced bool, e
 	// Try to replace an existing transaction in the pending pool
 	if list := pool.pending[from]; list != nil && list.Contains(tx.Nonce()) {
 		// Nonce already pending, check if required price bump is met
-		inserted, old := list.Add(tx, pool.config.PriceBump)
+		inserted, old := list.Add(tx, pool.config.PriceBump, *pool.currentHead.Load().FeePerTx)
 		if !inserted {
 			pendingDiscardMeter.Mark(1)
 			return false, txpool.ErrReplaceUnderpriced
@@ -834,7 +837,7 @@ func (pool *LegacyPool) enqueueTx(hash common.Hash, tx *types.Transaction, local
 	if pool.queue[from] == nil {
 		pool.queue[from] = newList(false)
 	}
-	inserted, old := pool.queue[from].Add(tx, pool.config.PriceBump)
+	inserted, old := pool.queue[from].Add(tx, pool.config.PriceBump, *pool.currentHead.Load().FeePerTx)
 	if !inserted {
 		// An older transaction was better, discard this
 		queuedDiscardMeter.Mark(1)
@@ -888,7 +891,7 @@ func (pool *LegacyPool) promoteTx(addr common.Address, hash common.Hash, tx *typ
 	}
 	list := pool.pending[addr]
 
-	inserted, old := list.Add(tx, pool.config.PriceBump)
+	inserted, old := list.Add(tx, pool.config.PriceBump, *pool.currentHead.Load().FeePerTx)
 	if !inserted {
 		// An older transaction was better, discard this
 		pool.all.Remove(hash)
@@ -1106,7 +1109,7 @@ func (pool *LegacyPool) removeTx(hash common.Hash, outofbound bool, unreserve bo
 	}
 	// Remove the transaction from the pending lists and reset the account nonce
 	if pending := pool.pending[addr]; pending != nil {
-		if removed, invalids := pending.Remove(tx); removed {
+		if removed, invalids := pending.Remove(tx, *pool.currentHead.Load().FeePerTx); removed {
 			// If no more pending transactions are left, remove the list
 			if pending.Empty() {
 				delete(pool.pending, addr)
@@ -1125,7 +1128,7 @@ func (pool *LegacyPool) removeTx(hash common.Hash, outofbound bool, unreserve bo
 	}
 	// Transaction is in the future queue
 	if future := pool.queue[addr]; future != nil {
-		if removed, _ := future.Remove(tx); removed {
+		if removed, _ := future.Remove(tx, *pool.currentHead.Load().FeePerTx); removed {
 			// Reduce the queued counter
 			queuedGauge.Dec(1)
 		}
@@ -1434,14 +1437,14 @@ func (pool *LegacyPool) promoteExecutables(accounts []common.Address) []*types.T
 			continue // Just in case someone calls with a non existing account
 		}
 		// Drop all transactions that are deemed too old (low nonce)
-		forwards := list.Forward(pool.currentState.GetNonce(addr))
+		forwards := list.Forward(pool.currentState.GetNonce(addr), *pool.currentHead.Load().FeePerTx)
 		for _, tx := range forwards {
 			hash := tx.Hash()
 			pool.all.Remove(hash)
 		}
 		log.Trace("Removed old queued transactions", "count", len(forwards))
 		// Drop all transactions that are too costly (low balance or out of gas)
-		drops, _ := list.Filter(pool.currentState.GetBalance(addr), gasLimit)
+		drops, _ := list.Filter(pool.currentState.GetBalance(addr), gasLimit, *pool.currentHead.Load().FeePerTx)
 		for _, tx := range drops {
 			hash := tx.Hash()
 			pool.all.Remove(hash)
@@ -1450,7 +1453,7 @@ func (pool *LegacyPool) promoteExecutables(accounts []common.Address) []*types.T
 		queuedNofundsMeter.Mark(int64(len(drops)))
 
 		// Gather all executable transactions and promote them
-		readies := list.Ready(pool.pendingNonces.get(addr))
+		readies := list.Ready(pool.pendingNonces.get(addr), *pool.currentHead.Load().FeePerTx)
 		for _, tx := range readies {
 			hash := tx.Hash()
 			if pool.promoteTx(addr, hash, tx) {
@@ -1463,7 +1466,7 @@ func (pool *LegacyPool) promoteExecutables(accounts []common.Address) []*types.T
 		// Drop all transactions over the allowed limit
 		var caps types.Transactions
 		if !pool.locals.contains(addr) {
-			caps = list.Cap(int(pool.config.AccountQueue))
+			caps = list.Cap(int(pool.config.AccountQueue), *pool.currentHead.Load().FeePerTx)
 			for _, tx := range caps {
 				hash := tx.Hash()
 				pool.all.Remove(hash)
@@ -1527,7 +1530,7 @@ func (pool *LegacyPool) truncatePending() {
 				for i := 0; i < len(offenders)-1; i++ {
 					list := pool.pending[offenders[i]]
 
-					caps := list.Cap(list.Len() - 1)
+					caps := list.Cap(list.Len()-1, *pool.currentHead.Load().FeePerTx)
 					for _, tx := range caps {
 						// Drop the transaction from the global pools too
 						hash := tx.Hash()
@@ -1554,7 +1557,7 @@ func (pool *LegacyPool) truncatePending() {
 			for _, addr := range offenders {
 				list := pool.pending[addr]
 
-				caps := list.Cap(list.Len() - 1)
+				caps := list.Cap(list.Len()-1, *pool.currentHead.Load().FeePerTx)
 				for _, tx := range caps {
 					// Drop the transaction from the global pools too
 					hash := tx.Hash()
@@ -1635,14 +1638,14 @@ func (pool *LegacyPool) demoteUnexecutables() {
 		nonce := pool.currentState.GetNonce(addr)
 
 		// Drop all transactions that are deemed too old (low nonce)
-		olds := list.Forward(nonce)
+		olds := list.Forward(nonce, *pool.currentHead.Load().FeePerTx)
 		for _, tx := range olds {
 			hash := tx.Hash()
 			pool.all.Remove(hash)
 			log.Trace("Removed old pending transaction", "hash", hash)
 		}
 		// Drop all transactions that are too costly (low balance or out of gas), and queue any invalids back for later
-		drops, invalids := list.Filter(pool.currentState.GetBalance(addr), gasLimit)
+		drops, invalids := list.Filter(pool.currentState.GetBalance(addr), gasLimit, *pool.currentHead.Load().FeePerTx)
 		for _, tx := range drops {
 			hash := tx.Hash()
 			log.Trace("Removed unpayable pending transaction", "hash", hash)
@@ -1663,7 +1666,7 @@ func (pool *LegacyPool) demoteUnexecutables() {
 		}
 		// If there's a gap in front, alert (should never happen) and postpone all transactions
 		if list.Len() > 0 && list.txs.Get(nonce) == nil {
-			gapped := list.Cap(0)
+			gapped := list.Cap(0, *pool.currentHead.Load().FeePerTx)
 			for _, tx := range gapped {
 				hash := tx.Hash()
 				log.Error("Demoting invalidated transaction", "hash", hash)

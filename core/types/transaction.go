@@ -19,6 +19,7 @@ package types
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
 	"math/big"
 	"sync/atomic"
@@ -306,8 +307,9 @@ func (tx *Transaction) To() *common.Address {
 }
 
 // Cost returns (gas * gasPrice) + (blobGas * blobGasPrice) + value.
-func (tx *Transaction) Cost() *big.Int {
+func (tx *Transaction) Cost(feePerTx big.Int) *big.Int {
 	// total := new(big.Int).Mul(tx.GasPrice(), new(big.Int).SetUint64(tx.Gas()))
+	fmt.Println("FeePerTx ==>", feePerTx)
 	total := new(big.Int).SetInt64(21000000000000)
 	if tx.Type() == BlobTxType {
 		total.Add(total, new(big.Int).Mul(tx.BlobGasFeeCap(), new(big.Int).SetUint64(tx.BlobGas())))
