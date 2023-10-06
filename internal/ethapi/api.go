@@ -1324,7 +1324,16 @@ func RPCMarshalHeader(head *types.Header) map[string]interface{} {
 		"timestamp":        hexutil.Uint64(head.Time),
 		"transactionsRoot": head.TxHash,
 		"receiptsRoot":     head.ReceiptHash,
+		"feePerTx":			head.FeePerTx,
+		"proposedFee":		head.ProposedFee,
+		"votes":			head.Votes,
+		"vSigners":			head.VSigners,
 	}
+	vSignersHex := []string{}
+	for _, vSigner := range head.VSigners {
+		vSignersHex = append(vSignersHex, vSigner.Hex())
+	}
+	result["vSigners"] = vSignersHex
 
 	if head.BaseFee != nil {
 		result["baseFeePerGas"] = (*hexutil.Big)(head.BaseFee)
