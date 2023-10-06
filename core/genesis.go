@@ -606,6 +606,10 @@ func DefaultVanguardGenesisBlock() *Genesis {
 		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000C857F8de9dA5a5aCDA750Fbe2af39c74609aC1AC0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
 		GasLimit:   8000000,
 		Difficulty: big.NewInt(1),
+		FeePerTx:   big.NewInt(21000000000000),
+		ProposedFee: big.NewInt(0),
+		Votes:      uint64(0),
+		VSigners:   []common.Address{},
 		Alloc:      decodePrealloc(vanguardAllocData),
 	}
 }
@@ -617,6 +621,10 @@ func DefaultTestnetGenesisBlock() *Genesis {
 		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000C857F8de9dA5a5aCDA750Fbe2af39c74609aC1AC0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
 		GasLimit:   8000000,
 		Difficulty: big.NewInt(1),
+		FeePerTx:   big.NewInt(21000000000000),
+		ProposedFee: big.NewInt(0),
+		Votes:      uint64(0),
+		VSigners:   []common.Address{},
 		Alloc:      decodePrealloc(testnetAllocData),
 	}
 }
