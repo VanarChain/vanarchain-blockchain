@@ -19,6 +19,7 @@ package clique
 import (
 	"encoding/json"
 	"fmt"
+	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -232,4 +233,30 @@ func (api *API) GetSigner(rlpOrBlockNr *blockNumberOrHashOrRLP) (common.Address,
 		return common.Address{}, err
 	}
 	return api.clique.Author(header)
+}
+
+func (api *API) ProposeFee(caller common.Address, fee *big.Int) (*big.Int, error) {
+    signer := api.clique.signer
+	if caller != signer{
+		return nil,fmt.Errorf("Address not Match")
+	}
+
+    snap, err := api.clique.snapshot(api.chain, api.chain.CurrentHeader().Number.Uint64(), api.chain.CurrentHeader().Hash(), nil)
+    if err != nil {
+        return nil,fmt.Errorf("snapshot missing", err)
+    }
+	 FeeLength, err := snap.ProposeFee(signer, fee, api.chain.CurrentHeader().ProposedFee, api.chain.CurrentHeader().FeePerTx)
+	 return FeeLength,err
+}
+
+
+func (api *API) GetProposedFee() (*big.Int, error) {
+    
+    snap, err := api.clique.snapshot(api.chain, api.chain.CurrentHeader().Number.Uint64(), api.chain.CurrentHeader().Hash(), nil)
+    if err != nil {
+        return new(big.Int).SetInt64(0), fmt.Errorf("Error in get proposed fee")
+    } else{
+		fee := snap.GetProposedFee()
+		return fee,nil
+	}
 }
