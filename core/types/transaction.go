@@ -310,7 +310,8 @@ func (tx *Transaction) To() *common.Address {
 func (tx *Transaction) Cost(feePerTx big.Int) *big.Int {
 	// total := new(big.Int).Mul(tx.GasPrice(), new(big.Int).SetUint64(tx.Gas()))
 	fmt.Println("FeePerTx ==>", feePerTx)
-	total := new(big.Int).SetInt64(21000000000000)
+	// total := new(big.Int).SetInt64(21000000000000)
+	total := new(big.Int).Set(&feePerTx)
 	if tx.Type() == BlobTxType {
 		total.Add(total, new(big.Int).Mul(tx.BlobGasFeeCap(), new(big.Int).SetUint64(tx.BlobGas())))
 	}
