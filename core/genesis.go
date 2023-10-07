@@ -58,6 +58,10 @@ type Genesis struct {
 	Alloc      GenesisAlloc        `json:"alloc"      gencodec:"required"`
 	FeePerTx   *big.Int			   `json:"feePerTx"	  gencodec:"required"`
 
+	ProposedFee *big.Int		   `json:"proposedFee"	  gencodec:"required"`
+	Votes      uint64			   `json:"votes"	  gencodec:"required"`
+	VSigners   []common.Address      `json:"vSigners"`
+
 	// These fields are used for consensus tests. Please don't use them
 	// in actual genesis blocks.
 	Number        uint64      `json:"number"`
@@ -103,6 +107,10 @@ func ReadGenesis(db ethdb.Database) (*Genesis, error) {
 	genesis.ExcessBlobGas = genesisHeader.ExcessBlobGas
 	genesis.BlobGasUsed = genesisHeader.BlobGasUsed
 	genesis.FeePerTx = genesisHeader.FeePerTx
+
+	genesis.ProposedFee = genesisHeader.ProposedFee
+	genesis.Votes = genesisHeader.Votes
+	genesis.VSigners = genesisHeader.VSigners
 
 	return &genesis, nil
 }
@@ -238,6 +246,10 @@ type genesisSpecMarshaling struct {
 	ExcessBlobGas *math.HexOrDecimal64
 	BlobGasUsed   *math.HexOrDecimal64
 	FeePerTx	  *math.HexOrDecimal256
+
+	ProposedFee	  math.HexOrDecimal64
+	Votes	  	  *math.HexOrDecimal256
+	VSigners 	  []hexutil.Bytes
 }
 
 type genesisAccountMarshaling struct {
@@ -469,8 +481,13 @@ func (g *Genesis) ToBlock() *types.Block {
 		MixDigest:  g.Mixhash,
 		Coinbase:   g.Coinbase,
 		FeePerTx:	g.FeePerTx,
+
+		ProposedFee:	g.ProposedFee,
+		Votes:		g.Votes,
+		VSigners: 	make([]common.Address, len(g.VSigners)),
 		Root:       root,
 	}
+	copy(head.VSigners, g.VSigners)
 	if g.GasLimit == 0 {
 		head.GasLimit = params.GenesisGasLimit
 	}
@@ -593,6 +610,10 @@ func DefaultVanguardGenesisBlock() *Genesis {
 		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000C857F8de9dA5a5aCDA750Fbe2af39c74609aC1AC0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
 		GasLimit:   8000000,
 		Difficulty: big.NewInt(1),
+		FeePerTx:   big.NewInt(21000000000000),
+		ProposedFee: big.NewInt(0),
+		Votes:      uint64(0),
+		VSigners:   []common.Address{},
 		Alloc:      decodePrealloc(vanguardAllocData),
 	}
 }
@@ -604,6 +625,10 @@ func DefaultTestnetGenesisBlock() *Genesis {
 		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000C857F8de9dA5a5aCDA750Fbe2af39c74609aC1AC0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
 		GasLimit:   8000000,
 		Difficulty: big.NewInt(1),
+		FeePerTx:   big.NewInt(21000000000000),
+		ProposedFee: big.NewInt(0),
+		Votes:      uint64(0),
+		VSigners:   []common.Address{},
 		Alloc:      decodePrealloc(testnetAllocData),
 	}
 }

@@ -80,6 +80,10 @@ type Header struct {
 	Nonce       BlockNonce     `json:"nonce"`
 	FeePerTx	*big.Int	   `json:"feePerTx"			gencodec:"required"`
 
+	ProposedFee	*big.Int	   `json:"proposedFee"		gencodec:"required"`
+	Votes		uint64		   `json:"votes"			gencodec:"required"`
+	VSigners 	[]common.Address `json:"vSigners"`
+
 	// BaseFee was added by EIP-1559 and is ignored in legacy headers.
 	BaseFee *big.Int `json:"baseFeePerGas" rlp:"optional"`
 
@@ -106,6 +110,10 @@ type headerMarshaling struct {
 	BlobGasUsed   *hexutil.Uint64
 	ExcessBlobGas *hexutil.Uint64
 	FeePerTx	  *hexutil.Big
+
+	ProposedFee	  *hexutil.Big
+	Votes		  hexutil.Uint64
+	VSigners 	  []hexutil.Bytes `json:"vSigners"`
 }
 
 // Hash returns the block hash of the header, which is simply the keccak256 hash of its
@@ -150,6 +158,12 @@ func (h *Header) SanityCheck() error {
 	if h.FeePerTx != nil {
 		if fptLen := h.FeePerTx.BitLen(); fptLen > 256 {
 			return fmt.Errorf("too large fee per tx: bitlen %d", fptLen)
+		}
+	}
+
+	if h.ProposedFee != nil {
+		if pfLen := h.ProposedFee.BitLen(); pfLen > 256 {
+			return fmt.Errorf("too large proposed fee: bitlen %d", pfLen)
 		}
 	}
 	return nil
@@ -307,6 +321,17 @@ func CopyHeader(h *Header) *Header {
 	if h.FeePerTx != nil {
 		cpy.FeePerTx = new(big.Int).Set(h.FeePerTx)
 	}
+
+	if h.ProposedFee != nil {
+		cpy.ProposedFee = new(big.Int).Set(h.ProposedFee)
+	}
+	
+	if len(h.VSigners) > 0 {
+		cpy.VSigners = make([]common.Address, len(h.VSigners))
+		copy(cpy.VSigners, h.VSigners)
+	}
+	
+	cpy.Votes = h.Votes
 	return &cpy
 }
 
@@ -391,6 +416,20 @@ func (b *Block) FeePerTx() *big.Int {
 		return nil
 	}
 	return new(big.Int).Set(b.header.FeePerTx)
+}
+
+
+func (b *Block) ProposedFee() *big.Int {
+	if b.header.ProposedFee == nil {
+		return nil
+	}
+	return new(big.Int).Set(b.header.ProposedFee)
+}
+
+func (b *Block) Votes() uint64  { return b.header.Votes }
+
+func (b *Block) VSigners() []common.Address {
+	return b.header.VSigners
 }
 
 func (b *Block) ExcessBlobGas() *uint64 {

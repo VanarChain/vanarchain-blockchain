@@ -41,6 +41,18 @@ func (obj *Header) EncodeRLP(_w io.Writer) error {
 	w.WriteBytes(obj.MixDigest[:])
 	w.WriteBytes(obj.Nonce[:])
 	w.WriteBigInt(obj.FeePerTx)
+
+	w.WriteBigInt(obj.ProposedFee)
+	w.WriteUint64(obj.Votes)
+	if len(obj.VSigners) == 0 {
+		w.Write(rlp.EmptyList)
+	} else {
+		vsignersList := w.List()
+		for _, vSigner := range obj.VSigners {
+			w.WriteBytes(vSigner[:])
+		}
+		w.ListEnd(vsignersList)
+	}
 	_tmp1 := obj.BaseFee != nil
 	_tmp2 := obj.WithdrawalsHash != nil
 	_tmp3 := obj.BlobGasUsed != nil
