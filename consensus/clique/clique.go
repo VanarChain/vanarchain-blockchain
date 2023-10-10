@@ -68,6 +68,9 @@ var (
 
 	diffInTurn = big.NewInt(2) // Block difficulty for in-turn signatures
 	diffNoTurn = big.NewInt(1) // Block difficulty for out-of-turn signatures
+
+	InitialBlockReward = big.NewInt(2e+18)
+	HalvingBlockInterval = new(big.Int).SetUint64(10000)
 )
 
 // Various error messages to mark blocks invalid. These should be private to
@@ -568,7 +571,22 @@ func (c *Clique) Prepare(chain consensus.ChainHeaderReader, header *types.Header
 // Finalize implements consensus.Engine. There is no post-transaction
 // consensus rules in clique, do nothing here.
 func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB, txs []*types.Transaction, uncles []*types.Header, withdrawals []*types.Withdrawal) {
-	// No block rewards in PoA, so the state remains as is
+	
+	var prevHeader *types.Header
+	prevHeader = chain.GetHeaderByNumber(header.Number.Uint64()-1)
+
+	sealer, err := c.Author(prevHeader)
+	if err == nil {
+		
+		blockForReward := big.NewInt(int64(prevHeader.Number.Uint64() - 1))
+		halvingCycle := new(big.Int).Div(blockForReward, HalvingBlockInterval)
+
+		// Calculate 2^halvingCycle
+		divisor := new(big.Int).Exp(big.NewInt(2), halvingCycle, nil)
+		reward := new(big.Int).Div(InitialBlockReward, divisor)
+		
+		state.AddBalance(sealer, reward)
+	}
 }
 
 // FinalizeAndAssemble implements consensus.Engine, ensuring no uncles are set,
