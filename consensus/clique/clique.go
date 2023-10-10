@@ -578,7 +578,12 @@ func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Heade
 	sealer, err := c.Author(prevHeader)
 	if err == nil {
 		
-		blockForReward := big.NewInt(int64(prevHeader.Number.Uint64() - 1))
+		var blockForReward *big.Int
+		if prevHeader.Number.Uint64() == 0 {
+			blockForReward = big.NewInt(0)
+		} else {
+			blockForReward = big.NewInt(int64(prevHeader.Number.Uint64() - 1))
+		}
 		halvingCycle := new(big.Int).Div(blockForReward, HalvingBlockInterval)
 
 		// Calculate 2^halvingCycle
