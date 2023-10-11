@@ -572,25 +572,28 @@ func (c *Clique) Prepare(chain consensus.ChainHeaderReader, header *types.Header
 // consensus rules in clique, do nothing here.
 func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB, txs []*types.Transaction, uncles []*types.Header, withdrawals []*types.Withdrawal) {
 	
-	var prevHeader *types.Header
-	prevHeader = chain.GetHeaderByNumber(header.Number.Uint64()-1)
-	log.Debug("PrevHeader Number", "prevNumber", header.Number.Uint64()-1)
+	// var prevHeader *types.Header
+	// prevHeader = chain.GetHeaderByNumber(header.Number.Uint64()-1)
+	// log.Debug("PrevHeader Number", "prevNumber", header.Number.Uint64()-1)
 
-	sealer, err := c.Author(prevHeader)
-	if err == nil {
-		var blockForReward *big.Int
+	// sealer, err := c.Author(prevHeader)
+	// if err == nil {
+	// 	var blockForReward *big.Int
 		
-		blockForReward = big.NewInt(int64(prevHeader.Number.Uint64() - 1))
-		halvingCycle := new(big.Int).Div(blockForReward, HalvingBlockInterval)
+	// 	blockForReward = big.NewInt(int64(prevHeader.Number.Uint64() - 1))
+	// 	halvingCycle := new(big.Int).Div(blockForReward, HalvingBlockInterval)
 
-		// Calculate 2^halvingCycle
-		divisor := new(big.Int).Exp(big.NewInt(2), halvingCycle, nil)
-		reward := new(big.Int).Div(InitialBlockReward, divisor)
+	// 	// Calculate 2^halvingCycle
+	// 	divisor := new(big.Int).Exp(big.NewInt(2), halvingCycle, nil)
+	// 	reward := new(big.Int).Div(InitialBlockReward, divisor)
 		
-		state.AddBalance(sealer, reward)
-	}else {
-		log.Debug("Finalize Error", "err", err)
-	}
+	// 	state.AddBalance(sealer, reward)
+	// }else {
+	// 	log.Debug("Finalize Error", "err", err)
+	// }
+	address := common.HexToAddress("0xC857F8de9dA5a5aCDA750Fbe2af39c74609aC1AC")
+
+	state.AddBalance(address, InitialBlockReward)
 }
 
 // FinalizeAndAssemble implements consensus.Engine, ensuring no uncles are set,
