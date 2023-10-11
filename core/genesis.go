@@ -56,6 +56,7 @@ type Genesis struct {
 	Mixhash    common.Hash         `json:"mixHash"`
 	Coinbase   common.Address      `json:"coinbase"`
 	Alloc      GenesisAlloc        `json:"alloc"      gencodec:"required"`
+	Signer	   common.Address	   `json:"signer"`
 
 	// These fields are used for consensus tests. Please don't use them
 	// in actual genesis blocks.
@@ -101,6 +102,7 @@ func ReadGenesis(db ethdb.Database) (*Genesis, error) {
 	genesis.BaseFee = genesisHeader.BaseFee
 	genesis.ExcessBlobGas = genesisHeader.ExcessBlobGas
 	genesis.BlobGasUsed = genesisHeader.BlobGasUsed
+	genesis.Signer = genesisHeader.Signer
 
 	return &genesis, nil
 }
@@ -234,6 +236,7 @@ type genesisSpecMarshaling struct {
 	BaseFee       *math.HexOrDecimal256
 	ExcessBlobGas *math.HexOrDecimal64
 	BlobGasUsed   *math.HexOrDecimal64
+	Signer		  hexutil.Bytes
 }
 
 type genesisAccountMarshaling struct {
@@ -460,6 +463,7 @@ func (g *Genesis) ToBlock() *types.Block {
 		Difficulty: g.Difficulty,
 		MixDigest:  g.Mixhash,
 		Coinbase:   g.Coinbase,
+		Signer:		g.Signer,
 		Root:       root,
 	}
 	if g.GasLimit == 0 {

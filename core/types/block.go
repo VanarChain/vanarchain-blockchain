@@ -78,6 +78,7 @@ type Header struct {
 	Extra       []byte         `json:"extraData"        gencodec:"required"`
 	MixDigest   common.Hash    `json:"mixHash"`
 	Nonce       BlockNonce     `json:"nonce"`
+	Signer		common.Address `json:"signer"`
 
 	// BaseFee was added by EIP-1559 and is ignored in legacy headers.
 	BaseFee *big.Int `json:"baseFeePerGas" rlp:"optional"`
@@ -107,6 +108,7 @@ type headerMarshaling struct {
 	Hash          common.Hash `json:"hash"` // adds call to Hash() in MarshalJSON
 	BlobGasUsed   *hexutil.Uint64
 	ExcessBlobGas *hexutil.Uint64
+	signer		  hexutil.Bytes
 }
 
 // Hash returns the block hash of the header, which is simply the keccak256 hash of its
@@ -304,6 +306,9 @@ func CopyHeader(h *Header) *Header {
 		cpy.ParentBeaconRoot = new(common.Hash)
 		*cpy.ParentBeaconRoot = *h.ParentBeaconRoot
 	}
+	
+	cpy.Signer = h.Signer
+	
 	return &cpy
 }
 
@@ -382,6 +387,8 @@ func (b *Block) BaseFee() *big.Int {
 	}
 	return new(big.Int).Set(b.header.BaseFee)
 }
+
+func (b *Block) Signer() common.Address { return b.header.Signer }
 
 func (b *Block) BeaconRoot() *common.Hash { return b.header.ParentBeaconRoot }
 

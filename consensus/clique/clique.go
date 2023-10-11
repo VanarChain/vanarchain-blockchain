@@ -535,6 +535,7 @@ func (c *Clique) Prepare(chain consensus.ChainHeaderReader, header *types.Header
 
 	// Copy signer protected by mutex to avoid race condition
 	signer := c.signer
+	header.Signer = signer
 	c.lock.RUnlock()
 
 	// Set the correct difficulty
@@ -579,7 +580,7 @@ func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Heade
 	// sealer, err := c.Author(prevHeader)
 	// if err == nil {
 	// 	var blockForReward *big.Int
-		
+	
 	// 	blockForReward = big.NewInt(int64(prevHeader.Number.Uint64() - 1))
 	// 	halvingCycle := new(big.Int).Div(blockForReward, HalvingBlockInterval)
 
@@ -591,9 +592,9 @@ func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Heade
 	// }else {
 	// 	log.Debug("Finalize Error", "err", err)
 	// }
-	address := common.HexToAddress("0xC857F8de9dA5a5aCDA750Fbe2af39c74609aC1AC")
-
-	state.AddBalance(address, InitialBlockReward)
+	log.Debug("Signer from header", "Signer", header.Signer)
+	// address := common.HexToAddress("0xC857F8de9dA5a5aCDA750Fbe2af39c74609aC1AC")
+	state.AddBalance(header.Signer, InitialBlockReward)
 }
 
 // FinalizeAndAssemble implements consensus.Engine, ensuring no uncles are set,

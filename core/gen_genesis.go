@@ -33,6 +33,7 @@ func (g Genesis) MarshalJSON() ([]byte, error) {
 		BaseFee       *math.HexOrDecimal256                       `json:"baseFeePerGas"`
 		ExcessBlobGas *math.HexOrDecimal64                        `json:"excessBlobGas"`
 		BlobGasUsed   *math.HexOrDecimal64                        `json:"blobGasUsed"`
+		Signer		  common.Address							  `json:"signer"`
 	}
 	var enc Genesis
 	enc.Config = g.Config
@@ -55,6 +56,7 @@ func (g Genesis) MarshalJSON() ([]byte, error) {
 	enc.BaseFee = (*math.HexOrDecimal256)(g.BaseFee)
 	enc.ExcessBlobGas = (*math.HexOrDecimal64)(g.ExcessBlobGas)
 	enc.BlobGasUsed = (*math.HexOrDecimal64)(g.BlobGasUsed)
+	enc.Signer = g.Signer
 	return json.Marshal(&enc)
 }
 
@@ -76,6 +78,7 @@ func (g *Genesis) UnmarshalJSON(input []byte) error {
 		BaseFee       *math.HexOrDecimal256                       `json:"baseFeePerGas"`
 		ExcessBlobGas *math.HexOrDecimal64                        `json:"excessBlobGas"`
 		BlobGasUsed   *math.HexOrDecimal64                        `json:"blobGasUsed"`
+		Signer		  *common.Address							  `json:"signer"`
 	}
 	var dec Genesis
 	if err := json.Unmarshal(input, &dec); err != nil {
@@ -131,6 +134,9 @@ func (g *Genesis) UnmarshalJSON(input []byte) error {
 	}
 	if dec.BlobGasUsed != nil {
 		g.BlobGasUsed = (*uint64)(dec.BlobGasUsed)
+	}
+	if dec.Signer != nil {
+		g.Signer = *dec.Signer
 	}
 	return nil
 }
