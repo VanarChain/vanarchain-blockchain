@@ -112,7 +112,7 @@ type headerMarshaling struct {
 	Hash          common.Hash `json:"hash"` // adds call to Hash() in MarshalJSON
 	BlobGasUsed   *hexutil.Uint64
 	ExcessBlobGas *hexutil.Uint64
-	signer		  hexutil.Bytes
+	Signer		  hexutil.Bytes
 	FeePerTx	  *hexutil.Big
 	ProposedFee	  *hexutil.Big
 	Votes		  hexutil.Uint64
