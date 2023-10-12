@@ -28,14 +28,6 @@ var MainnetBootnodes = []string{
 	"enode://4aeb4ab6c14b23e2c4cfdce879c04b0748a20d8e9b59e25ded2a08143e265c6c25936e74cbc8e641e3312ca288673d91f2f93f8e277de3cfa444ecdaaf982052@157.90.35.166:30303", // bootnode-hetzner-fsn
 }
 
-// HoleskyBootnodes are the enode URLs of the P2P bootstrap nodes running on the
-// Holesky test network.
-var HoleskyBootnodes = []string{
-	// EF DevOps
-	"enode://ac906289e4b7f12df423d654c5a962b6ebe5b3a74cc9e06292a85221f9a64a6f1cfdd6b714ed6dacef51578f92b34c60ee91e9ede9c7f8fadc4d347326d95e2b@146.190.13.128:30303",
-	"enode://a3435a0155a3e837c02f5e7f5662a2f1fbc25b48e4dc232016e1c51b544cb5b4510ef633ea3278c0e970fa8ad8141e2d4d0f9f95456c537ff05fdf9b31c15072@178.128.136.233:30303",
-}
-
 // SepoliaBootnodes are the enode URLs of the P2P bootstrap nodes running on the
 // Sepolia test network.
 var SepoliaBootnodes = []string{
@@ -62,6 +54,20 @@ var GoerliBootnodes = []string{
 	// Goerli Initiative bootnodes
 	"enode://d4f764a48ec2a8ecf883735776fdefe0a3949eb0ca476bd7bc8d0954a9defe8fea15ae5da7d40b5d2d59ce9524a99daedadf6da6283fca492cc80b53689fb3b3@46.4.99.122:32109",
 	"enode://d2b720352e8216c9efc470091aa91ddafc53e222b32780f505c817ceef69e01d5b0b0797b69db254c586f493872352f5a022b4d8479a00fc92ec55f9ad46a27e@88.99.70.182:30303",
+}
+
+var VanguardBootnodes = []string{
+	//"enode://741eada911eaa0c6cadf1352760fa71ceee5f4a0fed7bc2a9ec5eac48da8660a6866aad95c689f32d4bb329ea2c53598b79bd150c0e288165bdbcd3573a33740@35.212.84.250:30303",
+	//"enode://21d40d4bc61879eae417354a8b5a2b4059a3316429c31605f162b24e8c404199245703f2eb530ae3d64d4c670057d5b927f488698b723a4eaea56929a444fb79@35.212.33.181:30303",
+	//"enode://ada58f96fb64ed6d8c85a34d6f268d29736e6d8ae85d15b2215c84428612e266f41a953d024d7aa8c24db2c99750f6ff7998c21572acc53b7b8741d91df5a066@35.212.111.56:30303",
+	//"enode://bfe747af336911ac305ce58abfe5e3da2d3f4bc0fa46d2eccc0b51f3cc43f8cc28b27b463072db8d71c2d5c09e7ecd87a81d24299b0730d951e6c0f2fae684b3@34.172.170.25:30303",
+	//"enode://a0887bf2f2e2dda814c710767dae7aee30695e90a8de54f5655b9f2e3d389257959b65991a5900246a3d422acc8bc96f7ac1188e350f8569df473f68b03d2006@34.105.244.117:30303",	
+	"enode://bfe747af336911ac305ce58abfe5e3da2d3f4bc0fa46d2eccc0b51f3cc43f8cc28b27b463072db8d71c2d5c09e7ecd87a81d24299b0730d951e6c0f2fae684b3@bootnode1-vanguard.vanarchain.com:30303",
+	"enode://a0887bf2f2e2dda814c710767dae7aee30695e90a8de54f5655b9f2e3d389257959b65991a5900246a3d422acc8bc96f7ac1188e350f8569df473f68b03d2006@bootnode2-vanguard.vanarchain.com:30303",
+}
+
+var TestnetBootnodes = []string{
+	"enode://5322f21c033312024498eaea181e54c9f2dc0eb78190923093444dc22a8d9276e0ed6cacf231207d093cf5192dae3be744346911872d815a13c7bc0dcf1ed8e1@34.133.201.224:0?discport=30301",
 }
 
 var V5Bootnodes = []string{
@@ -96,8 +102,10 @@ func KnownDNSNetwork(genesis common.Hash, protocol string) string {
 		net = "goerli"
 	case SepoliaGenesisHash:
 		net = "sepolia"
-	case HoleskyGenesisHash:
-		net = "holesky"
+	case VanguardGenesisHash:
+		net = "vanguardTestnet"
+	case TestnetGenesisHash:
+		net = "testnetTestnet"
 	default:
 		return ""
 	}
