@@ -34,9 +34,9 @@ func (g Genesis) MarshalJSON() ([]byte, error) {
 		ExcessBlobGas *math.HexOrDecimal64                        `json:"excessBlobGas"`
 		BlobGasUsed   *math.HexOrDecimal64                        `json:"blobGasUsed"`
 		Signer		  common.Address							  `json:"signer"`
-		FeePerTx	  *math.HexOrDecimal256						  `json:"feePerTx"	 gencodec:"required"`
-		ProposedFee	  *math.HexOrDecimal256						  `json:"proposedFee"	 gencodec:"required"`
-		Votes	  	  math.HexOrDecimal64						  `json:"votes"	 	 gencodec:"required"`
+		FeePerTx	  *math.HexOrDecimal256						  `json:"feePerTx" gencodec:"required"`
+		ProposedFee	  *math.HexOrDecimal256						  `json:"proposedFee" gencodec:"required"`
+		Votes	  	  math.HexOrDecimal64						  `json:"votes" gencodec:"required"`
 		VSigners 	  []common.Address 							  `json:"vSigners"`
 	}
 	var enc Genesis
@@ -88,8 +88,8 @@ func (g *Genesis) UnmarshalJSON(input []byte) error {
 		ExcessBlobGas *math.HexOrDecimal64                        `json:"excessBlobGas"`
 		BlobGasUsed   *math.HexOrDecimal64                        `json:"blobGasUsed"`
 		Signer		  *common.Address							  `json:"signer"`
-		FeePerTx	  *math.HexOrDecimal256						  `json:"feePerTx"	 gencodec:"required"`
-		ProposedFee	  *math.HexOrDecimal256						  `json:"proposedFee"	 gencodec:"required"`
+		FeePerTx	  *math.HexOrDecimal256						  `json:"feePerTx" gencodec:"required"`
+		ProposedFee	  *math.HexOrDecimal256						  `json:"proposedFee" gencodec:"required"`
 		Votes         *math.HexOrDecimal64                        `json:"votes"      gencodec:"required"`
 		VSigners 	  *[]common.Address 						  `json:"vSigners"`
 	}
@@ -150,6 +150,7 @@ func (g *Genesis) UnmarshalJSON(input []byte) error {
 	}
 	if dec.Signer != nil {
 		g.Signer = *dec.Signer
+	}
 	if dec.FeePerTx == nil {
 		return errors.New("missing required field 'feePerTx' for Genesis")
 	}

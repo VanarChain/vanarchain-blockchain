@@ -57,9 +57,9 @@ type Genesis struct {
 	Coinbase   common.Address      `json:"coinbase"`
 	Alloc      GenesisAlloc        `json:"alloc"      gencodec:"required"`
 	Signer	   common.Address	   `json:"signer"`
-	FeePerTx   *big.Int			   `json:"feePerTx"	  gencodec:"required"`
-	ProposedFee *big.Int		   `json:"proposedFee"	  gencodec:"required"`
-	Votes      uint64			   `json:"votes"	  gencodec:"required"`
+	FeePerTx   *big.Int			   `json:"feePerTx" gencodec:"required"`
+	ProposedFee *big.Int		   `json:"proposedFee" gencodec:"required"`
+	Votes      uint64			   `json:"votes" gencodec:"required"`
 	VSigners   []common.Address      `json:"vSigners"`
 
 	// These fields are used for consensus tests. Please don't use them
