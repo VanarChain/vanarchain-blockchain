@@ -148,7 +148,7 @@ var (
 		IstanbulBlock:                 big.NewInt(0),
 		BerlinBlock:                   big.NewInt(0),
 		Clique: &CliqueConfig{
-			Period: 12,
+			Period: 2,
 			Epoch:  30000,
 		},
 	}
@@ -165,7 +165,7 @@ var (
 		IstanbulBlock:                 big.NewInt(0),
 		BerlinBlock:                   big.NewInt(0),
 		Clique: &CliqueConfig{
-			Period: 12,
+			Period: 2,
 			Epoch:  30000,
 		},
 	}
