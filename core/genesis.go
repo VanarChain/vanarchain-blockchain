@@ -56,10 +56,10 @@ type Genesis struct {
 	Mixhash    common.Hash         `json:"mixHash"`
 	Coinbase   common.Address      `json:"coinbase"`
 	Alloc      GenesisAlloc        `json:"alloc"      gencodec:"required"`
-	FeePerTx   *big.Int			   `json:"feePerTx"	  gencodec:"required"`
-
-	ProposedFee *big.Int		   `json:"proposedFee"	  gencodec:"required"`
-	Votes      uint64			   `json:"votes"	  gencodec:"required"`
+	Signer	   common.Address	   `json:"signer"`
+	FeePerTx   *big.Int			   `json:"feePerTx" gencodec:"required"`
+	ProposedFee *big.Int		   `json:"proposedFee" gencodec:"required"`
+	Votes      uint64			   `json:"votes" gencodec:"required"`
 	VSigners   []common.Address      `json:"vSigners"`
 
 	// These fields are used for consensus tests. Please don't use them
@@ -106,8 +106,8 @@ func ReadGenesis(db ethdb.Database) (*Genesis, error) {
 	genesis.BaseFee = genesisHeader.BaseFee
 	genesis.ExcessBlobGas = genesisHeader.ExcessBlobGas
 	genesis.BlobGasUsed = genesisHeader.BlobGasUsed
+	genesis.Signer = genesisHeader.Signer
 	genesis.FeePerTx = genesisHeader.FeePerTx
-
 	genesis.ProposedFee = genesisHeader.ProposedFee
 	genesis.Votes = genesisHeader.Votes
 	genesis.VSigners = genesisHeader.VSigners
@@ -140,7 +140,9 @@ func (ga *GenesisAlloc) deriveHash() (common.Hash, error) {
 		return common.Hash{}, err
 	}
 	for addr, account := range *ga {
-		statedb.AddBalance(addr, account.Balance)
+		if account.Balance != nil {
+			statedb.AddBalance(addr, account.Balance)
+		}
 		statedb.SetCode(addr, account.Code)
 		statedb.SetNonce(addr, account.Nonce)
 		for key, value := range account.Storage {
@@ -159,7 +161,9 @@ func (ga *GenesisAlloc) flush(db ethdb.Database, triedb *trie.Database, blockhas
 		return err
 	}
 	for addr, account := range *ga {
-		statedb.AddBalance(addr, account.Balance)
+		if account.Balance != nil {
+			statedb.AddBalance(addr, account.Balance)
+		}
 		statedb.SetCode(addr, account.Code)
 		statedb.SetNonce(addr, account.Nonce)
 		for key, value := range account.Storage {
@@ -213,7 +217,6 @@ func CommitGenesisState(db ethdb.Database, triedb *trie.Database, blockhash comm
 		case params.TestnetGenesisHash:
 			genesis = DefaultTestnetGenesisBlock()
 		}
-
 		if genesis != nil {
 			alloc = genesis.Alloc
 		} else {
@@ -245,8 +248,8 @@ type genesisSpecMarshaling struct {
 	BaseFee       *math.HexOrDecimal256
 	ExcessBlobGas *math.HexOrDecimal64
 	BlobGasUsed   *math.HexOrDecimal64
+	Signer		  hexutil.Bytes
 	FeePerTx	  *math.HexOrDecimal256
-
 	ProposedFee	  math.HexOrDecimal64
 	Votes	  	  *math.HexOrDecimal256
 	VSigners 	  []hexutil.Bytes
@@ -480,8 +483,8 @@ func (g *Genesis) ToBlock() *types.Block {
 		Difficulty: g.Difficulty,
 		MixDigest:  g.Mixhash,
 		Coinbase:   g.Coinbase,
+		Signer:		g.Signer,
 		FeePerTx:	g.FeePerTx,
-
 		ProposedFee:	g.ProposedFee,
 		Votes:		g.Votes,
 		VSigners: 	make([]common.Address, len(g.VSigners)),
@@ -509,6 +512,11 @@ func (g *Genesis) ToBlock() *types.Block {
 			withdrawals = make([]*types.Withdrawal, 0)
 		}
 		if conf.IsCancun(num, g.Timestamp) {
+			// EIP-4788: The parentBeaconBlockRoot of the genesis block is always
+			// the zero hash. This is because the genesis block does not have a parent
+			// by definition.
+			head.ParentBeaconRoot = new(common.Hash)
+			// EIP-4844 fields
 			head.ExcessBlobGas = g.ExcessBlobGas
 			head.BlobGasUsed = g.BlobGasUsed
 			if head.ExcessBlobGas == nil {
@@ -635,6 +643,18 @@ func DefaultTestnetGenesisBlock() *Genesis {
 	}
 }
 
+// DefaultHoleskyGenesisBlock returns the Holesky network genesis block.
+func DefaultHoleskyGenesisBlock() *Genesis {
+	return &Genesis{
+		Config:     params.HoleskyChainConfig,
+		Nonce:      0x1234,
+		GasLimit:   0x17d7840,
+		Difficulty: big.NewInt(0x01),
+		Timestamp:  1695902100,
+		Alloc:      decodePrealloc(holeskyAllocData),
+	}
+}
+
 // DeveloperGenesisBlock returns the 'geth --dev' genesis block.
 func DeveloperGenesisBlock(gasLimit uint64, faucet common.Address) *Genesis {
 	// Override the default period to the user requested one
@@ -662,13 +682,34 @@ func DeveloperGenesisBlock(gasLimit uint64, faucet common.Address) *Genesis {
 }
 
 func decodePrealloc(data string) GenesisAlloc {
-	var p []struct{ Addr, Balance *big.Int }
+	var p []struct {
+		Addr    *big.Int
+		Balance *big.Int
+		Misc    *struct {
+			Nonce uint64
+			Code  []byte
+			Slots []struct {
+				Key common.Hash
+				Val common.Hash
+			}
+		} `rlp:"optional"`
+	}
 	if err := rlp.NewStream(strings.NewReader(data), 0).Decode(&p); err != nil {
 		panic(err)
 	}
 	ga := make(GenesisAlloc, len(p))
 	for _, account := range p {
-		ga[common.BigToAddress(account.Addr)] = GenesisAccount{Balance: account.Balance}
+		acc := GenesisAccount{Balance: account.Balance}
+		if account.Misc != nil {
+			acc.Nonce = account.Misc.Nonce
+			acc.Code = account.Misc.Code
+
+			acc.Storage = make(map[common.Hash]common.Hash)
+			for _, slot := range account.Misc.Slots {
+				acc.Storage[slot.Key] = slot.Val
+			}
+		}
+		ga[common.BigToAddress(account.Addr)] = acc
 	}
 	return ga
 }
