@@ -36,6 +36,7 @@ func (s stEnv) MarshalJSON() ([]byte, error) {
 		ExcessBlobGas       *math.HexOrDecimal64                `json:"excessBlobGas,omitempty"`
 		ParentExcessBlobGas *math.HexOrDecimal64                `json:"parentExcessBlobGas,omitempty"`
 		ParentBlobGasUsed   *math.HexOrDecimal64                `json:"parentBlobGasUsed,omitempty"`
+		ParentBeaconBlockRoot *common.Hash                        `json:"parentBeaconBlockRoot"`
 		FeePerTx            *math.HexOrDecimal256               `json:"feePerTx,omitempty"`
 	}
 	var enc stEnv
