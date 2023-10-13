@@ -89,6 +89,7 @@ type stEnv struct {
 	ParentExcessBlobGas   *uint64                             `json:"parentExcessBlobGas,omitempty"`
 	ParentBlobGasUsed     *uint64                             `json:"parentBlobGasUsed,omitempty"`
 	ParentBeaconBlockRoot *common.Hash                        `json:"parentBeaconBlockRoot"`
+	FeePerTx              *big.Int                            `json:"feePerTx,omitempty"`
 }
 
 type stEnvMarshaling struct {
@@ -104,6 +105,7 @@ type stEnvMarshaling struct {
 	Timestamp           math.HexOrDecimal64
 	ParentTimestamp     math.HexOrDecimal64
 	BaseFee             *math.HexOrDecimal256
+	FeePerTx            *math.HexOrDecimal256
 	ExcessBlobGas       *math.HexOrDecimal64
 	ParentExcessBlobGas *math.HexOrDecimal64
 	ParentBlobGasUsed   *math.HexOrDecimal64
@@ -153,6 +155,10 @@ func (pre *Prestate) Apply(vmConfig vm.Config, chainConfig *params.ChainConfig,
 		Difficulty:  pre.Env.Difficulty,
 		GasLimit:    pre.Env.GasLimit,
 		GetHash:     getHash,
+	}
+	// If currentBaseFee is defined, add it to the vmContext.
+	if pre.Env.FeePerTx != nil {
+		vmContext.FeePerTx = new(big.Int).Set(pre.Env.FeePerTx)
 	}
 	// If currentBaseFee is defined, add it to the vmContext.
 	if pre.Env.BaseFee != nil {

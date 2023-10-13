@@ -29,6 +29,8 @@ var (
 	HoleskyGenesisHash = common.HexToHash("0xb5f7f912443c940f21fd611f12828d75b534364ed9e95ca4e307729a4661bde4")
 	SepoliaGenesisHash = common.HexToHash("0x25a5cc106eea7138acab33231d7160d69cb777ee0c2c553fcddf5138993e6dd9")
 	GoerliGenesisHash  = common.HexToHash("0xbf7e331f7f7c1dd2e05159666b3bf8bc7a8a3a9eb1d518969eab529dd9b88c1a")
+	VanguardGenesisHash = common.HexToHash("0x6309fe9c5eef695c083aea83ccb671da98480b30e558e50a695f49d0b29c7626");
+	TestnetGenesisHash = common.HexToHash("0x6309fe9c5eef695c083aea83ccb671da98480b30e558e50a695f49d0b29c7626");
 )
 
 func newUint64(val uint64) *uint64 { return &val }
@@ -132,6 +134,42 @@ var (
 			Epoch:  30000,
 		},
 	}
+
+	// VanguardChainConfig contains the chain parameters to run a node on the Vanguard network.
+	VanguardChainConfig = &ChainConfig{
+		ChainID:                       big.NewInt(7860),
+		HomesteadBlock:                big.NewInt(0),
+		EIP150Block:                   big.NewInt(0),
+		EIP155Block:                   big.NewInt(0),
+		EIP158Block:                   big.NewInt(0),
+		ByzantiumBlock:                big.NewInt(0),
+		ConstantinopleBlock:           big.NewInt(0),
+		PetersburgBlock:               big.NewInt(0),
+		IstanbulBlock:                 big.NewInt(0),
+		BerlinBlock:                   big.NewInt(0),
+		Clique: &CliqueConfig{
+			Period: 2,
+			Epoch:  30000,
+		},
+	}
+	// TestnetChainConfig contains the chain parameters to run a node on the Testnet network.
+	TestnetChainConfig = &ChainConfig{
+		ChainID:                       big.NewInt(1947),
+		HomesteadBlock:                big.NewInt(0),
+		EIP150Block:                   big.NewInt(0),
+		EIP155Block:                   big.NewInt(0),
+		EIP158Block:                   big.NewInt(0),
+		ByzantiumBlock:                big.NewInt(0),
+		ConstantinopleBlock:           big.NewInt(0),
+		PetersburgBlock:               big.NewInt(0),
+		IstanbulBlock:                 big.NewInt(0),
+		BerlinBlock:                   big.NewInt(0),
+		Clique: &CliqueConfig{
+			Period: 2,
+			Epoch:  30000,
+		},
+	}
+
 	// AllEthashProtocolChanges contains every protocol change (EIPs) introduced
 	// and accepted by the Ethereum core developers into the Ethash consensus.
 	AllEthashProtocolChanges = &ChainConfig{
@@ -281,6 +319,8 @@ var NetworkNames = map[string]string{
 	GoerliChainConfig.ChainID.String():  "goerli",
 	SepoliaChainConfig.ChainID.String(): "sepolia",
 	HoleskyChainConfig.ChainID.String(): "holesky",
+	VanguardChainConfig.ChainID.String(): "vanguard",
+	TestnetChainConfig.ChainID.String(): "testnet",
 }
 
 // ChainConfig is the core config which determines the blockchain settings.

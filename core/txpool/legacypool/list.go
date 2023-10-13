@@ -298,7 +298,7 @@ func (l *list) Contains(nonce uint64) bool {
 //
 // If the new transaction is accepted into the list, the lists' cost and gas
 // thresholds are also potentially updated.
-func (l *list) Add(tx *types.Transaction, priceBump uint64) (bool, *types.Transaction) {
+func (l *list) Add(tx *types.Transaction, priceBump uint64, feePerTx big.Int) (bool, *types.Transaction) {
 	// If there's an older better transaction, abort
 	old := l.txs.Get(tx.Nonce())
 	if old != nil {
@@ -322,13 +322,13 @@ func (l *list) Add(tx *types.Transaction, priceBump uint64) (bool, *types.Transa
 			return false, nil
 		}
 		// Old is being replaced, subtract old cost
-		l.subTotalCost([]*types.Transaction{old})
+		l.subTotalCost([]*types.Transaction{old}, feePerTx)
 	}
 	// Add new tx cost to totalcost
-	l.totalcost.Add(l.totalcost, tx.Cost())
+	l.totalcost.Add(l.totalcost, tx.Cost(feePerTx))
 	// Otherwise overwrite the old transaction with the current one
 	l.txs.Put(tx)
-	if cost := tx.Cost(); l.costcap.Cmp(cost) < 0 {
+	if cost := tx.Cost(feePerTx); l.costcap.Cmp(cost) < 0 {
 		l.costcap = cost
 	}
 	if gas := tx.Gas(); l.gascap < gas {
@@ -340,9 +340,9 @@ func (l *list) Add(tx *types.Transaction, priceBump uint64) (bool, *types.Transa
 // Forward removes all transactions from the list with a nonce lower than the
 // provided threshold. Every removed transaction is returned for any post-removal
 // maintenance.
-func (l *list) Forward(threshold uint64) types.Transactions {
+func (l *list) Forward(threshold uint64, feePerTx big.Int) types.Transactions {
 	txs := l.txs.Forward(threshold)
-	l.subTotalCost(txs)
+	l.subTotalCost(txs, feePerTx)
 	return txs
 }
 
@@ -355,7 +355,7 @@ func (l *list) Forward(threshold uint64) types.Transactions {
 // a point in calculating all the costs or if the balance covers all. If the threshold
 // is lower than the costgas cap, the caps will be reset to a new high after removing
 // the newly invalidated transactions.
-func (l *list) Filter(costLimit *big.Int, gasLimit uint64) (types.Transactions, types.Transactions) {
+func (l *list) Filter(costLimit *big.Int, gasLimit uint64, feePerTx big.Int) (types.Transactions, types.Transactions) {
 	// If all transactions are below the threshold, short circuit
 	if l.costcap.Cmp(costLimit) <= 0 && l.gascap <= gasLimit {
 		return nil, nil
@@ -365,7 +365,7 @@ func (l *list) Filter(costLimit *big.Int, gasLimit uint64) (types.Transactions, 
 
 	// Filter out all the transactions above the account's funds
 	removed := l.txs.Filter(func(tx *types.Transaction) bool {
-		return tx.Gas() > gasLimit || tx.Cost().Cmp(costLimit) > 0
+		return tx.Gas() > gasLimit || tx.Cost(feePerTx).Cmp(costLimit) > 0
 	})
 
 	if len(removed) == 0 {
@@ -383,34 +383,34 @@ func (l *list) Filter(costLimit *big.Int, gasLimit uint64) (types.Transactions, 
 		invalids = l.txs.filter(func(tx *types.Transaction) bool { return tx.Nonce() > lowest })
 	}
 	// Reset total cost
-	l.subTotalCost(removed)
-	l.subTotalCost(invalids)
+	l.subTotalCost(removed, feePerTx)
+	l.subTotalCost(invalids, feePerTx)
 	l.txs.reheap()
 	return removed, invalids
 }
 
 // Cap places a hard limit on the number of items, returning all transactions
 // exceeding that limit.
-func (l *list) Cap(threshold int) types.Transactions {
+func (l *list) Cap(threshold int, feePerTx big.Int) types.Transactions {
 	txs := l.txs.Cap(threshold)
-	l.subTotalCost(txs)
+	l.subTotalCost(txs, feePerTx)
 	return txs
 }
 
 // Remove deletes a transaction from the maintained list, returning whether the
 // transaction was found, and also returning any transaction invalidated due to
 // the deletion (strict mode only).
-func (l *list) Remove(tx *types.Transaction) (bool, types.Transactions) {
+func (l *list) Remove(tx *types.Transaction, feePerTx big.Int) (bool, types.Transactions) {
 	// Remove the transaction from the set
 	nonce := tx.Nonce()
 	if removed := l.txs.Remove(nonce); !removed {
 		return false, nil
 	}
-	l.subTotalCost([]*types.Transaction{tx})
+	l.subTotalCost([]*types.Transaction{tx}, feePerTx)
 	// In strict mode, filter out non-executable transactions
 	if l.strict {
 		txs := l.txs.Filter(func(tx *types.Transaction) bool { return tx.Nonce() > nonce })
-		l.subTotalCost(txs)
+		l.subTotalCost(txs, feePerTx)
 		return true, txs
 	}
 	return true, nil
@@ -423,9 +423,9 @@ func (l *list) Remove(tx *types.Transaction) (bool, types.Transactions) {
 // Note, all transactions with nonces lower than start will also be returned to
 // prevent getting into and invalid state. This is not something that should ever
 // happen but better to be self correcting than failing!
-func (l *list) Ready(start uint64) types.Transactions {
+func (l *list) Ready(start uint64, feePerTx big.Int) types.Transactions {
 	txs := l.txs.Ready(start)
-	l.subTotalCost(txs)
+	l.subTotalCost(txs, feePerTx)
 	return txs
 }
 
@@ -454,9 +454,9 @@ func (l *list) LastElement() *types.Transaction {
 
 // subTotalCost subtracts the cost of the given transactions from the
 // total cost of all transactions.
-func (l *list) subTotalCost(txs []*types.Transaction) {
+func (l *list) subTotalCost(txs []*types.Transaction, feePerTx big.Int) {
 	for _, tx := range txs {
-		l.totalcost.Sub(l.totalcost, tx.Cost())
+		l.totalcost.Sub(l.totalcost, tx.Cost(feePerTx))
 	}
 }
 

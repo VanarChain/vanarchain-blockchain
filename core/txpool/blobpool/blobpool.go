@@ -108,13 +108,13 @@ type blobTxMeta struct {
 
 // newBlobTxMeta retrieves the indexed metadata fields from a blob transaction
 // and assembles a helper struct to track in memory.
-func newBlobTxMeta(id uint64, size uint32, tx *types.Transaction) *blobTxMeta {
+func newBlobTxMeta(id uint64, size uint32, tx *types.Transaction, feePerTx big.Int) *blobTxMeta {
 	meta := &blobTxMeta{
 		hash:       tx.Hash(),
 		id:         id,
 		size:       size,
 		nonce:      tx.Nonce(),
-		costCap:    uint256.MustFromBig(tx.Cost()),
+		costCap:    uint256.MustFromBig(tx.Cost(feePerTx)),
 		execTipCap: uint256.MustFromBig(tx.GasTipCap()),
 		execFeeCap: uint256.MustFromBig(tx.GasFeeCap()),
 		blobFeeCap: uint256.MustFromBig(tx.BlobGasFeeCap()),
@@ -464,7 +464,7 @@ func (p *BlobPool) parseTransaction(id uint64, size uint32, blob []byte) error {
 		return errors.New("missing blob sidecar")
 	}
 
-	meta := newBlobTxMeta(id, size, tx)
+	meta := newBlobTxMeta(id, size, tx, *p.chain.CurrentBlock().FeePerTx)
 
 	sender, err := p.signer.Sender(tx)
 	if err != nil {
@@ -945,7 +945,7 @@ func (p *BlobPool) reinject(addr common.Address, txhash common.Hash) {
 	}
 
 	// Update the indixes and metrics
-	meta := newBlobTxMeta(id, p.store.Size(id), tx)
+	meta := newBlobTxMeta(id, p.store.Size(id), tx, *p.chain.CurrentBlock().FeePerTx)
 	if _, ok := p.index[addr]; !ok {
 		if err := p.reserve(addr, true); err != nil {
 			log.Warn("Failed to reserve account for blob pool", "tx", tx.Hash(), "from", addr, "err", err)
@@ -1070,7 +1070,7 @@ func (p *BlobPool) validateTx(tx *types.Transaction) error {
 			return nil
 		},
 	}
-	if err := txpool.ValidateTransactionWithState(tx, p.signer, stateOpts); err != nil {
+	if err := txpool.ValidateTransactionWithState(tx, p.signer, stateOpts, *p.chain.CurrentBlock().FeePerTx); err != nil {
 		return err
 	}
 	// If the transaction replaces an existing one, ensure that price bumps are
@@ -1211,7 +1211,7 @@ func (p *BlobPool) add(tx *types.Transaction) (err error) {
 	if err != nil {
 		return err
 	}
-	meta := newBlobTxMeta(id, p.store.Size(id), tx)
+	meta := newBlobTxMeta(id, p.store.Size(id), tx, *p.chain.CurrentBlock().FeePerTx)
 
 	var (
 		next   = p.state.GetNonce(from)

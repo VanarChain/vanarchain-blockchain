@@ -57,6 +57,10 @@ type Genesis struct {
 	Coinbase   common.Address      `json:"coinbase"`
 	Alloc      GenesisAlloc        `json:"alloc"      gencodec:"required"`
 	Signer	   common.Address	   `json:"signer"`
+	FeePerTx   *big.Int			   `json:"feePerTx" gencodec:"required"`
+	ProposedFee *big.Int		   `json:"proposedFee" gencodec:"required"`
+	Votes      uint64			   `json:"votes" gencodec:"required"`
+	VSigners   []common.Address      `json:"vSigners"`
 
 	// These fields are used for consensus tests. Please don't use them
 	// in actual genesis blocks.
@@ -103,6 +107,10 @@ func ReadGenesis(db ethdb.Database) (*Genesis, error) {
 	genesis.ExcessBlobGas = genesisHeader.ExcessBlobGas
 	genesis.BlobGasUsed = genesisHeader.BlobGasUsed
 	genesis.Signer = genesisHeader.Signer
+	genesis.FeePerTx = genesisHeader.FeePerTx
+	genesis.ProposedFee = genesisHeader.ProposedFee
+	genesis.Votes = genesisHeader.Votes
+	genesis.VSigners = genesisHeader.VSigners
 
 	return &genesis, nil
 }
@@ -204,6 +212,10 @@ func CommitGenesisState(db ethdb.Database, triedb *trie.Database, blockhash comm
 			genesis = DefaultGoerliGenesisBlock()
 		case params.SepoliaGenesisHash:
 			genesis = DefaultSepoliaGenesisBlock()
+		case params.VanguardGenesisHash:
+			genesis = DefaultVanguardGenesisBlock()
+		case params.TestnetGenesisHash:
+			genesis = DefaultTestnetGenesisBlock()
 		}
 		if genesis != nil {
 			alloc = genesis.Alloc
@@ -237,6 +249,10 @@ type genesisSpecMarshaling struct {
 	ExcessBlobGas *math.HexOrDecimal64
 	BlobGasUsed   *math.HexOrDecimal64
 	Signer		  hexutil.Bytes
+	FeePerTx	  *math.HexOrDecimal256
+	ProposedFee	  math.HexOrDecimal64
+	Votes	  	  *math.HexOrDecimal256
+	VSigners 	  []hexutil.Bytes
 }
 
 type genesisAccountMarshaling struct {
@@ -440,6 +456,10 @@ func (g *Genesis) configOrDefault(ghash common.Hash) *params.ChainConfig {
 		return params.SepoliaChainConfig
 	case ghash == params.GoerliGenesisHash:
 		return params.GoerliChainConfig
+	case ghash == params.VanguardGenesisHash:
+		return params.VanguardChainConfig
+	case ghash == params.TestnetGenesisHash:
+		return params.TestnetChainConfig
 	default:
 		return params.AllEthashProtocolChanges
 	}
@@ -464,8 +484,13 @@ func (g *Genesis) ToBlock() *types.Block {
 		MixDigest:  g.Mixhash,
 		Coinbase:   g.Coinbase,
 		Signer:		g.Signer,
+		FeePerTx:	g.FeePerTx,
+		ProposedFee:	g.ProposedFee,
+		Votes:		g.Votes,
+		VSigners: 	make([]common.Address, len(g.VSigners)),
 		Root:       root,
 	}
+	copy(head.VSigners, g.VSigners)
 	if g.GasLimit == 0 {
 		head.GasLimit = params.GenesisGasLimit
 	}
@@ -583,6 +608,38 @@ func DefaultSepoliaGenesisBlock() *Genesis {
 		Difficulty: big.NewInt(0x20000),
 		Timestamp:  1633267481,
 		Alloc:      decodePrealloc(sepoliaAllocData),
+	}
+}
+
+// DefaultVanguardGenesisBlock returns the Vanguard network genesis block.
+func DefaultVanguardGenesisBlock() *Genesis {
+	return &Genesis{
+		Config:     params.VanguardChainConfig,
+		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000C0E54BEc7ad0F2bF7742014b6E4559F42C6Aa8B40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+		GasLimit:   8000000,
+		Difficulty: big.NewInt(1),
+		Signer: common.HexToAddress("0xC0E54BEc7ad0F2bF7742014b6E4559F42C6Aa8B4"),
+		FeePerTx:   big.NewInt(21000000000000),
+		ProposedFee: big.NewInt(0),
+		Votes:      uint64(0),
+		VSigners:   []common.Address{},
+		Alloc:      decodePrealloc(vanguardAllocData),
+	}
+}
+
+// DefaultTestnetGenesisBlock returns the Testnet network genesis block.
+func DefaultTestnetGenesisBlock() *Genesis {
+	return &Genesis{
+		Config:     params.TestnetChainConfig,
+		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000C0E54BEc7ad0F2bF7742014b6E4559F42C6Aa8B40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+		GasLimit:   8000000,
+		Difficulty: big.NewInt(1),
+		Signer: common.HexToAddress("0xC0E54BEc7ad0F2bF7742014b6E4559F42C6Aa8B4"),
+		FeePerTx:   big.NewInt(21000000000000),
+		ProposedFee: big.NewInt(0),
+		Votes:      uint64(0),
+		VSigners:   []common.Address{},
+		Alloc:      decodePrealloc(testnetAllocData),
 	}
 }
 

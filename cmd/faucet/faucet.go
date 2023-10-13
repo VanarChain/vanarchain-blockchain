@@ -87,6 +87,8 @@ var (
 
 	goerliFlag  = flag.Bool("goerli", false, "Initializes the faucet with Görli network config")
 	sepoliaFlag = flag.Bool("sepolia", false, "Initializes the faucet with Sepolia network config")
+	vanguardFlag = flag.Bool("vanguard", false, "Initializes the faucet with Vanguard network config")
+	testnetFlag = flag.Bool("testnet", false, "Initializes the faucet with Testnet network config")
 )
 
 var (
@@ -107,7 +109,7 @@ func main() {
 	for i := 0; i < *tiersFlag; i++ {
 		// Calculate the amount for the next tier and format it
 		amount := float64(*payoutFlag) * math.Pow(2.5, float64(i))
-		amounts[i] = fmt.Sprintf("%s Ethers", strconv.FormatFloat(amount, 'f', -1, 64))
+		amounts[i] = fmt.Sprintf("%s Vanry", strconv.FormatFloat(amount, 'f', -1, 64))
 		if amount == 1 {
 			amounts[i] = strings.TrimSuffix(amounts[i], "s")
 		}
@@ -139,7 +141,7 @@ func main() {
 		log.Crit("Failed to render the faucet template", "err", err)
 	}
 	// Load and parse the genesis block requested by the user
-	genesis, err := getGenesis(*genesisFlag, *goerliFlag, *sepoliaFlag)
+	genesis, err := getGenesis(*genesisFlag, *goerliFlag, *sepoliaFlag, *vanguardFlag, *testnetFlag)
 	if err != nil {
 		log.Crit("Failed to parse genesis config", "err", err)
 	}
@@ -241,19 +243,24 @@ func newFaucet(genesis *core.Genesis, port int, enodes []*enode.Node, network ui
 
 	// Assemble the Ethereum light client protocol
 	cfg := ethconfig.Defaults
-	cfg.SyncMode = downloader.LightSync
+	// cfg.SyncMode = downloader.LightSync
+	cfg.SyncMode = downloader.FullSync
 	cfg.NetworkId = network
 	cfg.Genesis = genesis
 	utils.SetDNSDiscoveryDefaults(&cfg, genesis.ToBlock().Hash())
 
-	lesBackend, err := les.New(stack, &cfg)
+	// lesBackend, err := les.New(stack, &cfg)
+	ethBackend, err := les.New(stack, &cfg)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to register the Ethereum service: %w", err)
 	}
 
 	// Assemble the ethstats monitoring and reporting service'
 	if stats != "" {
-		if err := ethstats.New(stack, lesBackend.ApiBackend, lesBackend.Engine(), stats); err != nil {
+		// if err := ethstats.New(stack, lesBackend.ApiBackend, lesBackend.Engine(), stats); err != nil {
+		// 	return nil, err
+		// }
+		if err := ethstats.New(stack, ethBackend.ApiBackend, ethBackend.Engine(), stats); err != nil {
 			return nil, err
 		}
 	}
@@ -268,8 +275,9 @@ func newFaucet(genesis *core.Genesis, port int, enodes []*enode.Node, network ui
 		}
 	}
 	// Attach to the client and retrieve and interesting metadatas
-	api := stack.Attach()
-	client := ethclient.NewClient(api)
+	// api := stack.Attach()
+	// client := ethclient.NewClient(api)
+	client, _ := ethclient.Dial("ws://localhost:8546")
 
 	return &faucet{
 		config:   genesis.Config,
@@ -875,7 +883,7 @@ func authNoAuth(url string) (string, string, common.Address, error) {
 }
 
 // getGenesis returns a genesis based on input args
-func getGenesis(genesisFlag string, goerliFlag bool, sepoliaFlag bool) (*core.Genesis, error) {
+func getGenesis(genesisFlag string, goerliFlag bool, sepoliaFlag bool, vanguardFlag bool, testnetFlag bool) (*core.Genesis, error) {
 	switch {
 	case genesisFlag != "":
 		var genesis core.Genesis
@@ -885,6 +893,10 @@ func getGenesis(genesisFlag string, goerliFlag bool, sepoliaFlag bool) (*core.Ge
 		return core.DefaultGoerliGenesisBlock(), nil
 	case sepoliaFlag:
 		return core.DefaultSepoliaGenesisBlock(), nil
+	case vanguardFlag:
+		return core.DefaultVanguardGenesisBlock(), nil
+	case testnetFlag:
+		return core.DefaultTestnetGenesisBlock(), nil
 	default:
 		return nil, errors.New("no genesis flag provided")
 	}

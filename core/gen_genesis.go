@@ -34,6 +34,10 @@ func (g Genesis) MarshalJSON() ([]byte, error) {
 		ExcessBlobGas *math.HexOrDecimal64                        `json:"excessBlobGas"`
 		BlobGasUsed   *math.HexOrDecimal64                        `json:"blobGasUsed"`
 		Signer		  common.Address							  `json:"signer"`
+		FeePerTx	  *math.HexOrDecimal256						  `json:"feePerTx" gencodec:"required"`
+		ProposedFee	  *math.HexOrDecimal256						  `json:"proposedFee" gencodec:"required"`
+		Votes	  	  math.HexOrDecimal64						  `json:"votes" gencodec:"required"`
+		VSigners 	  []common.Address 							  `json:"vSigners"`
 	}
 	var enc Genesis
 	enc.Config = g.Config
@@ -57,6 +61,11 @@ func (g Genesis) MarshalJSON() ([]byte, error) {
 	enc.ExcessBlobGas = (*math.HexOrDecimal64)(g.ExcessBlobGas)
 	enc.BlobGasUsed = (*math.HexOrDecimal64)(g.BlobGasUsed)
 	enc.Signer = g.Signer
+	enc.FeePerTx = (*math.HexOrDecimal256)(g.FeePerTx)
+	enc.ProposedFee = (*math.HexOrDecimal256)(g.ProposedFee)
+	enc.Votes = math.HexOrDecimal64(g.Votes)
+	enc.VSigners = make([]common.Address, len(g.VSigners))
+    copy(enc.VSigners, g.VSigners)
 	return json.Marshal(&enc)
 }
 
@@ -79,6 +88,10 @@ func (g *Genesis) UnmarshalJSON(input []byte) error {
 		ExcessBlobGas *math.HexOrDecimal64                        `json:"excessBlobGas"`
 		BlobGasUsed   *math.HexOrDecimal64                        `json:"blobGasUsed"`
 		Signer		  *common.Address							  `json:"signer"`
+		FeePerTx	  *math.HexOrDecimal256						  `json:"feePerTx" gencodec:"required"`
+		ProposedFee	  *math.HexOrDecimal256						  `json:"proposedFee" gencodec:"required"`
+		Votes         *math.HexOrDecimal64                        `json:"votes"      gencodec:"required"`
+		VSigners 	  *[]common.Address 						  `json:"vSigners"`
 	}
 	var dec Genesis
 	if err := json.Unmarshal(input, &dec); err != nil {
@@ -137,6 +150,22 @@ func (g *Genesis) UnmarshalJSON(input []byte) error {
 	}
 	if dec.Signer != nil {
 		g.Signer = *dec.Signer
+	}
+	if dec.FeePerTx == nil {
+		return errors.New("missing required field 'feePerTx' for Genesis")
+	}
+	g.FeePerTx = (*big.Int)(dec.FeePerTx)
+	if dec.ProposedFee == nil {
+		return errors.New("missing required field 'proposedFee' for Genesis")
+	}
+	g.ProposedFee = (*big.Int)(dec.ProposedFee)
+	if dec.Votes == nil {
+		return errors.New("missing required field 'votes' for Genesis")
+	}
+	g.Votes = uint64(*dec.Votes)
+	if dec.VSigners != nil {
+		g.VSigners = make([]common.Address, len(*dec.VSigners))
+		copy(g.VSigners, *dec.VSigners)
 	}
 	return nil
 }

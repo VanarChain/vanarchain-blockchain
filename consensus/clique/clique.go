@@ -69,8 +69,8 @@ var (
 	diffInTurn = big.NewInt(2) // Block difficulty for in-turn signatures
 	diffNoTurn = big.NewInt(1) // Block difficulty for out-of-turn signatures
 
-	InitialBlockReward = big.NewInt(2e+18)
-	HalvingBlockInterval = new(big.Int).SetUint64(10000)
+	InitialBlockReward   = big.NewInt(2e+18)
+	HalvingBlockInterval = new(big.Int).SetUint64(1000)
 )
 
 // Various error messages to mark blocks invalid. These should be private to
@@ -566,7 +566,37 @@ func (c *Clique) Prepare(chain consensus.ChainHeaderReader, header *types.Header
 	if header.Time < uint64(time.Now().Unix()) {
 		header.Time = uint64(time.Now().Unix())
 	}
+
+	header.VSigners = parent.VSigners
+	header.Votes = parent.Votes
+	header.ProposedFee = parent.ProposedFee
+	if !c.ContainsAddress(header.VSigners, signer) && parent.FeePerTx.Cmp(snap.ProposedFee) != 0{
+		if snap.ProposedFee.Cmp(new(big.Int)) != 0 {
+			header.Votes = header.Votes + 1
+			header.ProposedFee = snap.ProposedFee
+			header.VSigners = append(header.VSigners, signer)
+		}
+	}
+	
+	if header.Votes > uint64(len(snap.Signers)/2) {
+		header.FeePerTx = header.ProposedFee
+		header.ProposedFee = new(big.Int)
+		header.Votes = 0
+		header.VSigners = []common.Address{}
+	} else {
+		header.FeePerTx = parent.FeePerTx
+	}
+
 	return nil
+}
+
+func (c *Clique) ContainsAddress(addresses []common.Address, address common.Address) bool {
+	for _, a := range addresses {
+		if a == address {
+			return true
+		}
+	}
+	return false
 }
 
 // Finalize implements consensus.Engine. There is no post-transaction
