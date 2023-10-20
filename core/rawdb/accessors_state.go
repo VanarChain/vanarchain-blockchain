@@ -19,9 +19,9 @@ package rawdb
 import (
 	"encoding/binary"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/ethdb"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/log"
 )
 
 // ReadPreimage retrieves a single preimage of the provided hash.

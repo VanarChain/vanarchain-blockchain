@@ -21,9 +21,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/mclock"
-	vfs "github.com/ethereum/go-ethereum/les/vflux/server"
-	"github.com/ethereum/go-ethereum/p2p/enode"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/mclock"
+	vfs "github.com/TerraVirtuaCo/vanarchain-blockchain/les/vflux/server"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p/enode"
 )
 
 var errUnknownBenchmarkType = errors.New("unknown benchmark type")

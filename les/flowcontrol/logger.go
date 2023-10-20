@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/mclock"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/mclock"
 )
 
 // logger collects events in string format and discards events older than the

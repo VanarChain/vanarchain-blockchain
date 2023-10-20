@@ -22,14 +22,14 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/trie"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/consensus/ethash"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/rawdb"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/types"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/ethdb"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/params"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/trie"
 )
 
 // So we can deterministically seed different blockchains

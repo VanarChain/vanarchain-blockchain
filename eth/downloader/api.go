@@ -20,9 +20,9 @@ import (
 	"context"
 	"sync"
 
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/event"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/rpc"
 )
 
 // DownloaderAPI provides an API which gives information about the current synchronisation status.

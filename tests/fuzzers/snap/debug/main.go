@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ethereum/go-ethereum/tests/fuzzers/snap"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/tests/fuzzers/snap"
 )
 
 func main() {

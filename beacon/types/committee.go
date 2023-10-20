@@ -22,9 +22,9 @@ import (
 	"fmt"
 	"math/bits"
 
-	"github.com/ethereum/go-ethereum/beacon/params"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/beacon/params"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/hexutil"
 	bls "github.com/protolambda/bls12-381-util"
 )
 

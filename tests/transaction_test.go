@@ -19,7 +19,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/params"
 )
 
 func TestTransaction(t *testing.T) {

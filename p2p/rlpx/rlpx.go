@@ -34,9 +34,9 @@ import (
 	"net"
 	"time"
 
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/crypto/ecies"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/crypto"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/crypto/ecies"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/rlp"
 	"github.com/golang/snappy"
 	"golang.org/x/crypto/sha3"
 )

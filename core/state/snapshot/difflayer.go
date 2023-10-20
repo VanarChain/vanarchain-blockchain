@@ -25,9 +25,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/types"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/rlp"
 	bloomfilter "github.com/holiman/bloomfilter/v2"
 	"golang.org/x/exp/slices"
 )

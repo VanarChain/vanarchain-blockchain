@@ -21,12 +21,12 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/internal/blocktest"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/types"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/ethdb"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/internal/blocktest"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/params"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/rlp"
 )
 
 var newTestHasher = blocktest.NewHasher

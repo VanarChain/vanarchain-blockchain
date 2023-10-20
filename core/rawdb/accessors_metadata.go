@@ -20,11 +20,11 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/ethdb"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/log"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/params"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/rlp"
 )
 
 // ReadDatabaseVersion retrieves the version number of the database.

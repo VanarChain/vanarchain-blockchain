@@ -26,10 +26,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/math"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/types"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/params"
 )
 
 type diffTest struct {

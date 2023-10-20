@@ -1,4 +1,4 @@
-module github.com/ethereum/go-ethereum
+module github.com/TerraVirtuaCo/vanarchain-blockchain
 
 go 1.20
 

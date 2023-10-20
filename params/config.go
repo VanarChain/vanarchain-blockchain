@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
 )
 
 // Genesis hashes to enforce below configs on.
@@ -148,7 +148,7 @@ var (
 		IstanbulBlock:                 big.NewInt(0),
 		BerlinBlock:                   big.NewInt(0),
 		Clique: &CliqueConfig{
-			Period: 2,
+			Period: 3,
 			Epoch:  30000,
 		},
 	}
@@ -165,7 +165,7 @@ var (
 		IstanbulBlock:                 big.NewInt(0),
 		BerlinBlock:                   big.NewInt(0),
 		Clique: &CliqueConfig{
-			Period: 2,
+			Period: 3,
 			Epoch:  30000,
 		},
 	}

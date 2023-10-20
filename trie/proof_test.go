@@ -24,10 +24,10 @@ import (
 	mrand "math/rand"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethdb/memorydb"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/rawdb"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/crypto"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/ethdb/memorydb"
 	"golang.org/x/exp/slices"
 )
 

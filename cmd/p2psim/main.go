@@ -44,13 +44,13 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/internal/flags"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/simulations"
-	"github.com/ethereum/go-ethereum/p2p/simulations/adapters"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/crypto"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/internal/flags"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p/enode"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p/simulations"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p/simulations/adapters"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/rpc"
 	"github.com/urfave/cli/v2"
 )
 

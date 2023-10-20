@@ -10,17 +10,17 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/ethereum/go-ethereum/tests"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/hexutil"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/rawdb"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/types"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/vm"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/rlp"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/tests"
 
 	// Force-load the native, to trigger registration
-	"github.com/ethereum/go-ethereum/eth/tracers"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/eth/tracers"
 )
 
 // flatCallTrace is the result of a callTracerParity run.

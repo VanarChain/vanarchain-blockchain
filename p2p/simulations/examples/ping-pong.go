@@ -25,12 +25,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/simulations"
-	"github.com/ethereum/go-ethereum/p2p/simulations/adapters"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/log"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/node"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p/enode"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p/simulations"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p/simulations/adapters"
 )
 
 var adapterType = flag.String("adapter", "sim", `node adapter to use (one of "sim", "exec" or "docker")`)

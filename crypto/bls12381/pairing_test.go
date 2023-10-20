@@ -4,7 +4,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
 )
 
 func TestPairingExpected(t *testing.T) {

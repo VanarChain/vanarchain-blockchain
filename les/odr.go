@@ -22,11 +22,11 @@ import (
 	"sort"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/txpool"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/light"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/mclock"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/txpool"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/ethdb"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/light"
 )
 
 // LesOdr implements light.OdrBackend

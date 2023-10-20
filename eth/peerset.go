@@ -21,10 +21,10 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/eth/protocols/eth"
-	"github.com/ethereum/go-ethereum/eth/protocols/snap"
-	"github.com/ethereum/go-ethereum/p2p"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/eth/protocols/eth"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/eth/protocols/snap"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p"
 )
 
 var (

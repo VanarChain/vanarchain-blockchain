@@ -17,10 +17,10 @@
 package trie
 
 import (
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/trie/triedb/hashdb"
-	"github.com/ethereum/go-ethereum/trie/triedb/pathdb"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/rawdb"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/ethdb"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/trie/triedb/hashdb"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/trie/triedb/pathdb"
 )
 
 // newTestDatabase initializes the trie database with specified scheme.

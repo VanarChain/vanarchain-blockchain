@@ -21,11 +21,11 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/ethereum/go-ethereum/cmd/devp2p/internal/ethtest"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/rlpx"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/cmd/devp2p/internal/ethtest"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/crypto"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p/rlpx"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/rlp"
 	"github.com/urfave/cli/v2"
 )
 

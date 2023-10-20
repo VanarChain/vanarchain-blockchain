@@ -20,11 +20,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/eth/downloader"
-	"github.com/ethereum/go-ethereum/eth/protocols/eth"
-	"github.com/ethereum/go-ethereum/eth/protocols/snap"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/eth/downloader"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/eth/protocols/eth"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/eth/protocols/snap"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p/enode"
 )
 
 // Tests that snap sync is disabled after a successful sync cycle.

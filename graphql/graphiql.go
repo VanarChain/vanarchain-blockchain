@@ -27,8 +27,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/ethereum/go-ethereum/graphql/internal/graphiql"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/graphql/internal/graphiql"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/log"
 )
 
 // GraphiQL is an in-browser IDE for exploring GraphiQL APIs.

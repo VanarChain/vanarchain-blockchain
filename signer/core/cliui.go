@@ -25,10 +25,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/console/prompt"
-	"github.com/ethereum/go-ethereum/internal/ethapi"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/hexutil"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/console/prompt"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/internal/ethapi"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/log"
 )
 
 type CommandlineUI struct {

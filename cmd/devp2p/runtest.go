@@ -19,9 +19,9 @@ package main
 import (
 	"os"
 
-	"github.com/ethereum/go-ethereum/cmd/devp2p/internal/v4test"
-	"github.com/ethereum/go-ethereum/internal/utesting"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/cmd/devp2p/internal/v4test"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/internal/utesting"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/log"
 	"github.com/urfave/cli/v2"
 )
 

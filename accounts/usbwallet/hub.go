@@ -23,9 +23,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/accounts"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/event"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/log"
 	"github.com/karalabe/usb"
 )
 

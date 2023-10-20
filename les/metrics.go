@@ -17,8 +17,8 @@
 package les
 
 import (
-	"github.com/ethereum/go-ethereum/metrics"
-	"github.com/ethereum/go-ethereum/p2p"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/metrics"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p"
 )
 
 var (

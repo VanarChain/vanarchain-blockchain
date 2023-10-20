@@ -19,10 +19,10 @@ package keystore
 import (
 	"math/big"
 
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/accounts"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/types"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/crypto"
 )
 
 // keystoreWallet implements the accounts.Wallet interface for the original

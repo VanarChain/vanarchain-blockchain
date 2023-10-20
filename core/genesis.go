@@ -25,18 +25,18 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/ethereum/go-ethereum/trie"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/hexutil"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/math"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/rawdb"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/state"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/types"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/crypto"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/ethdb"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/log"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/params"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/rlp"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/trie"
 )
 
 //go:generate go run github.com/fjl/gencodec -type Genesis -field-override genesisSpecMarshaling -out gen_genesis.go
@@ -615,10 +615,10 @@ func DefaultSepoliaGenesisBlock() *Genesis {
 func DefaultVanguardGenesisBlock() *Genesis {
 	return &Genesis{
 		Config:     params.VanguardChainConfig,
-		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000C0E54BEc7ad0F2bF7742014b6E4559F42C6Aa8B40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+		ExtraData:  hexutil.MustDecode("0x000000000000000000000000000000000000000000000000000000000000000013fd5936cD983e6282F94dA6123aa3b5a1395C220000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
 		GasLimit:   8000000,
 		Difficulty: big.NewInt(1),
-		Signer: common.HexToAddress("0xC0E54BEc7ad0F2bF7742014b6E4559F42C6Aa8B4"),
+		Signer: common.HexToAddress("0x13fd5936cD983e6282F94dA6123aa3b5a1395C22"),
 		FeePerTx:   big.NewInt(21000000000000),
 		ProposedFee: big.NewInt(0),
 		Votes:      uint64(0),

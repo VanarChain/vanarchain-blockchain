@@ -22,12 +22,12 @@ import (
 	"math"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
-	cmath "github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/consensus/misc/eip4844"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	cmath "github.com/TerraVirtuaCo/vanarchain-blockchain/common/math"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/consensus/misc/eip4844"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/types"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/vm"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/params"
 )
 
 // ExecutionResult includes all output after executing given evm

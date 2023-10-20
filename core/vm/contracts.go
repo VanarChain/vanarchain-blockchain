@@ -23,14 +23,14 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/crypto/blake2b"
-	"github.com/ethereum/go-ethereum/crypto/bls12381"
-	"github.com/ethereum/go-ethereum/crypto/bn256"
-	"github.com/ethereum/go-ethereum/crypto/kzg4844"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/math"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/crypto"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/crypto/blake2b"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/crypto/bls12381"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/crypto/bn256"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/crypto/kzg4844"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/params"
 	"golang.org/x/crypto/ripemd160"
 )
 

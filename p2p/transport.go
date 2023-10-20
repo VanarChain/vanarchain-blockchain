@@ -25,11 +25,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/bitutil"
-	"github.com/ethereum/go-ethereum/metrics"
-	"github.com/ethereum/go-ethereum/p2p/rlpx"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/bitutil"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/metrics"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p/rlpx"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/rlp"
 )
 
 const (

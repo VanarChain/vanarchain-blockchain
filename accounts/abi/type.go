@@ -26,7 +26,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
 )
 
 // Type enumerator

@@ -25,11 +25,11 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/console/prompt"
-	"github.com/ethereum/go-ethereum/p2p/dnsdisc"
-	"github.com/ethereum/go-ethereum/p2p/enode"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/accounts/keystore"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/console/prompt"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p/dnsdisc"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p/enode"
 	"github.com/urfave/cli/v2"
 )
 

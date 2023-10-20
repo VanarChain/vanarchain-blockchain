@@ -24,8 +24,8 @@ import (
 	"time"
 
 	"github.com/docker/docker/pkg/reexec"
-	"github.com/ethereum/go-ethereum/internal/cmdtest"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/internal/cmdtest"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/rpc"
 )
 
 type testgeth struct {

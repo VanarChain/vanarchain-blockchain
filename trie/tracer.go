@@ -17,7 +17,7 @@
 package trie
 
 import (
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
 )
 
 // tracer tracks the changes of trie nodes. During the trie operations,

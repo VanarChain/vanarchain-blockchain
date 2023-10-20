@@ -17,7 +17,7 @@
 package server
 
 import (
-	"github.com/ethereum/go-ethereum/metrics"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/metrics"
 )
 
 var (

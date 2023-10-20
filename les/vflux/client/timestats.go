@@ -21,8 +21,8 @@ import (
 	"math"
 	"time"
 
-	"github.com/ethereum/go-ethereum/les/utils"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/les/utils"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/rlp"
 )
 
 const (

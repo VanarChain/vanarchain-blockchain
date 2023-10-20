@@ -19,9 +19,9 @@ package downloader
 import (
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/eth/protocols/eth"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/eth/protocols/eth"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/log"
 )
 
 // receiptQueue implements typedQueue and is a type adapter between the generic

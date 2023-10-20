@@ -22,7 +22,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/les/utils"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/les/utils"
 )
 
 func TestTransition(t *testing.T) {

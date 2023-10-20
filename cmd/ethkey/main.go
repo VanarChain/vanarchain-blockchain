@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ethereum/go-ethereum/internal/flags"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/internal/flags"
 	"github.com/urfave/cli/v2"
 )
 

@@ -24,12 +24,12 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/cmd/utils"
-	"github.com/ethereum/go-ethereum/common/compiler"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/internal/flags"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/accounts/abi/bind"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/cmd/utils"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/compiler"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/crypto"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/internal/flags"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/log"
 	"github.com/urfave/cli/v2"
 )
 
