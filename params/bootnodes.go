@@ -58,7 +58,8 @@ var VanguardBootnodes = []string{
 }
 
 var TestnetBootnodes = []string{
-	"enode://5322f21c033312024498eaea181e54c9f2dc0eb78190923093444dc22a8d9276e0ed6cacf231207d093cf5192dae3be744346911872d815a13c7bc0dcf1ed8e1@bootnode-testnet.vanarchain.com:0?discport=30301",
+	//"enode://5322f21c033312024498eaea181e54c9f2dc0eb78190923093444dc22a8d9276e0ed6cacf231207d093cf5192dae3be744346911872d815a13c7bc0dcf1ed8e1@bootnode-testnet.vanarchain.com:0?discport=30301",
+    "enode://569d83763016c1e2f04fa3ecb6c058bfc6b659be3f376413702107924e06e995a89c086e99396365497b2389f551dbc1ea750d00ef3cb2e8a73157ac2a173d07@bootnode-testnet.vanarchain.com:30311",
 }
 
 // GoerliBootnodes are the enode URLs of the P2P bootstrap nodes running on the
