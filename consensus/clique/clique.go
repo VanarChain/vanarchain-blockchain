@@ -56,6 +56,9 @@ const (
 
 	wiggleTime = 500 * time.Millisecond // Random delay (per signer) to allow concurrent signers
 	testnetId = 6055012
+	vanguardId = 7860
+	mainnetId = 9882005
+
 )
 
 // Clique proof-of-authority protocol constants.
@@ -74,7 +77,52 @@ var (
 	diffNoTurn = big.NewInt(1) // Block difficulty for out-of-turn signatures
 
 	InitialBlockReward   = big.NewInt(2e+18)
-	blockInterval = 100
+	blockInterval = uint64(100)
+
+	//////
+
+	RewardFinalizeBlock = uint64(9600)
+	BlockReward = big.NewInt(0)
+
+	BlocksInAYear = uint64(1200)//10512000)
+	YearlyReward = map[uint64]*big.Int{
+
+		1: new(big.Int).SetUint64(12e+18),
+		2: new(big.Int).SetUint64(12e+18),
+		3: new(big.Int).SetUint64(11e+18),
+		4: new(big.Int).SetUint64(11e+18),
+		5: new(big.Int).SetUint64(10e+18),
+		6: new(big.Int).SetUint64(10e+18),
+		7: new(big.Int).SetUint64(9e+18),
+		8: new(big.Int).SetUint64(9e+18),
+		9: new(big.Int).SetUint64(8e+18),
+		10: new(big.Int).SetUint64(8e+18),
+		11: new(big.Int).SetUint64(7e+18),
+		12: new(big.Int).SetUint64(7e+18),
+		13: new(big.Int).SetUint64(6e+18),
+		14: new(big.Int).SetUint64(6e+18),
+		15: new(big.Int).SetUint64(5e+18),
+		16: new(big.Int).SetUint64(5e+18),
+		17: new(big.Int).SetUint64(4e+18),
+		18: new(big.Int).SetUint64(4e+18),
+		19: new(big.Int).SetUint64(3e+18),
+	}
+
+	BlocksInAMonth = uint64(100)
+	FirstYearMonthlyReward = map[uint64]*big.Int{
+		0: new(big.Int).SetUint64(18e+18),
+		1: new(big.Int).SetUint64(18e+18),
+		2: new(big.Int).SetUint64(17e+18),
+		3: new(big.Int).SetUint64(17e+18),
+		4: new(big.Int).SetUint64(16e+18),
+		5: new(big.Int).SetUint64(16e+18),
+		6: new(big.Int).SetUint64(15e+18),
+		7: new(big.Int).SetUint64(15e+18),
+		8: new(big.Int).SetUint64(14e+18),
+		9: new(big.Int).SetUint64(14e+18),
+		10: new(big.Int).SetUint64(13e+18),
+		11: new(big.Int).SetUint64(13e+18),
+	}
 )
 
 // Various error messages to mark blocks invalid. These should be private to
@@ -682,9 +730,28 @@ func (c *Clique) fetchFee() *big.Int {
 func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB, txs []*types.Transaction, uncles []*types.Header, withdrawals []*types.Withdrawal) {
 	log.Debug("Config Params", "Config-ID", chain.Config().ChainID)
 	log.Debug("Signer from header", "Signer", header.Signer)
-	if chain.Config().ChainID.Uint64() == testnetId {
+
+	if chain.Config().ChainID.Uint64() == testnetId || chain.Config().ChainID.Uint64() == vanguardId {
 		state.AddBalance(header.Signer, InitialBlockReward)
-	}	
+	} else if chain.Config().ChainID.Uint64() ==  mainnetId {
+		currentBlockNumber := header.Number.Uint64()
+	
+		sealer := common.HexToAddress("0x9D44f1aEEe8823326D9feB82442d93684E15ed1F")
+		
+		if ( currentBlockNumber <= RewardFinalizeBlock ){
+
+			currentYearOfReward := (currentBlockNumber - 1) / BlocksInAYear
+
+			if ( currentYearOfReward < 1 ){
+				Month := (currentBlockNumber - 1) / BlocksInAMonth
+				BlockReward = FirstYearMonthlyReward[Month]
+			} else {
+				BlockReward = YearlyReward[currentYearOfReward]
+			}
+			log.Info("Block reward", "Block", currentBlockNumber, "Reward", BlockReward)
+			state.AddBalance(sealer, BlockReward)
+		}
+	}
 }
 
 // FinalizeAndAssemble implements consensus.Engine, ensuring no uncles are set,
