@@ -19,16 +19,16 @@ package clique
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"math/big"
 	"math/rand"
+	"net/http"
 	"sync"
 	"time"
-	"encoding/json"
-	"io/ioutil"
-	"net/http"
 
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/accounts"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
@@ -55,10 +55,9 @@ const (
 	inmemorySignatures = 4096 // Number of recent block signatures to keep in memory
 
 	wiggleTime = 500 * time.Millisecond // Random delay (per signer) to allow concurrent signers
-	testnetId = 6055012
+	testnetId  = 6055012
 	vanguardId = 7860
-	mainnetId = 9882005
-
+	mainnetId  = 9882005
 )
 
 // Clique proof-of-authority protocol constants.
@@ -76,26 +75,26 @@ var (
 	diffInTurn = big.NewInt(2) // Block difficulty for in-turn signatures
 	diffNoTurn = big.NewInt(1) // Block difficulty for out-of-turn signatures
 
-	InitialBlockReward   = big.NewInt(2e+18)
-	blockInterval = uint64(100)
+	InitialBlockReward = big.NewInt(2e+18)
+	blockInterval      = uint64(100)
 
 	//////
 
 	RewardFinalizeBlock = uint64(9600)
-	BlockReward = big.NewInt(0)
+	BlockReward         = big.NewInt(0)
 
-	BlocksInAYear = uint64(1200)//10512000)
-	YearlyReward = map[uint64]*big.Int{
+	BlocksInAYear = uint64(1200) //10512000)
+	YearlyReward  = map[uint64]*big.Int{
 
-		1: new(big.Int).SetUint64(12e+18),
-		2: new(big.Int).SetUint64(12e+18),
-		3: new(big.Int).SetUint64(11e+18),
-		4: new(big.Int).SetUint64(11e+18),
-		5: new(big.Int).SetUint64(10e+18),
-		6: new(big.Int).SetUint64(10e+18),
-		7: new(big.Int).SetUint64(9e+18),
-		8: new(big.Int).SetUint64(9e+18),
-		9: new(big.Int).SetUint64(8e+18),
+		1:  new(big.Int).SetUint64(12e+18),
+		2:  new(big.Int).SetUint64(12e+18),
+		3:  new(big.Int).SetUint64(11e+18),
+		4:  new(big.Int).SetUint64(11e+18),
+		5:  new(big.Int).SetUint64(10e+18),
+		6:  new(big.Int).SetUint64(10e+18),
+		7:  new(big.Int).SetUint64(9e+18),
+		8:  new(big.Int).SetUint64(9e+18),
+		9:  new(big.Int).SetUint64(8e+18),
 		10: new(big.Int).SetUint64(8e+18),
 		11: new(big.Int).SetUint64(7e+18),
 		12: new(big.Int).SetUint64(7e+18),
@@ -108,18 +107,18 @@ var (
 		19: new(big.Int).SetUint64(3e+18),
 	}
 
-	BlocksInAMonth = uint64(100)
+	BlocksInAMonth         = uint64(100)
 	FirstYearMonthlyReward = map[uint64]*big.Int{
-		0: new(big.Int).SetUint64(18e+18),
-		1: new(big.Int).SetUint64(18e+18),
-		2: new(big.Int).SetUint64(17e+18),
-		3: new(big.Int).SetUint64(17e+18),
-		4: new(big.Int).SetUint64(16e+18),
-		5: new(big.Int).SetUint64(16e+18),
-		6: new(big.Int).SetUint64(15e+18),
-		7: new(big.Int).SetUint64(15e+18),
-		8: new(big.Int).SetUint64(14e+18),
-		9: new(big.Int).SetUint64(14e+18),
+		0:  new(big.Int).SetUint64(18e+18),
+		1:  new(big.Int).SetUint64(18e+18),
+		2:  new(big.Int).SetUint64(17e+18),
+		3:  new(big.Int).SetUint64(17e+18),
+		4:  new(big.Int).SetUint64(16e+18),
+		5:  new(big.Int).SetUint64(16e+18),
+		6:  new(big.Int).SetUint64(15e+18),
+		7:  new(big.Int).SetUint64(15e+18),
+		8:  new(big.Int).SetUint64(14e+18),
+		9:  new(big.Int).SetUint64(14e+18),
 		10: new(big.Int).SetUint64(13e+18),
 		11: new(big.Int).SetUint64(13e+18),
 	}
@@ -622,41 +621,46 @@ func (c *Clique) Prepare(chain consensus.ChainHeaderReader, header *types.Header
 	header.VSigners = parent.VSigners
 	header.Votes = parent.Votes
 	header.ProposedFee = parent.ProposedFee
-	if !c.ContainsAddress(header.VSigners, signer) && parent.FeePerTx.Cmp(snap.ProposedFee) != 0{
+	if !c.ContainsAddress(header.VSigners, signer) && parent.FeePerTx.Cmp(snap.ProposedFee) != 0 {
 		if snap.ProposedFee.Cmp(new(big.Int)) != 0 {
 			header.Votes = header.Votes + 1
 			header.ProposedFee = snap.ProposedFee
 			header.VSigners = append(header.VSigners, signer)
 		}
 	}
-	
+
 	if header.Votes > uint64(len(snap.Signers)/2) {
 		header.FeePerTx = header.ProposedFee
 		header.ProposedFee = new(big.Int)
 		header.Votes = 0
 		header.VSigners = []common.Address{}
 	} else {
-		header.FeePerTx = parent.FeePerTx
-		
-		if c.feeInterval(number) {
-			fetchedFee := c.fetchFee()
-			log.Info("Rate Fetched from API Default", "Rate", fetchedFee)
-			if fetchedFee != nil {
-				header.FeePerTx = fetchedFee
-			}
-		} else {
-			if number > blockInterval {
-				prevIntervalBlockHeader:= chain.GetHeaderByNumber(parent.Number.Uint64() - blockInterval)
+		if chain.Config().IsLahore(header.Number) {
+			header.FeePerTx = parent.FeePerTx
 
-				if parent.FeePerTx.Cmp(prevIntervalBlockHeader.FeePerTx) == 0 {
-					fetchedFee := c.fetchFee()
-					log.Info("Rate Fetched from API within Interval", "Rate", fetchedFee)
-					if fetchedFee != nil {
-						header.FeePerTx = fetchedFee
+			if c.feeInterval(number) {
+				fetchedFee := c.fetchFee()
+				log.Info("Rate Fetched from API Default", "Rate", fetchedFee)
+				if fetchedFee != nil {
+					header.FeePerTx = fetchedFee
+				}
+			} else {
+				if number > blockInterval {
+					prevIntervalBlockHeader := chain.GetHeaderByNumber(parent.Number.Uint64() - blockInterval)
+
+					if parent.FeePerTx.Cmp(prevIntervalBlockHeader.FeePerTx) == 0 {
+						fetchedFee := c.fetchFee()
+						log.Info("Rate Fetched from API within Interval", "Rate", fetchedFee)
+						if fetchedFee != nil {
+							header.FeePerTx = fetchedFee
+						}
 					}
 				}
 			}
-		} 
+		}else {	
+			header.FeePerTx = parent.FeePerTx
+		}
+
 	}
 
 	return nil
@@ -672,10 +676,10 @@ func (c *Clique) ContainsAddress(addresses []common.Address, address common.Addr
 }
 
 func (c *Clique) feeInterval(blockNumber uint64) bool {
-    if blockNumber < blockInterval {
+	if blockNumber < blockInterval {
 		return false
 	} else {
-		return (blockNumber - 1) % blockInterval == 0
+		return (blockNumber-1)%blockInterval == 0
 	}
 }
 
@@ -685,7 +689,7 @@ type Response struct {
 
 func (c *Clique) fetchFee() *big.Int {
 	url := "https://oxuanqzlalug.bimtvi.com/price"
-	
+
 	// Create a HTTP client with a timeout
 	client := &http.Client{
 		Timeout: 1 * time.Second,
@@ -724,33 +728,39 @@ func (c *Clique) fetchFee() *big.Int {
 	return valueBigInt
 }
 
-
 // Finalize implements consensus.Engine. There is no post-transaction
 // consensus rules in clique, do nothing here.
 func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB, txs []*types.Transaction, uncles []*types.Header, withdrawals []*types.Withdrawal) {
-	log.Debug("Config Params", "Config-ID", chain.Config().ChainID)
-	log.Debug("Signer from header", "Signer", header.Signer)
-
-	if chain.Config().ChainID.Uint64() == testnetId || chain.Config().ChainID.Uint64() == vanguardId {
-		state.AddBalance(header.Signer, InitialBlockReward)
-	} else if chain.Config().ChainID.Uint64() ==  mainnetId {
-		currentBlockNumber := header.Number.Uint64()
 	
-		sealer := common.HexToAddress("0x9D44f1aEEe8823326D9feB82442d93684E15ed1F")
-		
-		if ( currentBlockNumber <= RewardFinalizeBlock ){
+	if chain.Config().IsLahore(header.Number) {
 
-			currentYearOfReward := (currentBlockNumber - 1) / BlocksInAYear
+		log.Debug("Config Params", "Config-ID", chain.Config().ChainID)
+		log.Debug("Signer from header", "Signer", header.Signer)
 
-			if ( currentYearOfReward < 1 ){
-				Month := (currentBlockNumber - 1) / BlocksInAMonth
-				BlockReward = FirstYearMonthlyReward[Month]
-			} else {
-				BlockReward = YearlyReward[currentYearOfReward]
+		if chain.Config().ChainID.Uint64() == testnetId || chain.Config().ChainID.Uint64() == vanguardId {
+			state.AddBalance(header.Signer, InitialBlockReward)
+		} else if chain.Config().ChainID.Uint64() == mainnetId {
+			currentBlockNumber := header.Number.Uint64()
+
+			sealer := common.HexToAddress("0x9D44f1aEEe8823326D9feB82442d93684E15ed1F")
+
+			if currentBlockNumber <= RewardFinalizeBlock {
+
+				currentYearOfReward := (currentBlockNumber - 1) / BlocksInAYear
+
+				if currentYearOfReward < 1 {
+					Month := (currentBlockNumber - 1) / BlocksInAMonth
+					BlockReward = FirstYearMonthlyReward[Month]
+				} else {
+					BlockReward = YearlyReward[currentYearOfReward]
+				}
+				log.Info("Block reward", "Block", currentBlockNumber, "Reward", BlockReward)
+				state.AddBalance(sealer, BlockReward)
 			}
-			log.Info("Block reward", "Block", currentBlockNumber, "Reward", BlockReward)
-			state.AddBalance(sealer, BlockReward)
 		}
+	} else {
+		log.Debug("Signer from header", "Signer", header.Signer)
+		state.AddBalance(header.Signer, InitialBlockReward)
 	}
 }
 

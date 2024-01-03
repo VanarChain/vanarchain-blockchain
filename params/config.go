@@ -348,6 +348,7 @@ type ChainConfig struct {
 	MuirGlacierBlock    *big.Int `json:"muirGlacierBlock,omitempty"`    // Eip-2384 (bomb delay) switch block (nil = no fork, 0 = already activated)
 	BerlinBlock         *big.Int `json:"berlinBlock,omitempty"`         // Berlin switch block (nil = no fork, 0 = already on berlin)
 	LondonBlock         *big.Int `json:"londonBlock,omitempty"`         // London switch block (nil = no fork, 0 = already on london)
+	LahoreBlock         *big.Int `json:"lahoreBlock,omitempty"`         // Lahore switch block (nil = no fork, 0 = already on Lahore)
 	ArrowGlacierBlock   *big.Int `json:"arrowGlacierBlock,omitempty"`   // Eip-4345 (bomb delay) switch block (nil = no fork, 0 = already activated)
 	GrayGlacierBlock    *big.Int `json:"grayGlacierBlock,omitempty"`    // Eip-5133 (bomb delay) switch block (nil = no fork, 0 = already activated)
 	MergeNetsplitBlock  *big.Int `json:"mergeNetsplitBlock,omitempty"`  // Virtual fork after The Merge to use as a network splitter
@@ -445,6 +446,7 @@ func (c *ChainConfig) Description() string {
 	}
 	banner += fmt.Sprintf(" - Berlin:                      #%-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/berlin.md)\n", c.BerlinBlock)
 	banner += fmt.Sprintf(" - London:                      #%-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/london.md)\n", c.LondonBlock)
+	banner += fmt.Sprintf(" - Lahore:                      #%-8v (Fork Testing here)\n", c.LahoreBlock)
 	if c.ArrowGlacierBlock != nil {
 		banner += fmt.Sprintf(" - Arrow Glacier:               #%-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/arrow-glacier.md)\n", c.ArrowGlacierBlock)
 	}
@@ -547,6 +549,11 @@ func (c *ChainConfig) IsLondon(num *big.Int) bool {
 	return isBlockForked(c.LondonBlock, num)
 }
 
+// IsLahore returns whether num is either equal to the Lahore fork block or greater.
+func (c *ChainConfig) IsLahore(num *big.Int) bool {
+	return isBlockForked(c.LahoreBlock, num)
+}
+
 // IsArrowGlacier returns whether num is either equal to the Arrow Glacier (EIP-4345) fork block or greater.
 func (c *ChainConfig) IsArrowGlacier(num *big.Int) bool {
 	return isBlockForked(c.ArrowGlacierBlock, num)
@@ -622,7 +629,7 @@ func (c *ChainConfig) CheckConfigForkOrder() error {
 	var lastFork fork
 	for _, cur := range []fork{
 		{name: "homesteadBlock", block: c.HomesteadBlock},
-		{name: "daoForkBlock", block: c.DAOForkBlock, optional: true},
+		// {name: "daoForkBlock", block: c.DAOForkBlock, optional: true},
 		{name: "eip150Block", block: c.EIP150Block},
 		{name: "eip155Block", block: c.EIP155Block},
 		{name: "eip158Block", block: c.EIP158Block},
@@ -630,16 +637,17 @@ func (c *ChainConfig) CheckConfigForkOrder() error {
 		{name: "constantinopleBlock", block: c.ConstantinopleBlock},
 		{name: "petersburgBlock", block: c.PetersburgBlock},
 		{name: "istanbulBlock", block: c.IstanbulBlock},
-		{name: "muirGlacierBlock", block: c.MuirGlacierBlock, optional: true},
-		{name: "berlinBlock", block: c.BerlinBlock},
-		{name: "londonBlock", block: c.LondonBlock},
-		{name: "arrowGlacierBlock", block: c.ArrowGlacierBlock, optional: true},
-		{name: "grayGlacierBlock", block: c.GrayGlacierBlock, optional: true},
-		{name: "mergeNetsplitBlock", block: c.MergeNetsplitBlock, optional: true},
-		{name: "shanghaiTime", timestamp: c.ShanghaiTime},
-		{name: "cancunTime", timestamp: c.CancunTime, optional: true},
-		{name: "pragueTime", timestamp: c.PragueTime, optional: true},
-		{name: "verkleTime", timestamp: c.VerkleTime, optional: true},
+		// {name: "muirGlacierBlock", block: c.MuirGlacierBlock, optional: true},
+		{name: "berlinBlock", block: c.BerlinBlock, optional: true},
+		// {name: "londonBlock", block: c.LondonBlock, optional: true},
+		{name: "lahoreBlock", block: c.LahoreBlock},
+		// {name: "arrowGlacierBlock", block: c.ArrowGlacierBlock, optional: true},
+		// {name: "grayGlacierBlock", block: c.GrayGlacierBlock, optional: true},
+		// {name: "mergeNetsplitBlock", block: c.MergeNetsplitBlock, optional: true},
+		// {name: "shanghaiTime", timestamp: c.ShanghaiTime},
+		// {name: "cancunTime", timestamp: c.CancunTime, optional: true},
+		// {name: "pragueTime", timestamp: c.PragueTime, optional: true},
+		// {name: "verkleTime", timestamp: c.VerkleTime, optional: true},
 	} {
 		if lastFork.name != "" {
 			switch {
@@ -724,6 +732,9 @@ func (c *ChainConfig) checkCompatible(newcfg *ChainConfig, headNumber *big.Int, 
 	}
 	if isForkBlockIncompatible(c.LondonBlock, newcfg.LondonBlock, headNumber) {
 		return newBlockCompatError("London fork block", c.LondonBlock, newcfg.LondonBlock)
+	}
+	if isForkBlockIncompatible(c.LahoreBlock, newcfg.LahoreBlock, headNumber) {
+		return newBlockCompatError("Lahore fork block", c.LahoreBlock, newcfg.LahoreBlock)
 	}
 	if isForkBlockIncompatible(c.ArrowGlacierBlock, newcfg.ArrowGlacierBlock, headNumber) {
 		return newBlockCompatError("Arrow Glacier fork block", c.ArrowGlacierBlock, newcfg.ArrowGlacierBlock)
