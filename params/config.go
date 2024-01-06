@@ -164,6 +164,7 @@ var (
 		PetersburgBlock:               big.NewInt(0),
 		IstanbulBlock:                 big.NewInt(0),
 		BerlinBlock:                   big.NewInt(0),
+		LahoreBlock:				   big.NewInt(2_177_301),
 		Clique: &CliqueConfig{
 			Period: 3,
 			Epoch:  30000,
@@ -629,7 +630,7 @@ func (c *ChainConfig) CheckConfigForkOrder() error {
 	var lastFork fork
 	for _, cur := range []fork{
 		{name: "homesteadBlock", block: c.HomesteadBlock},
-		// {name: "daoForkBlock", block: c.DAOForkBlock, optional: true},
+		{name: "daoForkBlock", block: c.DAOForkBlock, optional: true},
 		{name: "eip150Block", block: c.EIP150Block},
 		{name: "eip155Block", block: c.EIP155Block},
 		{name: "eip158Block", block: c.EIP158Block},
@@ -637,10 +638,10 @@ func (c *ChainConfig) CheckConfigForkOrder() error {
 		{name: "constantinopleBlock", block: c.ConstantinopleBlock},
 		{name: "petersburgBlock", block: c.PetersburgBlock},
 		{name: "istanbulBlock", block: c.IstanbulBlock},
-		// {name: "muirGlacierBlock", block: c.MuirGlacierBlock, optional: true},
+		{name: "muirGlacierBlock", block: c.MuirGlacierBlock, optional: true},
 		{name: "berlinBlock", block: c.BerlinBlock, optional: true},
-		// {name: "londonBlock", block: c.LondonBlock, optional: true},
 		{name: "lahoreBlock", block: c.LahoreBlock},
+		// {name: "londonBlock", block: c.LondonBlock, optional: true},
 		// {name: "arrowGlacierBlock", block: c.ArrowGlacierBlock, optional: true},
 		// {name: "grayGlacierBlock", block: c.GrayGlacierBlock, optional: true},
 		// {name: "mergeNetsplitBlock", block: c.MergeNetsplitBlock, optional: true},

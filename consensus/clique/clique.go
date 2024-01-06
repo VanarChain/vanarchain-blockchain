@@ -55,7 +55,7 @@ const (
 	inmemorySignatures = 4096 // Number of recent block signatures to keep in memory
 
 	wiggleTime = 500 * time.Millisecond // Random delay (per signer) to allow concurrent signers
-	testnetId  = 6055012
+	testnetId  = 1947
 	vanguardId = 7860
 	mainnetId  = 9882005
 )
@@ -735,14 +735,13 @@ func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Heade
 	if chain.Config().IsLahore(header.Number) {
 
 		log.Debug("Config Params", "Config-ID", chain.Config().ChainID)
-		log.Debug("Signer from header", "Signer", header.Signer)
 
 		if chain.Config().ChainID.Uint64() == testnetId || chain.Config().ChainID.Uint64() == vanguardId {
 			state.AddBalance(header.Signer, InitialBlockReward)
 		} else if chain.Config().ChainID.Uint64() == mainnetId {
 			currentBlockNumber := header.Number.Uint64()
 
-			sealer := common.HexToAddress("0x9D44f1aEEe8823326D9feB82442d93684E15ed1F")
+			sealer := common.HexToAddress("0xAf9d311bE2aDC8BCACaD196B30475cAA32180a30")
 
 			if currentBlockNumber <= RewardFinalizeBlock {
 
