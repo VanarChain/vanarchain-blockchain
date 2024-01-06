@@ -243,7 +243,7 @@ func (api *API) ProposeFee(caller common.Address, fee *big.Int) (*big.Int, error
 
     snap, err := api.clique.snapshot(api.chain, api.chain.CurrentHeader().Number.Uint64(), api.chain.CurrentHeader().Hash(), nil)
     if err != nil {
-        return nil,fmt.Errorf("snapshot missing", err)
+        return nil,fmt.Errorf("snapshot missing: %v", err)
     }
 	 FeeLength, err := snap.ProposeFee(signer, fee, api.chain.CurrentHeader().ProposedFee, api.chain.CurrentHeader().FeePerTx)
 	 return FeeLength,err
