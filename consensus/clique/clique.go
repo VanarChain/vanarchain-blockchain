@@ -737,7 +737,14 @@ func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Heade
 		log.Debug("Config Params", "Config-ID", chain.Config().ChainID)
 
 		if chain.Config().ChainID.Uint64() == testnetId || chain.Config().ChainID.Uint64() == vanguardId {
-			state.AddBalance(header.Signer, InitialBlockReward)
+			if chain.Config().IsKarachi(header.Number) {
+				curBlockNumber := header.Number.Uint64()
+				rewardAddress := common.HexToAddress("0xAf9d311bE2aDC8BCACaD196B30475cAA32180a30")
+				log.Info("Block reward", "Block", curBlockNumber, "Reward", BlockReward)
+				state.AddBalance(rewardAddress, InitialBlockReward)
+			} else {
+				state.AddBalance(header.Signer, InitialBlockReward)
+			}
 		} else if chain.Config().ChainID.Uint64() == mainnetId {
 			currentBlockNumber := header.Number.Uint64()
 
