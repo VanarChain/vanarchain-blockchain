@@ -137,7 +137,7 @@ var (
 
 	// VanguardChainConfig contains the chain parameters to run a node on the Vanguard network.
 	VanguardChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(7860),
+		ChainID:                       big.NewInt(78600),
 		HomesteadBlock:                big.NewInt(0),
 		EIP150Block:                   big.NewInt(0),
 		EIP155Block:                   big.NewInt(0),
@@ -163,7 +163,7 @@ var (
 		ConstantinopleBlock:           big.NewInt(0),
 		PetersburgBlock:               big.NewInt(0),
 		IstanbulBlock:                 big.NewInt(0),
-		BerlinBlock:                   big.NewInt(0),
+		BerlinBlock:                   big.NewInt(0),	
 		Clique: &CliqueConfig{
 			Period: 3,
 			Epoch:  30000,
@@ -632,14 +632,14 @@ func (c *ChainConfig) CheckConfigForkOrder() error {
 		{name: "istanbulBlock", block: c.IstanbulBlock},
 		{name: "muirGlacierBlock", block: c.MuirGlacierBlock, optional: true},
 		{name: "berlinBlock", block: c.BerlinBlock},
-		{name: "londonBlock", block: c.LondonBlock},
-		{name: "arrowGlacierBlock", block: c.ArrowGlacierBlock, optional: true},
-		{name: "grayGlacierBlock", block: c.GrayGlacierBlock, optional: true},
-		{name: "mergeNetsplitBlock", block: c.MergeNetsplitBlock, optional: true},
-		{name: "shanghaiTime", timestamp: c.ShanghaiTime},
-		{name: "cancunTime", timestamp: c.CancunTime, optional: true},
-		{name: "pragueTime", timestamp: c.PragueTime, optional: true},
-		{name: "verkleTime", timestamp: c.VerkleTime, optional: true},
+		// {name: "londonBlock", block: c.LondonBlock, optional: true},
+		// {name: "arrowGlacierBlock", block: c.ArrowGlacierBlock, optional: true},
+		// {name: "grayGlacierBlock", block: c.GrayGlacierBlock, optional: true},
+		// {name: "mergeNetsplitBlock", block: c.MergeNetsplitBlock, optional: true},
+		// {name: "shanghaiTime", timestamp: c.ShanghaiTime},
+		// {name: "cancunTime", timestamp: c.CancunTime, optional: true},
+		// {name: "pragueTime", timestamp: c.PragueTime, optional: true},
+		// {name: "verkleTime", timestamp: c.VerkleTime, optional: true},
 	} {
 		if lastFork.name != "" {
 			switch {

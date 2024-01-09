@@ -4,8 +4,13 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
 	
-		<title>{{.Network}}: Authenticated Faucet</title>
+		<!-- <title>{{.Network}}: Authenticated Faucet</title> -->
+		<title>Vanar Chain - Faucet</title>
+		<meta name="description" content="An easy-to-use Vanry Faucet for the Vanar Testnet.">
+		<meta name="keywords" content="vanar, blockchain, crypto, currency, block, chain, trading, online, metaverse, virtua, NFT, virtua, network">
+		<link rel="icon" href="https://storage.googleapis.com/faucet-assets/assets/images/favicon.svg"/>
 	
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
 			rel="stylesheet" />
@@ -60,7 +65,7 @@
 					<div class="col-lg-8 col-lg-offset-2">
 						<div class="input-group">
 							<input id="url" name="url" type="text" class="form-control"
-								placeholder="Social network URL containing your Vanar address..." />
+								placeholder="Your Vanar address..." />	
 							<span class="input-group-btn">
 								<button id="mybtn" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 									Give me Vanry 
@@ -74,7 +79,7 @@
 								</ul>
 							</span>
 						</div>
-						<div class="g-recaptcha" style="display: flex; align-items: center; justify-content: center;" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" data-size="compact">
+						<div class="g-recaptcha" style="display: flex; align-items: center; justify-content: center;" data-sitekey="6Lcs1PYUAAAAAG6EwfeUJGVx4DAjnJz_-xYdEDJZ" data-size="compact">
 						</div>
 					</div>
 				</div>
@@ -90,11 +95,12 @@
 										<td style="text-align: center;"><img style="max-height: 18px; position: relative; top: -1px;" src="https://cdn-vanguard.vanarchain.com/assets/images/peer-icon.svg" alt="peer"> <span
 												id="peers"></span> peers</td>
 										<td style="text-align: center;"><img style="max-height: 18px; position: relative; top: -1px;" src="https://cdn-vanguard.vanarchain.com/assets/images/block-icon.svg" alt="block">
-											<span id="block"></span> blocks</td>
+										<span id="block"></span> blocks</td>
 										<td style="text-align: center;"><img style="max-height: 18px; position: relative; top: -1px;" src="https://cdn-vanguard.vanarchain.com/assets/images/vanar-icon-small.svg" alt="ethers">
-											<span id="funds"></span> Vanry</td>
+										<span id="funds"></span> Vanry</td>
 										<td style="text-align: center;"><img style="max-height: 16px; position: relative; top: -2px;" src="https://cdn-vanguard.vanarchain.com/assets/images/funded-icon.svg" alt="funded">
-											<span id="funded"></span> funded</td>
+										<span id="funded"></span> funded</td>
+
 									</tr>
 								</table>
 							</div>
@@ -140,6 +146,13 @@
 			// Check every 2 seconds (2000 milliseconds). Adjust the interval as needed.
 			setInterval(checkRecaptcha, 2000);
 		</script>
+		<!-- <script>
+			$(document).ready(function() {
+				$("#requests .hideDiv").fadeTo(5000, 500).slideUp(500, function(){
+					$("#requests .hideDiv").slideUp(500);
+				});
+			});
+			</script> -->
 		<script>
 			// Global variables to hold the current status of the faucet
 			var attempt = 0;
@@ -162,6 +175,7 @@
 			var submit = function({{if .Recaptcha}}captcha{{end}}) {
 				server.send(JSON.stringify({url: $("#url")[0].value, tier: tier{{if .Recaptcha}}, captcha: captcha{{end}}}));{{if .Recaptcha}}
 				grecaptcha.reset();{{end}}
+				document.getElementById("url").value=''
 			};
 			// Define a method to reconnect upon server loss
 			var reconnect = function() {
