@@ -137,7 +137,7 @@ var (
 
 	// VanguardChainConfig contains the chain parameters to run a node on the Vanguard network.
 	VanguardChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(7860),
+		ChainID:                       big.NewInt(78600),
 		HomesteadBlock:                big.NewInt(0),
 		EIP150Block:                   big.NewInt(0),
 		EIP155Block:                   big.NewInt(0),
@@ -163,9 +163,7 @@ var (
 		ConstantinopleBlock:           big.NewInt(0),
 		PetersburgBlock:               big.NewInt(0),
 		IstanbulBlock:                 big.NewInt(0),
-		BerlinBlock:                   big.NewInt(0),
-		LahoreBlock:				   big.NewInt(2_177_301),
-		KarachiBlock:				   big.NewInt(2_178_701),	
+		BerlinBlock:                   big.NewInt(0),	
 		Clique: &CliqueConfig{
 			Period: 3,
 			Epoch:  30000,
@@ -350,8 +348,6 @@ type ChainConfig struct {
 	MuirGlacierBlock    *big.Int `json:"muirGlacierBlock,omitempty"`    // Eip-2384 (bomb delay) switch block (nil = no fork, 0 = already activated)
 	BerlinBlock         *big.Int `json:"berlinBlock,omitempty"`         // Berlin switch block (nil = no fork, 0 = already on berlin)
 	LondonBlock         *big.Int `json:"londonBlock,omitempty"`         // London switch block (nil = no fork, 0 = already on london)
-	LahoreBlock         *big.Int `json:"lahoreBlock,omitempty"`         // Lahore switch block (nil = no fork, 0 = already on Lahore)
-	KarachiBlock		*big.Int `json:"KarachiBlock,omitempty"`         // Lahore switch block (nil = no fork, 0 = already on Pattoki)
 	ArrowGlacierBlock   *big.Int `json:"arrowGlacierBlock,omitempty"`   // Eip-4345 (bomb delay) switch block (nil = no fork, 0 = already activated)
 	GrayGlacierBlock    *big.Int `json:"grayGlacierBlock,omitempty"`    // Eip-5133 (bomb delay) switch block (nil = no fork, 0 = already activated)
 	MergeNetsplitBlock  *big.Int `json:"mergeNetsplitBlock,omitempty"`  // Virtual fork after The Merge to use as a network splitter
@@ -449,8 +445,6 @@ func (c *ChainConfig) Description() string {
 	}
 	banner += fmt.Sprintf(" - Berlin:                      #%-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/berlin.md)\n", c.BerlinBlock)
 	banner += fmt.Sprintf(" - London:                      #%-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/london.md)\n", c.LondonBlock)
-	banner += fmt.Sprintf(" - Lahore:                      #%-8v (Fork Testing here)\n", c.LahoreBlock)
-	banner += fmt.Sprintf(" - Karachi:                      #%-8v (Fork Testing here)\n", c.KarachiBlock)
 	if c.ArrowGlacierBlock != nil {
 		banner += fmt.Sprintf(" - Arrow Glacier:               #%-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/arrow-glacier.md)\n", c.ArrowGlacierBlock)
 	}
@@ -553,16 +547,6 @@ func (c *ChainConfig) IsLondon(num *big.Int) bool {
 	return isBlockForked(c.LondonBlock, num)
 }
 
-// IsLahore returns whether num is either equal to the Lahore fork block or greater.
-func (c *ChainConfig) IsLahore(num *big.Int) bool {
-	return isBlockForked(c.LahoreBlock, num)
-}
-
-// IsKarachi returns whether num is either equal to the Pattoki fork block or greater.
-func (c *ChainConfig) IsKarachi(num *big.Int) bool {
-	return isBlockForked(c.KarachiBlock, num)
-}
-
 // IsArrowGlacier returns whether num is either equal to the Arrow Glacier (EIP-4345) fork block or greater.
 func (c *ChainConfig) IsArrowGlacier(num *big.Int) bool {
 	return isBlockForked(c.ArrowGlacierBlock, num)
@@ -647,9 +631,7 @@ func (c *ChainConfig) CheckConfigForkOrder() error {
 		{name: "petersburgBlock", block: c.PetersburgBlock},
 		{name: "istanbulBlock", block: c.IstanbulBlock},
 		{name: "muirGlacierBlock", block: c.MuirGlacierBlock, optional: true},
-		{name: "berlinBlock", block: c.BerlinBlock, optional: true},
-		{name: "lahoreBlock", block: c.LahoreBlock},
-		{name: "karachiBlock", block: c.KarachiBlock},
+		{name: "berlinBlock", block: c.BerlinBlock},
 		// {name: "londonBlock", block: c.LondonBlock, optional: true},
 		// {name: "arrowGlacierBlock", block: c.ArrowGlacierBlock, optional: true},
 		// {name: "grayGlacierBlock", block: c.GrayGlacierBlock, optional: true},
@@ -742,12 +724,6 @@ func (c *ChainConfig) checkCompatible(newcfg *ChainConfig, headNumber *big.Int, 
 	}
 	if isForkBlockIncompatible(c.LondonBlock, newcfg.LondonBlock, headNumber) {
 		return newBlockCompatError("London fork block", c.LondonBlock, newcfg.LondonBlock)
-	}
-	if isForkBlockIncompatible(c.LahoreBlock, newcfg.LahoreBlock, headNumber) {
-		return newBlockCompatError("Lahore fork block", c.LahoreBlock, newcfg.LahoreBlock)
-	}
-	if isForkBlockIncompatible(c.KarachiBlock, newcfg.KarachiBlock, headNumber) {
-		return newBlockCompatError("Pattoki fork block", c.KarachiBlock, newcfg.KarachiBlock)
 	}
 	if isForkBlockIncompatible(c.ArrowGlacierBlock, newcfg.ArrowGlacierBlock, headNumber) {
 		return newBlockCompatError("Arrow Glacier fork block", c.ArrowGlacierBlock, newcfg.ArrowGlacierBlock)

@@ -1858,7 +1858,7 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 		SetDNSDiscoveryDefaults(cfg, params.GoerliGenesisHash)
 	case ctx.Bool(VanguardFlag.Name):
 		if !ctx.IsSet(NetworkIdFlag.Name) {
-			cfg.NetworkId = 7860
+			cfg.NetworkId = 78600
 		}
 		cfg.Genesis = core.DefaultVanguardGenesisBlock()
 		SetDNSDiscoveryDefaults(cfg, params.VanguardGenesisHash)

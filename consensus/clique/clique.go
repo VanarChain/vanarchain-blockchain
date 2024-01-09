@@ -56,8 +56,8 @@ const (
 
 	wiggleTime = 500 * time.Millisecond // Random delay (per signer) to allow concurrent signers
 	testnetId  = 1947
-	vanguardId = 7860
-	mainnetId  = 9882005
+	vanguardId = 78600
+	mainnetId  = 2024
 )
 
 // Clique proof-of-authority protocol constants.
@@ -628,39 +628,34 @@ func (c *Clique) Prepare(chain consensus.ChainHeaderReader, header *types.Header
 			header.VSigners = append(header.VSigners, signer)
 		}
 	}
-
 	if header.Votes > uint64(len(snap.Signers)/2) {
 		header.FeePerTx = header.ProposedFee
 		header.ProposedFee = new(big.Int)
 		header.Votes = 0
 		header.VSigners = []common.Address{}
 	} else {
-		if chain.Config().IsLahore(header.Number) {
-			header.FeePerTx = parent.FeePerTx
+		header.FeePerTx = parent.FeePerTx
+		chainRef:= chain.Config().ChainID.Uint64()
+		
+		if c.feeInterval(number) {
+			fetchedFee := c.fetchFee(chainRef)
+			log.Info("Rate Fetched from API Default", "Rate", fetchedFee)
+			if fetchedFee != nil {
+				header.FeePerTx = fetchedFee
+			}
+		} else {
+			if number > blockInterval {
+				prevIntervalBlockHeader := chain.GetHeaderByNumber(parent.Number.Uint64() - blockInterval)
 
-			if c.feeInterval(number) {
-				fetchedFee := c.fetchFee()
-				log.Info("Rate Fetched from API Default", "Rate", fetchedFee)
-				if fetchedFee != nil {
-					header.FeePerTx = fetchedFee
-				}
-			} else {
-				if number > blockInterval {
-					prevIntervalBlockHeader := chain.GetHeaderByNumber(parent.Number.Uint64() - blockInterval)
-
-					if parent.FeePerTx.Cmp(prevIntervalBlockHeader.FeePerTx) == 0 {
-						fetchedFee := c.fetchFee()
-						log.Info("Rate Fetched from API within Interval", "Rate", fetchedFee)
-						if fetchedFee != nil {
-							header.FeePerTx = fetchedFee
-						}
+				if parent.FeePerTx.Cmp(prevIntervalBlockHeader.FeePerTx) == 0 {
+					fetchedFee := c.fetchFee(chainRef)
+					log.Info("Rate Fetched from API within Interval", "Rate", fetchedFee)
+					if fetchedFee != nil {
+						header.FeePerTx = fetchedFee
 					}
 				}
 			}
-		}else {	
-			header.FeePerTx = parent.FeePerTx
 		}
-
 	}
 
 	return nil
@@ -687,9 +682,14 @@ type Response struct {
 	Value int64 `json:"value"`
 }
 
-func (c *Clique) fetchFee() *big.Int {
-	url := "https://oxuanqzlalug.bimtvi.com/price"
-
+func (c *Clique) fetchFee(chainReference uint64) *big.Int {
+	url := ""
+	if chainReference == testnetId {
+		url = "https://oxuanqzlalug.bimtvi.com/price"
+	} else if chainReference == vanguardId {
+		url = "https://oxuanqzlalug.vanarchain.com/price"
+	}
+	
 	// Create a HTTP client with a timeout
 	client := &http.Client{
 		Timeout: 1 * time.Second,
@@ -731,43 +731,26 @@ func (c *Clique) fetchFee() *big.Int {
 // Finalize implements consensus.Engine. There is no post-transaction
 // consensus rules in clique, do nothing here.
 func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB, txs []*types.Transaction, uncles []*types.Header, withdrawals []*types.Withdrawal) {
-	
-	if chain.Config().IsLahore(header.Number) {
+	currentBlockNumber := header.Number.Uint64()
+	rewardAddress := common.HexToAddress("0x8DE5B80a0C1B02Fe4976851D030B36122dbb8624")
 
-		log.Debug("Config Params", "Config-ID", chain.Config().ChainID)
-
-		if chain.Config().ChainID.Uint64() == testnetId || chain.Config().ChainID.Uint64() == vanguardId {
-			if chain.Config().IsKarachi(header.Number) {
-				curBlockNumber := header.Number.Uint64()
-				rewardAddress := common.HexToAddress("0xAf9d311bE2aDC8BCACaD196B30475cAA32180a30")
-				log.Info("Block reward", "Block", curBlockNumber, "Reward", BlockReward)
-				state.AddBalance(rewardAddress, InitialBlockReward)
+	if chain.Config().ChainID.Uint64() == testnetId || chain.Config().ChainID.Uint64() == vanguardId {	
+		log.Info("Block reward", "Block", currentBlockNumber, "Reward", InitialBlockReward)
+		state.AddBalance(rewardAddress, InitialBlockReward)	
+	} else if chain.Config().ChainID.Uint64() == mainnetId {
+		if currentBlockNumber <= RewardFinalizeBlock {
+			currentYearOfReward := (currentBlockNumber - 1) / BlocksInAYear
+			if currentYearOfReward < 1 {
+				Month := (currentBlockNumber - 1) / BlocksInAMonth
+				BlockReward = FirstYearMonthlyReward[Month]
 			} else {
-				state.AddBalance(header.Signer, InitialBlockReward)
+				BlockReward = YearlyReward[currentYearOfReward]
 			}
-		} else if chain.Config().ChainID.Uint64() == mainnetId {
-			currentBlockNumber := header.Number.Uint64()
-
-			sealer := common.HexToAddress("0xAf9d311bE2aDC8BCACaD196B30475cAA32180a30")
-
-			if currentBlockNumber <= RewardFinalizeBlock {
-
-				currentYearOfReward := (currentBlockNumber - 1) / BlocksInAYear
-
-				if currentYearOfReward < 1 {
-					Month := (currentBlockNumber - 1) / BlocksInAMonth
-					BlockReward = FirstYearMonthlyReward[Month]
-				} else {
-					BlockReward = YearlyReward[currentYearOfReward]
-				}
-				log.Info("Block reward", "Block", currentBlockNumber, "Reward", BlockReward)
-				state.AddBalance(sealer, BlockReward)
-			}
+			log.Info("Block reward", "Block", currentBlockNumber, "Reward", BlockReward)
+			state.AddBalance(rewardAddress, BlockReward)
 		}
-	} else {
-		log.Debug("Signer from header", "Signer", header.Signer)
-		state.AddBalance(header.Signer, InitialBlockReward)
 	}
+	
 }
 
 // FinalizeAndAssemble implements consensus.Engine, ensuring no uncles are set,
