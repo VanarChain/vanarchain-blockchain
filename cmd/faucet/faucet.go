@@ -39,24 +39,24 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"github.com/ethereum/go-ethereum/cmd/utils"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/eth/downloader"
-	"github.com/ethereum/go-ethereum/eth/ethconfig"
-	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ethereum/go-ethereum/ethstats"
-	"github.com/ethereum/go-ethereum/internal/version"
-	"github.com/ethereum/go-ethereum/les"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/nat"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/accounts"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/accounts/keystore"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/cmd/utils"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/types"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/eth/downloader"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/eth/ethconfig"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/ethclient"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/ethstats"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/internal/version"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/les"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/log"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/node"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p/enode"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/p2p/nat"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/params"
 	"github.com/gorilla/websocket"
 )
 
@@ -109,7 +109,7 @@ func main() {
 	for i := 0; i < *tiersFlag; i++ {
 		// Calculate the amount for the next tier and format it
 		amount := float64(*payoutFlag) * math.Pow(2.5, float64(i))
-		amounts[i] = fmt.Sprintf("%s Ethers", strconv.FormatFloat(amount, 'f', -1, 64))
+		amounts[i] = fmt.Sprintf("%s Vanry", strconv.FormatFloat(amount, 'f', -1, 64))
 		if amount == 1 {
 			amounts[i] = strings.TrimSuffix(amounts[i], "s")
 		}
@@ -466,7 +466,7 @@ func (f *faucet) apiHandler(w http.ResponseWriter, r *http.Request) {
 			id = username
 		default:
 			//lint:ignore ST1005 This error is to be displayed in the browser
-			err = errors.New("Something funky happened, please open an issue at https://github.com/ethereum/go-ethereum/issues")
+			err = errors.New("Something funky happened, please open an issue at https://github.com/TerraVirtuaCo/vanarchain-blockchain/issues")
 		}
 		if err != nil {
 			if err = sendError(wsconn, err); err != nil {
@@ -530,7 +530,6 @@ func (f *faucet) apiHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			continue
 		}
-		// if err = sendSuccess(wsconn, fmt.Sprintf("Funding request accepted for %s into %s", username, address.Hex())); err != nil {
 		if err = sendSuccess(wsconn, fmt.Sprintf("Funding request accepted for %s", address.Hex())); err != nil {
 			log.Warn("Failed to send funding success to client", "err", err)
 			return
