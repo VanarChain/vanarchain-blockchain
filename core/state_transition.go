@@ -260,7 +260,6 @@ func (st *StateTransition) buyGas() error {
 	}
 	st.gasRemaining += st.msg.GasLimit
 
-	fmt.Println("subfee freeperTx ==>", st.evm.Context.FeePerTx)
 	subFee := st.evm.Context.FeePerTx
 	st.initialGas = st.msg.GasLimit
 	// st.state.SubBalance(st.msg.From, mgval)

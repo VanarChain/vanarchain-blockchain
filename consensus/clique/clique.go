@@ -639,7 +639,7 @@ func (c *Clique) Prepare(chain consensus.ChainHeaderReader, header *types.Header
 		
 		if c.feeInterval(number) {
 			fetchedFee := c.fetchFee(chainRef)
-			log.Info("Rate Fetched from API Default", "Rate", fetchedFee)
+			
 			if fetchedFee != nil {
 				header.FeePerTx = fetchedFee
 			}
@@ -649,7 +649,7 @@ func (c *Clique) Prepare(chain consensus.ChainHeaderReader, header *types.Header
 
 				if parent.FeePerTx.Cmp(prevIntervalBlockHeader.FeePerTx) == 0 {
 					fetchedFee := c.fetchFee(chainRef)
-					log.Info("Rate Fetched from API within Interval", "Rate", fetchedFee)
+					
 					if fetchedFee != nil {
 						header.FeePerTx = fetchedFee
 					}
@@ -735,7 +735,6 @@ func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Heade
 	rewardAddress := common.HexToAddress("0x8DE5B80a0C1B02Fe4976851D030B36122dbb8624")
 
 	if chain.Config().ChainID.Uint64() == testnetId || chain.Config().ChainID.Uint64() == vanguardId {	
-		log.Info("Block reward", "Block", currentBlockNumber, "Reward", InitialBlockReward)
 		state.AddBalance(rewardAddress, InitialBlockReward)	
 	} else if chain.Config().ChainID.Uint64() == mainnetId {
 		if currentBlockNumber <= RewardFinalizeBlock {
@@ -746,7 +745,6 @@ func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Heade
 			} else {
 				BlockReward = YearlyReward[currentYearOfReward]
 			}
-			log.Info("Block reward", "Block", currentBlockNumber, "Reward", BlockReward)
 			state.AddBalance(rewardAddress, BlockReward)
 		}
 	}

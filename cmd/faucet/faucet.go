@@ -87,13 +87,22 @@ var (
 
 	goerliFlag  = flag.Bool("goerli", false, "Initializes the faucet with Görli network config")
 	sepoliaFlag = flag.Bool("sepolia", false, "Initializes the faucet with Sepolia network config")
+
 	vanguardFlag = flag.Bool("vanguard", false, "Initializes the faucet with Vanguard network config")
 	testnetFlag = flag.Bool("testnet", false, "Initializes the faucet with Testnet network config")
+	faucetURLFlag = flag.String("faucet.url", "", "CDN url to be assigned")
+	bearerTokenFlag = flag.String("bearer.token", "","Authentication bearer token for faucet API")
 )
 
 var (
-	ether = new(big.Int).Exp(big.NewInt(10), big.NewInt(18), nil)
+	ether = new(big.Int).Exp(big.NewInt(10), big.NewInt(18), nil) 
 )
+
+type APIRequestBody struct {
+	WalletAddress string `json:"wallet_address"`
+	EventType     string `json:"event_type"`
+	SourceFrom    string `json:"source_from"`
+}
 
 //go:embed faucet.html
 var websiteTmpl string
@@ -109,20 +118,20 @@ func main() {
 	for i := 0; i < *tiersFlag; i++ {
 		// Calculate the amount for the next tier and format it
 		amount := float64(*payoutFlag) * math.Pow(2.5, float64(i))
-		amounts[i] = fmt.Sprintf("%s Vanry", strconv.FormatFloat(amount, 'f', -1, 64))
+		amounts[i] = fmt.Sprintf("%s VANRY", strconv.FormatFloat(amount, 'f', -1, 64))
 		if amount == 1 {
 			amounts[i] = strings.TrimSuffix(amounts[i], "s")
 		}
 		// Calculate the period for the next tier and format it
 		period := *minutesFlag * int(math.Pow(3, float64(i)))
-		periods[i] = fmt.Sprintf("%d mins", period)
+		periods[i] = fmt.Sprintf("%d MINS", period)
 		if period%60 == 0 {
 			period /= 60
-			periods[i] = fmt.Sprintf("%d hours", period)
+			periods[i] = fmt.Sprintf("%d HOURS", period)
 
 			if period%24 == 0 {
 				period /= 24
-				periods[i] = fmt.Sprintf("%d days", period)
+				periods[i] = fmt.Sprintf("%d DAYS", period)
 			}
 		}
 		if period == 1 {
@@ -132,6 +141,7 @@ func main() {
 	website := new(bytes.Buffer)
 	err := template.Must(template.New("").Parse(websiteTmpl)).Execute(website, map[string]interface{}{
 		"Network":   *netnameFlag,
+		"CDNUrl": *faucetURLFlag,
 		"Amounts":   amounts,
 		"Periods":   periods,
 		"Recaptcha": *captchaToken,
@@ -182,6 +192,7 @@ func main() {
 	if err := faucet.listenAndServe(*apiPortFlag); err != nil {
 		log.Crit("Failed to launch faucet API", "err", err)
 	}
+
 }
 
 // request represents an accepted funding request.
@@ -303,6 +314,8 @@ func (f *faucet) listenAndServe(port int) error {
 
 	http.HandleFunc("/", f.webHandler)
 	http.HandleFunc("/api", f.apiHandler)
+	
+	
 	return http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 }
 
@@ -533,6 +546,101 @@ func (f *faucet) apiHandler(w http.ResponseWriter, r *http.Request) {
 		if err = sendSuccess(wsconn, fmt.Sprintf("Funding request accepted for %s", address.Hex())); err != nil {
 			log.Warn("Failed to send funding success to client", "err", err)
 			return
+		} else {
+			switch *netFlag {
+				case 1947: {
+					// log.Info("Faucet request valid accpeted and processed")
+					requestBody := APIRequestBody{
+						WalletAddress: strings.ToLower(address.Hex()),
+						EventType:     "isFaucetClaimed",
+						SourceFrom:    "faucetTestnet",
+					}
+				
+					// Marshal the request body to JSON
+					jsonBody, err := json.Marshal(requestBody)
+					if err != nil {
+						fmt.Println("Error marshaling request body:", err)
+						return
+					}
+				
+					// Define the API endpoint
+					apiURL := "https://vanar-analytics.bimtvi.com/api/publish-events"
+				
+					// Create a POST request with the JSON body
+					req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(jsonBody))
+					if err != nil {
+						fmt.Println("Error creating request:", err)
+						return
+					}
+
+					// Set headers
+					req.Header.Set("Content-Type", "application/json")
+					req.Header.Set("Authorization", *bearerTokenFlag)
+				
+					// Send the request
+					client := &http.Client{}
+					resp, err := client.Do(req)
+					if err != nil {
+						fmt.Println("Error sending request:", err)
+						return
+					}
+					defer resp.Body.Close()
+				
+					// Check the response status
+					if resp.StatusCode != http.StatusOK {
+						fmt.Println("Unexpected response status:", resp.StatusCode)
+						return
+					}
+				
+					// log.Info("API was hit")
+				}
+				case 78600: {
+					// log.Info("Faucet request valid accpeted and processed")
+					requestBody := APIRequestBody{
+						WalletAddress: strings.ToLower(address.Hex()),
+						EventType:     "isFaucetClaimed",
+						SourceFrom:    "vanguard",
+					}
+				
+					// Marshal the request body to JSON
+					jsonBody, err := json.Marshal(requestBody)
+					if err != nil {
+						fmt.Println("Error marshaling request body:", err)
+						return
+					}
+				
+					// Define the API endpoint
+					apiURL := "https://analytics.vanarchain.com/api/publish-events"
+				
+					// Create a POST request with the JSON body
+					req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(jsonBody))
+					if err != nil {
+						fmt.Println("Error creating request:", err)
+						return
+					}
+				
+					// Set headers
+					req.Header.Set("Content-Type", "application/json")
+					req.Header.Set("Authorization", *bearerTokenFlag)
+				
+					// Send the request
+					client := &http.Client{}
+					resp, err := client.Do(req)
+					if err != nil {
+						fmt.Println("Error sending request:", err)
+						return
+					}
+					defer resp.Body.Close()
+				
+					// Check the response status
+					if resp.StatusCode != http.StatusOK {
+						fmt.Println("Unexpected response status:", resp.StatusCode)
+						return
+					}
+				
+					// log.Info("API was hit")
+				}			
+			}
 		}
 		select {
 		case f.update <- struct{}{}:
