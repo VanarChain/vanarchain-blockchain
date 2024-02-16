@@ -640,8 +640,7 @@ func (pool *LegacyPool) validateTx(tx *types.Transaction, local bool) error {
 			return nil
 		},
 	}
-	//fmt.Println("pooling current block base fee using pool chain ==>", pool.chain.CurrentBlock().BaseFee)
-	fmt.Println("pooling current block base fee using pool current head ==>", pool.currentHead.Load().FeePerTx)
+	
 	if err := txpool.ValidateTransactionWithState(tx, pool.signer, opts, *pool.currentHead.Load().FeePerTx); err != nil {
 		return err
 	}
