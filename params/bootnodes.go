@@ -52,6 +52,9 @@ var VanguardBootnodes = []string{
 	//"enode://a0887bf2f2e2dda814c710767dae7aee30695e90a8de54f5655b9f2e3d389257959b65991a5900246a3d422acc8bc96f7ac1188e350f8569df473f68b03d2006@bootnode2-vanguard.vanarchain.com:30303",
 	"enode://c5590525e6fa5688c6ac13b0a7e0cbdb42edae64063ac097ae4261864f4c59654324aa049a0568307a29b25bf4b2842421b8a157f2dbf0d70cc8bedeb184e1bd@bootnode1-vanguard.vanarchain.com:30311",
 	"enode://e27b211391ad0d3c71651fa36555a13defa812e39b78cfb859b3f1e3496126328e47fcd864fa450ff030ecda53287c1e582e18b6feae2278961a17897fe97857@bootnode2-vanguard.vanarchain.com:30311",
+	"enode://b1256c669a2d43c42145293625ffeff7bfe124543d0ca87307a18a0ad380727ec31c7666c320ca5bcbcfeebef17200e8409652318c22cc8123834a6d058ddd5f@bootnode3-vanguard.vanarchain.com:30311",
+	"enode://c5088916737bdba6c05297e937950d76ca8d4af70635789b180703fa063cdaf771fd7c130946feb067b19013a86cb3f6079fee83d2e1bb689377e4b4d909f0c5@bootnode4-vanguard.vanarchain.com:30311",
+	"enode://873880162dc1cd7319c755244bd73ab40b06c0ebac7b7bdac7550845acc74fd1205150f0e6e99cad025b95ff57158710285812ca7b502640dd7d5e1e4a736a0f@bootnode5-vanguard.vanarchain.com:30311",
 	
 }
 
@@ -59,6 +62,7 @@ var TestnetBootnodes = []string{
 	//"enode://5322f21c033312024498eaea181e54c9f2dc0eb78190923093444dc22a8d9276e0ed6cacf231207d093cf5192dae3be744346911872d815a13c7bc0dcf1ed8e1@bootnode-testnet.vanarchain.com:0?discport=30301",
         //"enode://569d83763016c1e2f04fa3ecb6c058bfc6b659be3f376413702107924e06e995a89c086e99396365497b2389f551dbc1ea750d00ef3cb2e8a73157ac2a173d07@bootnode-testnet.vanarchain.com:30311",
 	 "enode://544322ae2fd8c82e05e54122465276a698258f31557dfa4f31dc8a594bb8730eaa979fd4fb05b53b0725c56af086267f18b627e6433f2bb15e5e2e6fbae154ef@bootnode-testnet.vanarchain.com:30311",
+	 "enode://0ea9f5a6285fd29a0883ad08e8d1ad22956e9e70f251d5dd5415db67c5c3d28fd4ed3ab17da86fa2055f09192ef6a7e0cddd81334538f6dae5432c9084205f25@bootnode2-testnet.vanarchain.com:30311",
 }
 
 // GoerliBootnodes are the enode URLs of the P2P bootstrap nodes running on the

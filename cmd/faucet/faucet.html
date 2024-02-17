@@ -1,287 +1,545 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-	
-		<!-- <title>{{.Network}}: Authenticated Faucet</title> -->
-		<title>Vanar Chain - Faucet</title>
-		<meta name="description" content="An easy-to-use Vanry Faucet for the Vanar Testnet.">
-		<meta name="keywords" content="vanar, blockchain, crypto, currency, block, chain, trading, online, metaverse, virtua, NFT, virtua, network">
-		<link rel="icon" href="https://storage.googleapis.com/faucet-assets/assets/images/favicon.svg"/>
-	
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
-			rel="stylesheet" />
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-	
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-noty/2.4.1/packaged/jquery.noty.packaged.min.js">
-		</script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.0/moment.min.js"></script>
 
-		<script src="https://www.google.com/recaptcha/api.js" async defer></script>
-	
-		<style>
-			.vertical-center {
-				min-height: 100%;
-				min-height: 100vh;
-				display: flex;
-				align-items: center;
-			}
-	
-			.progress {
-				position: relative;
-			}
-	
-			.progress span {
-				position: absolute;
-				display: block;
-				width: 100%;
-				color: white;
-			}
-	
-			pre {
-				padding: 6px;
-				margin: 0;
-			}
-		</style>
-	
-		<link href="https://cdn-vanguard.vanarchain.com/assets/stylesheet.css" rel="stylesheet" />
-	</head>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vanar Chain - Faucet</title>
+    <meta name="description" content="An easy-to-use Vanry Faucet for the Vanar Testnet.">
+    <meta name="keywords"
+        content="vanar, blockchain, crypto, currency, block, chain, trading, online, metaverse, virtua, NFT, virtua, network">
+    <link rel="icon" href="{{printf "%s/assets/images/favicon.svg" .CDNUrl}}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-noty/2.4.1/packaged/jquery.noty.packaged.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.0/moment.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-	<body>
-		<div class="vertical-center">
-			<div class="container">
-				<div class="row" style="margin-bottom: 16px;">
-					<div class="col-lg-12">
-						<h1 class="main-title" style="text-align: center;"><span><img src="https://cdn-vanguard.vanarchain.com/assets/images/logo.svg"
-									alt=""></span> {{.Network}} Authenticated Faucet</h1>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-8 col-lg-offset-2">
-						<div class="input-group">
-							<input id="url" name="url" type="text" class="form-control"
-								placeholder="Your Vanar address..." />	
-							<span class="input-group-btn">
-								<button id="mybtn" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									Give me Vanry 
-									<!-- <i class="fa fa-caret-down" aria-hidden="true"></i> -->
-									<span class="img-holder"><img src="https://cdn-vanguard.vanarchain.com/assets/images/dropdown-arrow.svg" alt="" aria-hidden="true"></span>
-								</button>
-								<ul class="dropdown-menu dropdown-menu-right">{{range $idx, $amount := .Amounts}}
-									<li><a style="text-align: center;"
-											onclick="tier={{$idx}}; {{if $.Recaptcha}}grecaptcha.execute(){{else}}submit({{$idx}}){{end}}">{{$amount}}
-											/ {{index $.Periods $idx}}</a></li>{{end}}
-								</ul>
-							</span>
-						</div>
-						<div class="g-recaptcha" style="display: flex; align-items: center; justify-content: center;" data-sitekey="6Lcs1PYUAAAAAG6EwfeUJGVx4DAjnJz_-xYdEDJZ" data-size="compact">
-						</div>
-					</div>
-				</div>
-				<div class="row" style="margin-top: 32px;">
-					<div class="col-lg-6 col-lg-offset-3 alinc">
-						<div class="panel panel-small panel-default">
-							<div class="panel-body" style="padding: 0; overflow: auto; max-height: 300px;">
-								<table id="requests" class="table table-condensed" style="margin: 0;"></table>
-							</div>
-							<div class="panel-footer">
-								<table style="width: 100%">
-									<tr>
-										<td style="text-align: center;"><img style="max-height: 18px; position: relative; top: -1px;" src="https://cdn-vanguard.vanarchain.com/assets/images/peer-icon.svg" alt="peer"> <span
-												id="peers"></span> peers</td>
-										<td style="text-align: center;"><img style="max-height: 18px; position: relative; top: -1px;" src="https://cdn-vanguard.vanarchain.com/assets/images/block-icon.svg" alt="block">
-										<span id="block"></span> blocks</td>
-										<td style="text-align: center;"><img style="max-height: 18px; position: relative; top: -1px;" src="https://cdn-vanguard.vanarchain.com/assets/images/vanar-icon-small.svg" alt="ethers">
-										<span id="funds"></span> Vanry</td>
-										<td style="text-align: center;"><img style="max-height: 16px; position: relative; top: -2px;" src="https://cdn-vanguard.vanarchain.com/assets/images/funded-icon.svg" alt="funded">
-										<span id="funded"></span> funded</td>
+    <!-- <link href="{{printf "%s/assets/stylesheet.css" .CDNUrl}}" rel="stylesheet" /> -->
+	<link href="{{printf "%s/assets/stylesheet.css" .CDNUrl}}" rel="stylesheet" />
+    <!-- <link href="/cmd/faucet/style.css" rel="stylesheet" /> -->
+</head>
 
-									</tr>
-								</table>
-							</div>
-						</div>
-					</div>
-					
-				</div>
-				<div class="row" style="margin-top: 32px;">
-					<div class="col-lg-12 how-it-works-section" style="text-align: center;">
-						<h5 style="color: #fff; font-size: 18px; font-weight: bold; margin-bottom: 6px;" class="title">How does this work?</h5>
-						
-						<dl class="dl-horizontal" style="margin-bottom: 0px;">
-							
-	
-							<div class="clr">
-								{{if .NoAuth}}
-							
-							<dd class="text-danger" ></i> To request funds
-								<strong>without authentication</strong>, simply copy-paste your Vanry address into the
-								above input box (surrounding text doesn't matter) and fire away.
-								
-							{{end}}
-							</div>
-						</dl>
-						
-					</div>
-				</div>
-				
-			</div>
-		</div>
-		<script>
-			function checkRecaptcha() {
-				var response = grecaptcha.getResponse();
-				var inputValue = document.getElementById("url").value.trim();
+<body>
+    <div id="wrapper">
+        <header class="fixed" id="header">
+            <div class="container">
+                <nav class="navigation">
+                    <a href="" class="logo">
+                        <img src="{{printf "%s/assets/images/vanguard-logo.svg" .CDNUrl}}" alt="vanguard-logo"
+                            class="img-fluid">
+                    </a>
+                    <div class="navigation-menu">
+                        <ul class="header-btns">
+                            <li>
+                                <a href="http://vanguard.vanarchain.com/" class="custom-btn" target="_blank">Explore Vanguard</a>
+                            </li>
+                            <li>
+                                <a href="http://velocity.vanarchain.com/" class="custom-btn active" target="_blank">
+                                    Test Now
+                                    <span class="arrow">
+                                        <img src="{{printf "%s/assets/images/arrow.svg" .CDNUrl}}" alt="arrow">
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <main id="main">
+            <div class="relative">
+                <div class="container">
+                    <h1 class="title">$VANRY testnet faucet</h1>
+                    <p class="text">Claim test $VANRY tokens for use on our Vanguard Testnet</p>
+                    <div class="testnet-faucet">
+                        <div class="wallet-address">
+                            <div class="input-field">
+                                <div class="input-heading">
+                                    <div class="name">
+                                        enter wallet address
+                                    </div>
+                                </div>
+                                <input type="text" id="url" placeholder="Your Vanar address..." name="url"
+                                    autocomplete="off" class="amount" value="">
+                            </div>
+                            <span class="vanry-btn">
+                                <button id="mybtn" class="btn btn-default" disabled type="button" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    {{range $idx, $amount := .Amounts}}
+                                    <a style="text-align: center;"
+                                        onclick="tier={{$idx}}; {{if $.Recaptcha}}grecaptcha.execute(){{else}}submit({{$idx}}){{end}}">{{$amount}}
+                                        / {{index $.Periods $idx}}</a>{{end}}
 
-				if (response.length === 0 || inputValue === "") {
-					document.getElementById("mybtn").disabled = true;
-				} else {
-					document.getElementById("mybtn").disabled = false;
-				}
-			}
-		
-			// Check every 2 seconds (2000 milliseconds). Adjust the interval as needed.
-			setInterval(checkRecaptcha, 2000);
-		</script>
-		<!-- <script>
-			$(document).ready(function() {
-				$("#requests .hideDiv").fadeTo(5000, 500).slideUp(500, function(){
-					$("#requests .hideDiv").slideUp(500);
-				});
-			});
-			</script> -->
-		<script>
-			// Global variables to hold the current status of the faucet
-			var attempt = 0;
-			var server;
-			var tier = 0;
-			var requests = [];
+                                </button>
+                            </span>
+                        </div>
+                        <div class="g-recaptcha"
+                            style="display: flex; align-items: center; justify-content: center; margin-bottom: 15px;"
+                            data-sitekey="6Lcs1PYUAAAAAG6EwfeUJGVx4DAjnJz_-xYdEDJZ" data-size="normal">
+                        </div>
+                        <div class="row" style="margin-top: 32px; display: none;">
+                            <div class="col-lg-6 col-lg-offset-3 alinc">
+                                <div class="panel panel-small panel-default">
+                                    <div class="panel-body" style="padding: 0; overflow: auto; max-height: 300px;">
+                                        <table id="requests" class="table table-condensed" style="margin: 0;"></table>
+                                    </div>
+                                    <div class="panel-footer">
+                                        <table style="width: 100%">
+                                            <tr>
+                                                <td style="text-align: center;"><img
+                                                        style="max-height: 18px; position: relative; top: -1px;"
+                                                        src="https://cdn-vanguard.vanarchain.com/assets/images/peer-icon.svg"
+                                                        alt="peer"> <span id="peers"></span> peers</td>
+                                                <td style="text-align: center;"><img
+                                                        style="max-height: 18px; position: relative; top: -1px;"
+                                                        src="https://cdn-vanguard.vanarchain.com/assets/images/block-icon.svg"
+                                                        alt="block">
+                                                    <span id="block"></span> blocks
+                                                </td>
+                                                <td style="text-align: center;"><img
+                                                        style="max-height: 18px; position: relative; top: -1px;"
+                                                        src="https://cdn-vanguard.vanarchain.com/assets/images/vanar-icon-small.svg"
+                                                        alt="ethers">
+                                                    <span id="funds"></span> Vanry
+                                                </td>
+                                                <td style="text-align: center;"><img
+                                                        style="max-height: 16px; position: relative; top: -2px;"
+                                                        src="https://cdn-vanguard.vanarchain.com/assets/images/funded-icon.svg"
+                                                        alt="funded">
+                                                    <span id="funded"></span> funded
+                                                </td>
 
-			// Define a function that creates closures to drop old requests
-			var dropper = function(hash) {
-				return function() {
-					for (var i=0; i<requests.length; i++) {
-						if (requests[i].tx.hash == hash) {
-							requests.splice(i, 1);
-							break;
-						}
-					}
-				}
-			};
-			// Define the function that submits a gist url to the server
-			var submit = function({{if .Recaptcha}}captcha{{end}}) {
-				server.send(JSON.stringify({url: $("#url")[0].value, tier: tier{{if .Recaptcha}}, captcha: captcha{{end}}}));{{if .Recaptcha}}
-				grecaptcha.reset();{{end}}
-				document.getElementById("url").value=''
-			};
-			// Define a method to reconnect upon server loss
-			var reconnect = function() {
-				server = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/api");
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
 
-				server.onmessage = function(event) {
-					var msg = JSON.parse(event.data);
-					if (msg === null) {
-						return;
-					}
+                        </div>
+                        <div class="wallet-btns">
+                            <a class="custom-btn" id="addTestnetVanguard">
+                                <span class="icon">
+                                    <img src="{{printf "%s/assets/images/metamask-icon.svg" .CDNUrl}}" alt="metamask">
+                                </span>
+                                Add Vanguard Testnet
+                            </a>
+                            <a href="https://explorer-vanguard.vanarchain.com/" class="custom-btn" target="_blank">
+                                <span class="icon">
+                                    <img src="{{printf "%s/assets/images/vanry-icon.svg" .CDNUrl}}" alt="vanry">
+                                </span>
+                                View Block Explorer
+                            </a>
+                        </div>
+                        <div class="">
+                            <p class="para">To ensure a sufficient balance for all users, the Faucet is set to dispense
+                                1 testnet token every 6 hours.</p>
+                            <p class="para">By claiming a testnet token you are accepting the <a
+                                    href="https://faucet.vanarchain.com/terms.html" target="_blank"
+                                    rel="noopener noreferrer" class="highlight">
+                                    Terms and Conditions
+                                </a> of use</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testnet-vanguard">
+                    <div class="container">
+                        <h1 class="section-title">Learn more about the Vanar Vanguard Testnet!</h1>
+                        <div class="wrapper">
+                            <div class="box-holder">
+                                <div class="fade"></div>
+                                <div class="img-holder">
+                                    <img src="{{printf "%s/assets/images/vanry-logo.svg" .CDNUrl}}" alt="vanry logo"
+                                        class="img-fluid logo">
+                                </div>
+                                <p>Visit the Vanguard Hub, and learn everything about the Vanar Testnet.</p>
+                                <a href="http://vanguard.vanarchain.com/" target="_blank" class="custom-btn">
+                                    <img class="arrow" src="{{printf "%s/assets/images/arrow.svg" .CDNUrl}}"
+                                        alt="arrow">
+                                </a>
+                            </div>
+                            <div class="box-holder">
+                                <div class="fade"></div>
+                                <div class="img-holder">
+                                    <img src="{{printf "%s/assets/images/velocity.png" .CDNUrl}}" alt="Velocity logo"
+                                        class="img-fluid logo">
+                                </div>
+                                <p>Join Velocity - the exclusive Vanar testnet campaign. Earn airdrops, NFTs and more!
+                                </p>
+                                <a href="http://velocity.vanarchain.com/" target="_blank" class="custom-btn">
+                                    <img class="arrow" src="{{printf "%s/assets/images/arrow.svg" .CDNUrl}}"
+                                        alt="arrow">
+                                </a>
+                            </div>
+                            <div class="box-holder developer-box">
+                                <div class="fade"></div>
+                                <div class="img-holder">
+                                    <img src="{{printf "%s/assets/images/doc-icon.svg" .CDNUrl}}" alt="document icon"
+                                        class="img-fluid logo">
+                                </div>
+                                <p>Explore Vanguard in our developer docs and begin your journey with us today!</p>
+                                <a href="http://docs.vanarchain.com/" target="_blank" class="custom-btn">
+                                    <img class="arrow" src="{{printf "%s/assets/images/arrow.svg" .CDNUrl}}"
+                                        alt="arrow">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer id="footer">
+            <div class="container">
+                <div class="mid-footer">
+                    <div class="content-link">
+                        <p class="mb-0">Copyright © <span id="footerDate">2024</span> Vanar Chain</p>
+                        <ul class="links">
+                            <li>
+                                <a href="https://vanarchain.com/privacy-policy.html" target="_blank"
+                                    rel="noopener noreferrer">
+                                    Privacy Policy
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://vanarchain.com/terms-of-use.html" target="_blank"
+                                    rel="noopener noreferrer">Terms of Use</a>
+                            </li>
+                            <li>
+                                <a href="https://vanarchain.com/brand-guidelines.html" target="_blank"
+                                    rel="noopener noreferrer">Brand
+                                    Guidelines</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="brand">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="53" height="44" viewBox="0 0 53 44" fill="none">
+                            <g clip-path="url(#clip0_11933_11608)">
+                                <path
+                                    d="M33.119 44L39.7414 32.995L19.8741 0H6.62242L0 10.9983H13.2586L33.119 44ZM46.3707 21.9967L53 10.9983L46.3707 0H33.1259L26.5035 10.9983H39.7483L46.3707 21.9967Z"
+                                    fill="#A08CFF" />
+                                <path d="M39.7414 10.9983L46.3707 0L33.119 7.87936e-07L26.4966 10.9983H39.7414Z"
+                                    fill="#A08CFF" />
+                                <path d="M13.2448 10.9983L19.8741 0H6.62242L0 10.9983L13.2448 10.9983Z"
+                                    fill="#A08CFF" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_11933_11608">
+                                    <rect width="53" height="44" fill="white" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </div>
+                    <ul class="social-links mb-0">
+                        <li>
+                            <a href="https://twitter.com/vanarchain" target="_blank" rel="noopener noreferrer">
+                                <svg width="50%" height="50%" viewBox="0 0 20 18" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M7.49233 9.57605L0 0H5.93445L10.5594 5.91866L15.5004 0.0266487H18.7688L12.1397 7.94098L20 18H14.0833L9.07538 11.5993L3.72896 17.9823H0.44287L7.49233 9.57605ZM14.9457 16.2257L3.63881 1.77427H5.07138L16.364 16.2257H14.9457Z"
+                                        fill="rgba(144, 144, 144, 1)"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://t.me/vanarchain" target="_blank" rel="noopener noreferrer">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18"
+                                    fill="none">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M16.9593 16.3852L16.9599 16.3836L16.9775 16.3412L20 1.59794V1.55005C20 1.18271 19.8597 0.862027 19.5544 0.669671C19.2872 0.501301 18.98 0.48931 18.7647 0.505128C18.5369 0.521856 18.322 0.576869 18.1733 0.622662C18.0968 0.646221 18.0328 0.668921 17.987 0.68609C17.964 0.694707 17.9454 0.702019 17.9319 0.707467L17.9186 0.712886L1.06641 7.10877L1.06177 7.11038C1.05267 7.11359 1.04063 7.11793 1.0261 7.12341C0.997114 7.13432 0.957664 7.14994 0.91132 7.17026C0.820324 7.21016 0.694601 7.27173 0.567098 7.35621C0.350544 7.49968 -0.0618076 7.83935 0.00782129 8.37784C0.0654948 8.82388 0.383293 9.10716 0.597544 9.25383C0.712395 9.33245 0.822271 9.38914 0.902731 9.4262C0.943499 9.44498 0.978129 9.45936 1.00392 9.46952C1.01685 9.47462 1.02766 9.47869 1.03602 9.48176L1.04673 9.48563L1.05358 9.48809L4.00197 10.4484C3.99202 10.6274 4.01037 10.8099 4.05943 10.9899L5.53631 16.4101C5.71142 17.0528 6.31236 17.5005 6.99933 17.5C7.61509 17.4996 8.16121 17.1392 8.39322 16.6015L10.699 14.2162L14.6591 17.1535L14.7154 17.1773C15.0752 17.3292 15.4113 17.3773 15.7187 17.3367C16.0256 17.2962 16.2695 17.1716 16.4526 17.0298C16.6329 16.8903 16.7565 16.7328 16.8342 16.6142C16.8736 16.554 16.9031 16.5011 16.9235 16.4612C16.9337 16.4412 16.9418 16.4243 16.9479 16.4111L16.9555 16.3941L16.9582 16.3878L16.9593 16.3852ZM5.52131 10.617C5.48774 10.4939 5.54043 10.3638 5.65159 10.2955L15.6521 4.15124C15.6521 4.15124 16.2403 3.80575 16.2193 4.15124C16.2193 4.15124 16.3243 4.21225 16.0091 4.49673C15.7101 4.76691 8.88145 11.1454 8.19049 11.7908C8.1506 11.8281 8.1268 11.8708 8.11274 11.9227L6.99819 16.0373L5.52131 10.617Z"
+                                        fill="#909090"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://medium.com/vanarchain" target="_blank" rel="noopener noreferrer">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g id="Frame" clip-path="url(#clip0_7883_2967)">
+                                        <g id="Group">
+                                            <path id="Vector"
+                                                d="M13.2868 11.9879C13.2868 15.4006 10.539 18.1672 7.14962 18.1672C3.76022 18.1672 1.01221 15.4006 1.01221 11.9879C1.01221 8.57513 3.76001 5.80835 7.14962 5.80835C10.5392 5.80835 13.2868 8.57513 13.2868 11.9879Z"
+                                                fill="rgba(144, 144, 144, 1)"></path>
+                                        </g>
+                                        <g id="Group_2">
+                                            <path id="Vector_2"
+                                                d="M20.0197 11.988C20.0197 15.2003 18.6458 17.8055 16.951 17.8055C15.2562 17.8055 13.8823 15.2003 13.8823 11.988C13.8823 8.77559 15.256 6.17041 16.9508 6.17041C18.6456 6.17041 20.0195 8.77475 20.0195 11.988"
+                                                fill="rgba(144, 144, 144, 1)"></path>
+                                        </g>
+                                        <g id="Group_3">
+                                            <path id="Vector_3"
+                                                d="M22.7736 11.988C22.7736 14.8655 22.2904 17.1996 21.6943 17.1996C21.0982 17.1996 20.6152 14.8661 20.6152 11.988C20.6152 9.10985 21.0984 6.77637 21.6943 6.77637C22.2902 6.77637 22.7736 9.10964 22.7736 11.988Z"
+                                                fill="rgba(144, 144, 144, 1)"></path>
+                                        </g>
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_7883_2967">
+                                            <rect width="24" height="24" fill="white"></rect>
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script>
+        $(function () {
+            $(window).on("scroll", function () {
+                if ($(window).scrollTop() > 50) {
+                    $(".fixed").addClass("active");
+                } else {
+                    //remove the background property so it comes transparent again (defined in your css)
+                    $(".fixed").removeClass("active");
+                }
+            });
+        });
+    </script>
+    <script>
+        function checkRecaptcha() {
+            var response = grecaptcha.getResponse();
+            var inputValue = document.getElementById("url").value.trim();
 
-					if (msg.funds !== undefined) {
-						$("#funds").text(msg.funds);
-					}
-					if (msg.funded !== undefined) {
-						$("#funded").text(msg.funded);
-					}
-					if (msg.peers !== undefined) {
-						$("#peers").text(msg.peers);
-					}
-					if (msg.number !== undefined) {
-						$("#block").text(parseInt(msg.number, 16));
-					}
-					if (msg.error !== undefined) {
-						noty({layout: 'topCenter', text: msg.error, type: 'error', timeout: 5000, progressBar: true});
-					}
-					if (msg.success !== undefined) {
-						noty({layout: 'topCenter', text: msg.success, type: 'success', timeout: 5000, progressBar: true});
-					}
-					if (msg.requests !== undefined && msg.requests !== null) {
-						// Mark all previous requests missing as done
-						for (var i=0; i<requests.length; i++) {
-							if (msg.requests.length > 0 && msg.requests[0].tx.hash == requests[i].tx.hash) {
-								break;
-							}
-							if (requests[i].time != "") {
-								requests[i].time = "";
-								setTimeout(dropper(requests[i].tx.hash), 3000);
-							}
-						}
-						// Append any new requests into our local collection
-						var common = -1;
-						if (requests.length > 0) {
-							for (var i=0; i<msg.requests.length; i++) {
-								if (requests[requests.length-1].tx.hash == msg.requests[i].tx.hash) {
-									common = i;
-									break;
-								}
-							}
-						}
-						for (var i=common+1; i<msg.requests.length; i++) {
-							requests.push(msg.requests[i]);
-						}
-						// Iterate over our entire local collection and re-render the funding table
-						var content = "";
-						for (var i=requests.length-1; i >= 0; i--) {
-							var done    = requests[i].time == "";
-							var elapsed = moment().unix()-moment(requests[i].time).unix();
+            if (response.length === 0 || inputValue === "") {
+                document.getElementById("mybtn").disabled = true;
+            } else {
+                document.getElementById("mybtn").disabled = false;
+            }
+        }
+    
+        // Check every 2 seconds (2000 milliseconds). Adjust the interval as needed.
+        setInterval(checkRecaptcha, 2000);
+    </script>
+    <!-- <script>
+        $(document).ready(function() {
+            $("#requests .hideDiv").fadeTo(5000, 500).slideUp(500, function(){
+                $("#requests .hideDiv").slideUp(500);
+            });
+        });
+        </script> -->
+        <script>
 
-							content += "<tr id='" + requests[i].tx.hash + "'>";
-							content += "  <td><div style=\"background: url('" + requests[i].avatar + "'); background-size: cover; width:32px; height: 32px; border-radius: 4px;\"></div></td>";
-							content += "  <td><pre>" + requests[i].account + "</pre></td>";
-							content += "  <td style=\"width: 100%; text-align: center; vertical-align: middle;\">";
-							if (done) {
-								content += "    funded";
-							} else {
-								content += "    <span id='time-" + i + "' class='timer'>" + moment.duration(-elapsed, 'seconds').humanize(true) + "</span>";
-							}
-							content += "    <div class='progress' style='height: 4px; margin: 0;'>";
-							if (done) {
-								content += "      <div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='30' style='width:100%;'></div>";
-							} else if (elapsed > 30) {
-								content += "      <div class='progress-bar progress-bar-danger progress-bar-striped active' role='progressbar' aria-valuenow='30' style='width:100%;'></div>";
-							} else {
-								content += "      <div class='progress-bar progress-bar-striped active' role='progressbar' aria-valuenow='" + elapsed + "' style='width:" + (elapsed * 100 / 30) + "%;'></div>";
-							}
-							content += "    </div>";
-							content += "  </td>";
-							content += "</tr>";
-						}
-						$("#requests").html("<tbody>" + content + "</tbody>");
-					}
-				}
-				server.onclose = function() { setTimeout(reconnect, 3000); };
-			}
-			// Start a UI updater to push the progress bars forward until they are done
-			setInterval(function() {
-				$('.progress-bar').each(function() {
-					var progress = Number($(this).attr('aria-valuenow')) + 1;
-					if (progress < 30) {
-						$(this).attr('aria-valuenow', progress);
-						$(this).css('width', (progress * 100 / 30) + '%');
-					} else if (progress == 30) {
-						$(this).css('width', '100%');
-						$(this).addClass("progress-bar-danger");
-					}
-				})
-				$('.timer').each(function() {
-					var index = Number($(this).attr('id').substring(5));
-					$(this).html(moment.duration(moment(requests[index].time).unix()-moment().unix(), 'seconds').humanize(true));
-				})
-			}, 1000);
+            const getConfig = () => {
+                const url = {{.CDNUrl }}
+                if (url.includes('testnet')) {
+                    return {
+                        chainId: '1947',
+                        chainName: 'Vanar Testnet',
+                        nativeCurrency: {
+                            name: 'VANRY',
+                            symbol: 'VANRY',
+                            decimals: 18,
+                        },
+                        rpcUrls: ['https://rpc-testnet.vanarchain.com'],
+                        blockExplorerUrls: ['https://explorer-testnet.vanarchain.com/'],
+                    }
+                } else if (url.includes('vanguard')) {
+                    return {
+                        chainId: '78600',
+                        chainName: 'Vanguard',
+                        nativeCurrency: {
+                            name: 'Vanguard Vanry',
+                            symbol: 'VG',
+                            decimals: 18,
+                        },
+                        rpcUrls: ['https://rpc-vanguard.vanarchain.com'],
+                        blockExplorerUrls: ['https://explorer-vanguard.vanarchain.com/'],
+                    }
+                }
+    
+            }
+    
+            const addTestnetBtn = document.getElementById('addTestnetVanguard')
+            addTestnetBtn.addEventListener('click', async () => {
+    
+                let provider = null;
+                if (window.ethereum?.providers) {
+                    provider = window.ethereum?.providers?.find((p) => p?.isMetaMask);
+                } else if (window.ethereum.isMetaMask) {
+                    provider = window.ethereum;
+                }
+    
+                const config = getConfig()
+    
+                if (provider && provider.networkVersion !== config.chainId) {
+                    const hexadecimalChainId = '0x' + Number(config.chainId).toString(16)
+                    try {
+                        await provider.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: hexadecimalChainId }],
+                        });
+                    } catch (error) {
+                        // const errorObj = getErrorObj(error);
+                        const code = error?.code
+                        // This error code indicates that the chain has not been added to Wallet.
+                        if (code === 4902) {
+                            const params = [{
+                                chainId: hexadecimalChainId,
+                                chainName: config.chainName,
+                                nativeCurrency: {
+                                    name:config.nativeCurrency.name ,
+                                    symbol:config.nativeCurrency.symbol ,
+                                    decimals: 18,
+                                },
+                                rpcUrls: config.rpcUrls,
+                                blockExplorerUrls: config.blockExplorerUrls,
+                            }];
+                            // in wagmi types for wallet_addEthereumChain method is not provided
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    
+                            await provider.request({
+                                method: 'wallet_addEthereumChain',
+                                params: params,
+                            });
+                        }
+                    }
+                } else {
+                    alert('Network already added in your wallet')
+    
+    
+                }
+            })
+        </script>
+    <script>
+        // Global variables to hold the current status of the faucet
+        var attempt = 0;
+        var server;
+        var tier = 0;
+        var requests = [];
 
-			// Establish a websocket connection to the API server
-			reconnect();
-		</script>{{if .Recaptcha}}
-		<script src="https://www.google.com/recaptcha/api.js" async defer></script>{{end}}
-	</body>
+        // Define a function that creates closures to drop old requests
+        var dropper = function(hash) {
+            return function() {
+                for (var i=0; i<requests.length; i++) {
+                    if (requests[i].tx.hash == hash) {
+                        requests.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+        };
+        // Define the function that submits a gist url to the server
+        var submit = function({{if .Recaptcha}}captcha{{end}}) {
+            server.send(JSON.stringify({url: $("#url")[0].value, tier: tier{{if .Recaptcha}}, captcha: captcha{{end}}}));{{if .Recaptcha}}
+            grecaptcha.reset();{{end}}
+            document.getElementById("url").value=''
+        };
+        // Define a method to reconnect upon server loss
+        var reconnect = function() {
+            server = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/api");
+
+            server.onmessage = function(event) {
+                var msg = JSON.parse(event.data);
+                if (msg === null) {
+                    return;
+                }
+
+                if (msg.funds !== undefined) {
+                    $("#funds").text(msg.funds);
+                }
+                if (msg.funded !== undefined) {
+                    $("#funded").text(msg.funded);
+                }
+                if (msg.peers !== undefined) {
+                    $("#peers").text(msg.peers);
+                }
+                if (msg.networkID !== undefined) {
+                    $("#networkID").text(msg.networkID);
+                }
+
+                if (msg.number !== undefined) {
+                    $("#block").text(parseInt(msg.number, 16));
+                }
+                if (msg.error !== undefined) {
+                    noty({layout: 'topCenter', text: msg.error, type: 'error', timeout: 5000, progressBar: true});
+                }
+                if (msg.success !== undefined) {
+                    noty({layout: 'topCenter', text: msg.success, type: 'success', timeout: 5000, progressBar: true});
+                }
+                if (msg.requests !== undefined && msg.requests !== null) {
+                    // Mark all previous requests missing as done
+                    for (var i=0; i<requests.length; i++) {
+                        if (msg.requests.length > 0 && msg.requests[0].tx.hash == requests[i].tx.hash) {
+                            break;
+                        }
+                        if (requests[i].time != "") {
+                            requests[i].time = "";
+                            setTimeout(dropper(requests[i].tx.hash), 3000);
+                        }
+                    }
+                    // Append any new requests into our local collection
+                    var common = -1;
+                    if (requests.length > 0) {
+                        for (var i=0; i<msg.requests.length; i++) {
+                            if (requests[requests.length-1].tx.hash == msg.requests[i].tx.hash) {
+                                common = i;
+                                break;
+                            }
+                        }
+                    }
+                    for (var i=common+1; i<msg.requests.length; i++) {
+                        requests.push(msg.requests[i]);
+                    }
+                    // Iterate over our entire local collection and re-render the funding table
+                    var content = "";
+                    for (var i=requests.length-1; i >= 0; i--) {
+                        var done    = requests[i].time == "";
+                        var elapsed = moment().unix()-moment(requests[i].time).unix();
+
+                        content += "<tr id='" + requests[i].tx.hash + "'>";
+                        content += "  <td><div style=\"background: url('" + requests[i].avatar + "'); background-size: cover; width:32px; height: 32px; border-radius: 4px;\"></div></td>";
+                        content += "  <td><pre>" + requests[i].account + "</pre></td>";
+                        content += "  <td style=\"width: 100%; text-align: center; vertical-align: middle;\">";
+                        if (done) {
+                            content += "    funded";
+                        } else {
+                            content += "    <span id='time-" + i + "' class='timer'>" + moment.duration(-elapsed, 'seconds').humanize(true) + "</span>";
+                        }
+                        content += "    <div class='progress' style='height: 4px; margin: 0;'>";
+                        if (done) {
+                            content += "      <div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='30' style='width:100%;'></div>";
+                        } else if (elapsed > 30) {
+                            content += "      <div class='progress-bar progress-bar-danger progress-bar-striped active' role='progressbar' aria-valuenow='30' style='width:100%;'></div>";
+                        } else {
+                            content += "      <div class='progress-bar progress-bar-striped active' role='progressbar' aria-valuenow='" + elapsed + "' style='width:" + (elapsed * 100 / 30) + "%;'></div>";
+                        }
+                        content += "    </div>";
+                        content += "  </td>";
+                        content += "</tr>";
+                    }
+                    $("#requests").html("<tbody>" + content + "</tbody>");
+                }
+            }
+            server.onclose = function() { setTimeout(reconnect, 3000); };
+        }
+        // Start a UI updater to push the progress bars forward until they are done
+        setInterval(function() {
+            $('.progress-bar').each(function() {
+                var progress = Number($(this).attr('aria-valuenow')) + 1;
+                if (progress < 30) {
+                    $(this).attr('aria-valuenow', progress);
+                    $(this).css('width', (progress * 100 / 30) + '%');
+                } else if (progress == 30) {
+                    $(this).css('width', '100%');
+                    $(this).addClass("progress-bar-danger");
+                }
+            })
+            $('.timer').each(function() {
+                var index = Number($(this).attr('id').substring(5));
+                $(this).html(moment.duration(moment(requests[index].time).unix()-moment().unix(), 'seconds').humanize(true));
+            })
+        }, 1000);
+
+        // Establish a websocket connection to the API server
+        reconnect();
+    </script>{{if .Recaptcha}}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>{{end}}
+</body>
+
 </html>

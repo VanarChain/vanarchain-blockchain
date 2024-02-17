@@ -147,6 +147,7 @@ var (
 		PetersburgBlock:               big.NewInt(0),
 		IstanbulBlock:                 big.NewInt(0),
 		BerlinBlock:                   big.NewInt(0),
+		LahoreBlock:                   big.NewInt(1_068_650),
 		Clique: &CliqueConfig{
 			Period: 3,
 			Epoch:  30000,
@@ -163,7 +164,8 @@ var (
 		ConstantinopleBlock:           big.NewInt(0),
 		PetersburgBlock:               big.NewInt(0),
 		IstanbulBlock:                 big.NewInt(0),
-		BerlinBlock:                   big.NewInt(0),	
+		BerlinBlock:                   big.NewInt(0),
+		LahoreBlock:                   big.NewInt(1_046_000),	
 		Clique: &CliqueConfig{
 			Period: 3,
 			Epoch:  30000,
@@ -347,6 +349,7 @@ type ChainConfig struct {
 	IstanbulBlock       *big.Int `json:"istanbulBlock,omitempty"`       // Istanbul switch block (nil = no fork, 0 = already on istanbul)
 	MuirGlacierBlock    *big.Int `json:"muirGlacierBlock,omitempty"`    // Eip-2384 (bomb delay) switch block (nil = no fork, 0 = already activated)
 	BerlinBlock         *big.Int `json:"berlinBlock,omitempty"`         // Berlin switch block (nil = no fork, 0 = already on berlin)
+	LahoreBlock         *big.Int `json:"lahoreBlock,omitempty"`         // Lahore switch block (nil = no fork, 0 = already on lahore)
 	LondonBlock         *big.Int `json:"londonBlock,omitempty"`         // London switch block (nil = no fork, 0 = already on london)
 	ArrowGlacierBlock   *big.Int `json:"arrowGlacierBlock,omitempty"`   // Eip-4345 (bomb delay) switch block (nil = no fork, 0 = already activated)
 	GrayGlacierBlock    *big.Int `json:"grayGlacierBlock,omitempty"`    // Eip-5133 (bomb delay) switch block (nil = no fork, 0 = already activated)
@@ -444,6 +447,7 @@ func (c *ChainConfig) Description() string {
 		banner += fmt.Sprintf(" - Muir Glacier:                #%-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/muir-glacier.md)\n", c.MuirGlacierBlock)
 	}
 	banner += fmt.Sprintf(" - Berlin:                      #%-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/berlin.md)\n", c.BerlinBlock)
+	banner += fmt.Sprintf(" - Lahore:                      #%-8v (Lahore Fork Implementing)\n", c.LahoreBlock)
 	banner += fmt.Sprintf(" - London:                      #%-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/london.md)\n", c.LondonBlock)
 	if c.ArrowGlacierBlock != nil {
 		banner += fmt.Sprintf(" - Arrow Glacier:               #%-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/arrow-glacier.md)\n", c.ArrowGlacierBlock)
@@ -542,6 +546,11 @@ func (c *ChainConfig) IsBerlin(num *big.Int) bool {
 	return isBlockForked(c.BerlinBlock, num)
 }
 
+// IsLahore returns whether num is either equal to the Lahore fork block or greater.
+func (c *ChainConfig) IsLahore(num *big.Int) bool {
+	return isBlockForked(c.LahoreBlock, num)
+}
+
 // IsLondon returns whether num is either equal to the London fork block or greater.
 func (c *ChainConfig) IsLondon(num *big.Int) bool {
 	return isBlockForked(c.LondonBlock, num)
@@ -632,6 +641,7 @@ func (c *ChainConfig) CheckConfigForkOrder() error {
 		{name: "istanbulBlock", block: c.IstanbulBlock},
 		{name: "muirGlacierBlock", block: c.MuirGlacierBlock, optional: true},
 		{name: "berlinBlock", block: c.BerlinBlock},
+		{name: "lahoreBlock", block: c.LahoreBlock},
 		// {name: "londonBlock", block: c.LondonBlock, optional: true},
 		// {name: "arrowGlacierBlock", block: c.ArrowGlacierBlock, optional: true},
 		// {name: "grayGlacierBlock", block: c.GrayGlacierBlock, optional: true},
@@ -721,6 +731,9 @@ func (c *ChainConfig) checkCompatible(newcfg *ChainConfig, headNumber *big.Int, 
 	}
 	if isForkBlockIncompatible(c.BerlinBlock, newcfg.BerlinBlock, headNumber) {
 		return newBlockCompatError("Berlin fork block", c.BerlinBlock, newcfg.BerlinBlock)
+	}
+	if isForkBlockIncompatible(c.LahoreBlock, newcfg.LahoreBlock, headNumber) {
+		return newBlockCompatError("Lahore fork block", c.LahoreBlock, newcfg.LahoreBlock)
 	}
 	if isForkBlockIncompatible(c.LondonBlock, newcfg.LondonBlock, headNumber) {
 		return newBlockCompatError("London fork block", c.LondonBlock, newcfg.LondonBlock)

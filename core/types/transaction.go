@@ -19,7 +19,6 @@ package types
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"io"
 	"math/big"
 	"sync/atomic"
@@ -309,14 +308,49 @@ func (tx *Transaction) To() *common.Address {
 // Cost returns (gas * gasPrice) + (blobGas * blobGasPrice) + value.
 func (tx *Transaction) Cost(feePerTx big.Int) *big.Int {
 	// total := new(big.Int).Mul(tx.GasPrice(), new(big.Int).SetUint64(tx.Gas()))
-	fmt.Println("FeePerTx ==>", feePerTx)
-	// total := new(big.Int).SetInt64(21000000000000)
+	
 	total := new(big.Int).Set(&feePerTx)
+	feeMultiplier := tx.feeTiers(new(big.Int).SetUint64(tx.Gas()))
+	total.Mul(total, new(big.Int).SetUint64(feeMultiplier))
+	
 	if tx.Type() == BlobTxType {
 		total.Add(total, new(big.Int).Mul(tx.BlobGasFeeCap(), new(big.Int).SetUint64(tx.BlobGas())))
 	}
 	total.Add(total, tx.Value())
 	return total
+}
+
+func (tx *Transaction) feeTiers(gas *big.Int) uint64 {
+    // Define the tier thresholds
+    tier1 := big.NewInt(500_000)      // 500K
+    tier2 := big.NewInt(600_000)      // 600K
+    tier3 := big.NewInt(800_000)      // 800K
+    tier4 := big.NewInt(1_200_000)    // 1.2M
+    tier5 := big.NewInt(2_000_000)    // 2M
+    tier6 := big.NewInt(5_000_000)    // 5M
+    tier7 := big.NewInt(15_000_000)   // 15M
+    tier8 := big.NewInt(30_000_000)   // 30M
+
+    // Check the gas amount against the tier thresholds
+    if gas.Cmp(tier1) <= 0 {
+        return 1
+    } else if gas.Cmp(tier1) > 0 && gas.Cmp(tier2) <= 0 {
+        return 1
+    } else if gas.Cmp(tier2) > 0 && gas.Cmp(tier3) <= 0 {
+        return 1
+    } else if gas.Cmp(tier3) > 0 && gas.Cmp(tier4) <= 0 {
+        return 500
+    } else if gas.Cmp(tier4) > 0 && gas.Cmp(tier5) <= 0 {
+        return 1000
+    } else if gas.Cmp(tier5) > 0 && gas.Cmp(tier6) <= 0 {
+        return 1500
+    } else if gas.Cmp(tier6) > 0 && gas.Cmp(tier7) <= 0 {
+        return 2000
+    } else if gas.Cmp(tier7) > 0 && gas.Cmp(tier8) <= 0 {
+        return 4000
+    }
+
+	return 8000
 }
 
 // RawSignatureValues returns the V, R, S signature values of the transaction.
