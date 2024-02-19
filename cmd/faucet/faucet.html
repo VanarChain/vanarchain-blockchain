@@ -9,7 +9,7 @@
     <meta name="description" content="An easy-to-use Vanry Faucet for the Vanar Testnet.">
     <meta name="keywords"
         content="vanar, blockchain, crypto, currency, block, chain, trading, online, metaverse, virtua, NFT, virtua, network">
-    <link rel="icon" href="{{printf " %s/assets/images/favicon.svg" .CDNUrl}}" />
+    <link rel="icon" href="{{printf "%s/assets/images/favicon.svg" .CDNUrl}}" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
         rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
@@ -21,7 +21,7 @@
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <!-- <link href="{{printf "%s/assets/stylesheet.css" .CDNUrl}}" rel="stylesheet" /> -->
-    <link href="{{printf " %s/assets/stylesheet.css" .CDNUrl}}" rel="stylesheet" />
+	<link href="{{printf "%s/assets/stylesheet.css" .CDNUrl}}" rel="stylesheet" />
     <!-- <link href="/cmd/faucet/style.css" rel="stylesheet" /> -->
 </head>
 
@@ -31,20 +31,19 @@
             <div class="container">
                 <nav class="navigation">
                     <a href="" class="logo">
-                        <img src="{{printf " %s/assets/images/vanguard-logo.svg" .CDNUrl}}" alt="vanguard-logo"
+                        <img src="{{printf "%s/assets/images/vanguard-logo.svg" .CDNUrl}}" alt="vanguard-logo"
                             class="img-fluid">
                     </a>
                     <div class="navigation-menu">
                         <ul class="header-btns">
                             <li>
-                                <a href="http://vanguard.vanarchain.com/" class="custom-btn" target="_blank">Explore
-                                    Vanguard</a>
+                                <a href="http://vanguard.vanarchain.com/" class="custom-btn" target="_blank">Explore Vanguard</a>
                             </li>
                             <li>
                                 <a href="http://velocity.vanarchain.com/" class="custom-btn active" target="_blank">
                                     Test Now
                                     <span class="arrow">
-                                        <img src="{{printf " %s/assets/images/arrow.svg" .CDNUrl}}" alt="arrow">
+                                        <img src="{{printf "%s/assets/images/arrow.svg" .CDNUrl}}" alt="arrow">
                                     </span>
                                 </a>
                             </li>
@@ -126,13 +125,13 @@
                         <div class="wallet-btns">
                             <a class="custom-btn" id="addTestnetVanguard">
                                 <span class="icon">
-                                    <img src="{{printf " %s/assets/images/metamask-icon.svg" .CDNUrl}}" alt="metamask">
+                                    <img src="{{printf "%s/assets/images/metamask-icon.svg" .CDNUrl}}" alt="metamask">
                                 </span>
                                 Add Vanguard Testnet
                             </a>
                             <a href="https://explorer-vanguard.vanarchain.com/" class="custom-btn" target="_blank">
                                 <span class="icon">
-                                    <img src="{{printf " %s/assets/images/vanry-icon.svg" .CDNUrl}}" alt="vanry">
+                                    <img src="{{printf "%s/assets/images/vanry-icon.svg" .CDNUrl}}" alt="vanry">
                                 </span>
                                 View Block Explorer
                             </a>
@@ -155,37 +154,37 @@
                             <div class="box-holder">
                                 <div class="fade"></div>
                                 <div class="img-holder">
-                                    <img src="{{printf " %s/assets/images/vanry-logo.svg" .CDNUrl}}" alt="vanry logo"
+                                    <img src="{{printf "%s/assets/images/vanry-logo.svg" .CDNUrl}}" alt="vanry logo"
                                         class="img-fluid logo">
                                 </div>
                                 <p>Visit the Vanguard Hub, and learn everything about the Vanar Testnet.</p>
                                 <a href="http://vanguard.vanarchain.com/" target="_blank" class="custom-btn">
-                                    <img class="arrow" src="{{printf " %s/assets/images/arrow.svg" .CDNUrl}}"
+                                    <img class="arrow" src="{{printf "%s/assets/images/arrow.svg" .CDNUrl}}"
                                         alt="arrow">
                                 </a>
                             </div>
                             <div class="box-holder">
                                 <div class="fade"></div>
                                 <div class="img-holder">
-                                    <img src="{{printf " %s/assets/images/velocity.png" .CDNUrl}}" alt="Velocity logo"
+                                    <img src="{{printf "%s/assets/images/velocity.png" .CDNUrl}}" alt="Velocity logo"
                                         class="img-fluid logo">
                                 </div>
                                 <p>Join Velocity - the exclusive Vanar testnet campaign. Earn airdrops, NFTs and more!
                                 </p>
                                 <a href="http://velocity.vanarchain.com/" target="_blank" class="custom-btn">
-                                    <img class="arrow" src="{{printf " %s/assets/images/arrow.svg" .CDNUrl}}"
+                                    <img class="arrow" src="{{printf "%s/assets/images/arrow.svg" .CDNUrl}}"
                                         alt="arrow">
                                 </a>
                             </div>
                             <div class="box-holder developer-box">
                                 <div class="fade"></div>
                                 <div class="img-holder">
-                                    <img src="{{printf " %s/assets/images/doc-icon.svg" .CDNUrl}}" alt="document icon"
+                                    <img src="{{printf "%s/assets/images/doc-icon.svg" .CDNUrl}}" alt="document icon"
                                         class="img-fluid logo">
                                 </div>
                                 <p>Explore Vanguard in our developer docs and begin your journey with us today!</p>
                                 <a href="http://docs.vanarchain.com/" target="_blank" class="custom-btn">
-                                    <img class="arrow" src="{{printf " %s/assets/images/arrow.svg" .CDNUrl}}"
+                                    <img class="arrow" src="{{printf "%s/assets/images/arrow.svg" .CDNUrl}}"
                                         alt="arrow">
                                 </a>
                             </div>
@@ -313,7 +312,7 @@
                 document.getElementById("mybtn").disabled = false;
             }
         }
-
+    
         // Check every 2 seconds (2000 milliseconds). Adjust the interval as needed.
         setInterval(checkRecaptcha, 2000);
     </script>
@@ -324,52 +323,51 @@
             });
         });
         </script> -->
-    <script>
-        const url = {{.CDNUrl }}
+        <script>
 
-        const getConfig = () => {
-            if (url.includes('testnet')) {
-                return {
-                    chainId: '1947',
-                    chainName: 'Vanar Testnet',
-                    nativeCurrency: {
-                        name: 'VANRY',
-                        symbol: 'VANRY',
-                        decimals: 18,
-                    },
-                    rpcUrls: ['https://rpc-testnet.vanarchain.com'],
-                    blockExplorerUrls: ['https://explorer-testnet.vanarchain.com/'],
+            const getConfig = () => {
+                const url = {{.CDNUrl }}
+                if (url.includes('testnet')) {
+                    return {
+                        chainId: '1947',
+                        chainName: 'Vanar Testnet',
+                        nativeCurrency: {
+                            name: 'VANRY',
+                            symbol: 'VANRY',
+                            decimals: 18,
+                        },
+                        rpcUrls: ['https://rpc-testnet.vanarchain.com'],
+                        blockExplorerUrls: ['https://explorer-testnet.vanarchain.com/'],
+                    }
+                } else if (url.includes('vanguard')) {
+                    return {
+                        chainId: '78600',
+                        chainName: 'Vanguard',
+                        nativeCurrency: {
+                            name: 'Vanguard Vanry',
+                            symbol: 'VG',
+                            decimals: 18,
+                        },
+                        rpcUrls: ['https://rpc-vanguard.vanarchain.com'],
+                        blockExplorerUrls: ['https://explorer-vanguard.vanarchain.com/'],
+                    }
                 }
-            } else if (url.includes('vanguard')) {
-                return {
-                    chainId: '78600',
-                    chainName: 'Vanguard',
-                    nativeCurrency: {
-                        name: 'Vanguard Vanry',
-                        symbol: 'VG',
-                        decimals: 18,
-                    },
-                    rpcUrls: ['https://rpc-vanguard.vanarchain.com'],
-                    blockExplorerUrls: ['https://explorer-vanguard.vanarchain.com/'],
+    
+            }
+    
+            const addTestnetBtn = document.getElementById('addTestnetVanguard')
+            addTestnetBtn.addEventListener('click', async () => {
+    
+                let provider = null;
+                if (window.ethereum?.providers) {
+                    provider = window.ethereum?.providers?.find((p) => p?.isMetaMask);
+                } else if (window.ethereum.isMetaMask) {
+                    provider = window.ethereum;
                 }
-            }
-
-        }
-
-        const addTestnetBtn = document.getElementById('addTestnetVanguard')
-        addTestnetBtn.addEventListener('click', async () => {
-
-            let provider = null;
-            if (window.ethereum?.providers) {
-                provider = window.ethereum?.providers?.find((p) => p?.isMetaMask);
-            } else if (window.ethereum.isMetaMask) {
-                provider = window.ethereum;
-            }
-
-            const config = getConfig()
-
-            if (provider) {
-                if (provider.networkVersion !== config.chainId) {
+    
+                const config = getConfig()
+    
+                if (provider && provider.networkVersion !== config.chainId) {
                     const hexadecimalChainId = '0x' + Number(config.chainId).toString(16)
                     try {
                         await provider.request({
@@ -385,8 +383,8 @@
                                 chainId: hexadecimalChainId,
                                 chainName: config.chainName,
                                 nativeCurrency: {
-                                    name: config.nativeCurrency.name,
-                                    symbol: config.nativeCurrency.symbol,
+                                    name:config.nativeCurrency.name ,
+                                    symbol:config.nativeCurrency.symbol ,
                                     decimals: 18,
                                 },
                                 rpcUrls: config.rpcUrls,
@@ -394,6 +392,7 @@
                             }];
                             // in wagmi types for wallet_addEthereumChain method is not provided
                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    
                             await provider.request({
                                 method: 'wallet_addEthereumChain',
                                 params: params,
@@ -402,22 +401,11 @@
                     }
                 } else {
                     alert('Network already added in your wallet')
+    
+    
                 }
-
-            } else {
-
-                let deepLink = ''
-                if (url.includes('testnet')) {
-                    deepLink = 'https://metamask.app.link/dapp/faucet-testnet.vanarchain.com/'
-                } else if (url.includes('vanguard')) {
-                    deepLink = 'https://metamask.app.link/dapp/faucet.vanarchain.com/'
-                }
-                const a = document.createElement("a");
-                a.href = deepLink
-                a.click();
-            }
-        })
-    </script>
+            })
+        </script>
     <script>
         // Global variables to hold the current status of the faucet
         var attempt = 0;
@@ -426,9 +414,9 @@
         var requests = [];
 
         // Define a function that creates closures to drop old requests
-        var dropper = function (hash) {
-            return function () {
-                for (var i = 0; i < requests.length; i++) {
+        var dropper = function(hash) {
+            return function() {
+                for (var i=0; i<requests.length; i++) {
                     if (requests[i].tx.hash == hash) {
                         requests.splice(i, 1);
                         break;
@@ -437,16 +425,16 @@
             }
         };
         // Define the function that submits a gist url to the server
-        var submit = function ({{ if .Recaptcha }}captcha{ { end } }) {
-            server.send(JSON.stringify({ url: $("#url")[0].value, tier: tier{{ if .Recaptcha }}, captcha: captcha{ { end } }})); { { if .Recaptcha} }
-        grecaptcha.reset(); { { end } }
-        document.getElementById("url").value = ''
+        var submit = function({{if .Recaptcha}}captcha{{end}}) {
+            server.send(JSON.stringify({url: $("#url")[0].value, tier: tier{{if .Recaptcha}}, captcha: captcha{{end}}}));{{if .Recaptcha}}
+            grecaptcha.reset();{{end}}
+            document.getElementById("url").value=''
         };
         // Define a method to reconnect upon server loss
-        var reconnect = function () {
+        var reconnect = function() {
             server = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/api");
 
-            server.onmessage = function (event) {
+            server.onmessage = function(event) {
                 var msg = JSON.parse(event.data);
                 if (msg === null) {
                     return;
@@ -469,14 +457,14 @@
                     $("#block").text(parseInt(msg.number, 16));
                 }
                 if (msg.error !== undefined) {
-                    noty({ layout: 'topCenter', text: msg.error, type: 'error', timeout: 5000, progressBar: true });
+                    noty({layout: 'topCenter', text: msg.error, type: 'error', timeout: 5000, progressBar: true});
                 }
                 if (msg.success !== undefined) {
-                    noty({ layout: 'topCenter', text: msg.success, type: 'success', timeout: 5000, progressBar: true });
+                    noty({layout: 'topCenter', text: msg.success, type: 'success', timeout: 5000, progressBar: true});
                 }
                 if (msg.requests !== undefined && msg.requests !== null) {
                     // Mark all previous requests missing as done
-                    for (var i = 0; i < requests.length; i++) {
+                    for (var i=0; i<requests.length; i++) {
                         if (msg.requests.length > 0 && msg.requests[0].tx.hash == requests[i].tx.hash) {
                             break;
                         }
@@ -488,21 +476,21 @@
                     // Append any new requests into our local collection
                     var common = -1;
                     if (requests.length > 0) {
-                        for (var i = 0; i < msg.requests.length; i++) {
-                            if (requests[requests.length - 1].tx.hash == msg.requests[i].tx.hash) {
+                        for (var i=0; i<msg.requests.length; i++) {
+                            if (requests[requests.length-1].tx.hash == msg.requests[i].tx.hash) {
                                 common = i;
                                 break;
                             }
                         }
                     }
-                    for (var i = common + 1; i < msg.requests.length; i++) {
+                    for (var i=common+1; i<msg.requests.length; i++) {
                         requests.push(msg.requests[i]);
                     }
                     // Iterate over our entire local collection and re-render the funding table
                     var content = "";
-                    for (var i = requests.length - 1; i >= 0; i--) {
-                        var done = requests[i].time == "";
-                        var elapsed = moment().unix() - moment(requests[i].time).unix();
+                    for (var i=requests.length-1; i >= 0; i--) {
+                        var done    = requests[i].time == "";
+                        var elapsed = moment().unix()-moment(requests[i].time).unix();
 
                         content += "<tr id='" + requests[i].tx.hash + "'>";
                         content += "  <td><div style=\"background: url('" + requests[i].avatar + "'); background-size: cover; width:32px; height: 32px; border-radius: 4px;\"></div></td>";
@@ -528,11 +516,11 @@
                     $("#requests").html("<tbody>" + content + "</tbody>");
                 }
             }
-            server.onclose = function () { setTimeout(reconnect, 3000); };
+            server.onclose = function() { setTimeout(reconnect, 3000); };
         }
         // Start a UI updater to push the progress bars forward until they are done
-        setInterval(function () {
-            $('.progress-bar').each(function () {
+        setInterval(function() {
+            $('.progress-bar').each(function() {
                 var progress = Number($(this).attr('aria-valuenow')) + 1;
                 if (progress < 30) {
                     $(this).attr('aria-valuenow', progress);
@@ -542,9 +530,9 @@
                     $(this).addClass("progress-bar-danger");
                 }
             })
-            $('.timer').each(function () {
+            $('.timer').each(function() {
                 var index = Number($(this).attr('id').substring(5));
-                $(this).html(moment.duration(moment(requests[index].time).unix() - moment().unix(), 'seconds').humanize(true));
+                $(this).html(moment.duration(moment(requests[index].time).unix()-moment().unix(), 'seconds').humanize(true));
             })
         }, 1000);
 
