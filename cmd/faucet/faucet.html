@@ -388,7 +388,7 @@
                             // const errorObj = getErrorObj(error);
                             const code = error?.code
                             // This error code indicates that the chain has not been added to Wallet.
-                            if (code === 4902) {
+                            if (code === 4902 && code === -32603) {
                                 const params = [{
                                     chainId: hexadecimalChainId,
                                     chainName: config.chainName,
