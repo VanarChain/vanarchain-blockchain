@@ -19,10 +19,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.0/moment.min.js"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YTBYZP6BCP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-    <!-- <link href="{{printf "%s/assets/stylesheet.css" .CDNUrl}}" rel="stylesheet" /> -->
+        gtag('config', 'G-YTBYZP6BCP');
+    </script>
+
 	<link href="{{printf "%s/assets/stylesheet.css" .CDNUrl}}" rel="stylesheet" />
-    <!-- <link href="/cmd/faucet/style.css" rel="stylesheet" /> -->
+ 
 </head>
 
 <body>
@@ -69,12 +77,13 @@
                                     autocomplete="off" class="amount" value="">
                             </div>
                             <span class="vanry-btn">
+                                {{range $idx, $amount := .Amounts}}
                                 <button id="mybtn" class="btn btn-default" disabled type="button" aria-haspopup="true"
-                                    aria-expanded="false">
-                                    {{range $idx, $amount := .Amounts}}
+                                    aria-expanded="false" onclick="tier={{$idx}}; submit({{$idx}})">
                                     <a style="text-align: center;"
-                                        onclick="tier={{$idx}}; {{if $.Recaptcha}}grecaptcha.execute(){{else}}submit({{$idx}}){{end}}">{{$amount}}
-                                        / {{index $.Periods $idx}}</a>{{end}}
+                                        >{{$amount}}
+                                        / {{index $.Periods $idx}}
+                                    </a>{{end}}
 
                                 </button>
                             </span>
@@ -324,9 +333,9 @@
         });
         </script> -->
         <script>
-
+            const url = {{.CDNUrl }}
+    
             const getConfig = () => {
-                const url = {{.CDNUrl }}
                 if (url.includes('testnet')) {
                     return {
                         chainId: '1947',
@@ -361,48 +370,60 @@
                 let provider = null;
                 if (window.ethereum?.providers) {
                     provider = window.ethereum?.providers?.find((p) => p?.isMetaMask);
-                } else if (window.ethereum.isMetaMask) {
+                } else if (window.ethereum?.isMetaMask) {
                     provider = window.ethereum;
                 }
     
                 const config = getConfig()
     
-                if (provider && provider.networkVersion !== config.chainId) {
-                    const hexadecimalChainId = '0x' + Number(config.chainId).toString(16)
-                    try {
-                        await provider.request({
-                            method: 'wallet_switchEthereumChain',
-                            params: [{ chainId: hexadecimalChainId }],
-                        });
-                    } catch (error) {
-                        // const errorObj = getErrorObj(error);
-                        const code = error?.code
-                        // This error code indicates that the chain has not been added to Wallet.
-                        if (code === 4902) {
-                            const params = [{
-                                chainId: hexadecimalChainId,
-                                chainName: config.chainName,
-                                nativeCurrency: {
-                                    name:config.nativeCurrency.name ,
-                                    symbol:config.nativeCurrency.symbol ,
-                                    decimals: 18,
-                                },
-                                rpcUrls: config.rpcUrls,
-                                blockExplorerUrls: config.blockExplorerUrls,
-                            }];
-                            // in wagmi types for wallet_addEthereumChain method is not provided
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    
+                if (provider) {
+                    if (provider.networkVersion !== config.chainId) {
+                        const hexadecimalChainId = '0x' + Number(config.chainId).toString(16)
+                        try {
                             await provider.request({
-                                method: 'wallet_addEthereumChain',
-                                params: params,
+                                method: 'wallet_switchEthereumChain',
+                                params: [{ chainId: hexadecimalChainId }],
                             });
+                        } catch (error) {
+                            // const errorObj = getErrorObj(error);
+                            const code = error?.code
+                            // This error code indicates that the chain has not been added to Wallet.
+                            if (code === 4902 || code === -32603) {
+                                const params = [{
+                                    chainId: hexadecimalChainId,
+                                    chainName: config.chainName,
+                                    nativeCurrency: {
+                                        name: config.nativeCurrency.name,
+                                        symbol: config.nativeCurrency.symbol,
+                                        decimals: 18,
+                                    },
+                                    rpcUrls: config.rpcUrls,
+                                    blockExplorerUrls: config.blockExplorerUrls,
+                                }];
+                                // in wagmi types for wallet_addEthereumChain method is not provided
+                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                await provider.request({
+                                    method: 'wallet_addEthereumChain',
+                                    params: params,
+                                });
+                            }
                         }
+                    } else {
+
+                        alert('Network already added in your wallet')
                     }
+    
                 } else {
-                    alert('Network already added in your wallet')
     
-    
+                    let deepLink = ''
+                    if (url.includes('testnet')) {
+                        deepLink = 'https://metamask.app.link/dapp/faucet-testnet.vanarchain.com/'
+                    } else if (url.includes('vanguard')) {
+                        deepLink = 'https://metamask.app.link/dapp/faucet.vanarchain.com/'
+                    }
+                    const a = document.createElement("a");
+                    a.href = deepLink
+                    a.click();
                 }
             })
         </script>
@@ -429,6 +450,7 @@
             server.send(JSON.stringify({url: $("#url")[0].value, tier: tier{{if .Recaptcha}}, captcha: captcha{{end}}}));{{if .Recaptcha}}
             grecaptcha.reset();{{end}}
             document.getElementById("url").value=''
+            grecaptcha.reset();
         };
         // Define a method to reconnect upon server loss
         var reconnect = function() {
