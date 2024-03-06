@@ -635,7 +635,7 @@ func (b *SimulatedBackend) callContract(ctx context.Context, call ethereum.CallM
 	}
 	// Ensure message is initialized properly.
 	if call.Gas == 0 {
-		call.Gas = 50000000
+		call.Gas = 800000
 	}
 	if call.Value == nil {
 		call.Value = new(big.Int)

@@ -1198,6 +1198,7 @@ func DoEstimateGas(ctx context.Context, b Backend, args TransactionArgs, blockNr
 	var (
 		lo uint64 // lowest-known gas limit where tx execution fails
 		hi uint64 // lowest-known gas limit where tx execution succeeds
+		limit uint64
 	)
 	// Use zero address if sender unspecified.
 	if args.From == nil {
@@ -1205,8 +1206,6 @@ func DoEstimateGas(ctx context.Context, b Backend, args TransactionArgs, blockNr
 	}
 	// Determine the highest gas limit can be used during the estimation.
 	if args.Gas != nil && uint64(*args.Gas) >= params.TxGas {
-		hi = uint64(*args.Gas)
-	} else {
 		// Retrieve the block to act as the gas ceiling
 		block, err := b.BlockByNumberOrHash(ctx, blockNrOrHash)
 		if err != nil {
@@ -1215,7 +1214,15 @@ func DoEstimateGas(ctx context.Context, b Backend, args TransactionArgs, blockNr
 		if block == nil {
 			return 0, errors.New("block not found")
 		}
-		hi = block.GasLimit()
+		limit = block.GasLimit()
+
+		if uint64(*args.Gas) <= limit {
+			hi = uint64(*args.Gas)
+		} else {
+			return 0, errors.New("gas exceeding limit")
+		}
+	} else {
+		hi = gasCap
 	}
 	// Normalize the max fee per gas the call is willing to spend.
 	var feeCap *big.Int
@@ -1263,7 +1270,7 @@ func DoEstimateGas(ctx context.Context, b Backend, args TransactionArgs, blockNr
 	// Recap the highest gas allowance with specified gascap.
 	if gasCap != 0 && hi > gasCap {
 		log.Warn("Caller gas above allowance, capping", "requested", hi, "cap", gasCap)
-		hi = gasCap
+		// hi = gasCap
 	}
 
 	// We first execute the transaction at the highest allowable gas limit, since if this fails we
