@@ -148,7 +148,6 @@ var (
 		IstanbulBlock:                 big.NewInt(0),
 		BerlinBlock:                   big.NewInt(0),
 		LahoreBlock:                   big.NewInt(1_068_650),
-		
 		Clique: &CliqueConfig{
 			Period: 3,
 			Epoch:  30000,
@@ -167,7 +166,7 @@ var (
 		IstanbulBlock:                 big.NewInt(0),
 		BerlinBlock:                   big.NewInt(0),
 		LahoreBlock:                   big.NewInt(1_046_000),
-		KarachiBlock:				   big.NewInt(0),
+		KarachiBlock:				   big.NewInt(2_011_590),
 		Clique: &CliqueConfig{
 			Period: 3,
 			Epoch:  30000,
