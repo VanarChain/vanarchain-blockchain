@@ -505,8 +505,14 @@
         });
     
         function verifyCaptcha() {
+            var captchaSiteKey
+            if(url.includes('testnet')){
+                captchaSiteKey = '6LfD_qQpAAAAALk957r0c0-H_OpTDyCgAe42oamE'
+            }else if(url.includes('vanguard')){
+                captchaSiteKey = '6Lfh_qQpAAAAAEeqWhpvmLn5a12n6zib_vJWJ9Fz'
+            }
             grecaptcha.ready(function() {
-                grecaptcha.execute('6LfD_qQpAAAAALk957r0c0-H_OpTDyCgAe42oamE', {action: 'submit'}).then((res)=> {
+                grecaptcha.execute(captchaSiteKey, {action: 'submit'}).then((res)=> {
                     captchaToken = res
                 });
             });
