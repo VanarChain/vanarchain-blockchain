@@ -18,8 +18,7 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.0/moment.min.js"></script>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <!-- Google tag (gtag.js) -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6Ld4V68jAAAAAFnDg8qvjdEjYYi2gkCrtuYTuJps"></script>    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YTBYZP6BCP"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -65,6 +64,7 @@
                 <div class="container">
                     <h1 class="title">$VANRY testnet faucet</h1>
                     <p class="text">Claim test $VANRY tokens for use on our Vanguard Testnet</p>
+                
                     <div class="testnet-faucet">
                         <div class="wallet-address">
                             <div class="input-field">
@@ -76,6 +76,7 @@
                                 <input type="text" id="url" placeholder="Your Vanar address..." name="url"
                                     autocomplete="off" class="amount" value="">
                             </div>
+                            <p id="error" class="error"></p>
                             <span class="vanry-btn">
                                 {{range $idx, $amount := .Amounts}}
                                 <button id="mybtn" class="btn btn-default" disabled type="button" aria-haspopup="true"
@@ -88,10 +89,7 @@
                                 </button>
                             </span>
                         </div>
-                        <div class="g-recaptcha"
-                            style="display: flex; align-items: center; justify-content: center; margin-bottom: 15px;"
-                            data-sitekey="6Lcs1PYUAAAAAG6EwfeUJGVx4DAjnJz_-xYdEDJZ" data-size="normal">
-                        </div>
+                       
                         <div class="row" style="margin-top: 32px; display: none;">
                             <div class="col-lg-6 col-lg-offset-3 alinc">
                                 <div class="panel panel-small panel-default">
@@ -299,6 +297,67 @@
         </footer>
     </div>
     <script>
+        function checkInput() {
+            const inputValue = document.getElementById("url").value.trim();
+            const errorMessage = document.getElementById("error")
+            const addressRegExp = /^(0x)?[0-9a-fA-F]{40}$/;
+            if (inputValue !== '') {
+                document.getElementById("mybtn").disabled = false;
+                if (addressRegExp.test(inputValue)) {
+                    errorMessage.innerHTML = ''
+                    document.getElementById("mybtn").disabled = false;
+
+                } else {
+                    errorMessage.innerHTML = 'Invalid Address'
+                    document.getElementById("mybtn").disabled = true;
+                }
+            }else{
+                errorMessage.innerHTML = ''
+                document.getElementById("mybtn").disabled = true;
+            }
+      
+        }
+
+        setInterval(checkInput, 2000);
+    </script>
+
+    <!-- <script>
+        window.addEventListener('load', function() {
+            verifyCaptcha();
+        });
+    
+        function verifyCaptcha() {
+            grecaptcha.ready(function() {
+                grecaptcha.execute('6Ld4V68jAAAAAFnDg8qvjdEjYYi2gkCrtuYTuJps', {action: 'submit'}).then((res)=> {
+                    console.log(res);
+                    fetch('/verify-recaptcha', {
+                        method: 'POST',
+                         headers: {
+                         'Content-Type': 'application/json;charset=UTF-8'
+                        },
+                        body: JSON.stringify({ token: res })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                    console.log("Response:", data);
+                    if (data.success) {
+                        console.log("reCAPTCHA verification successful!");
+                        alert("reCAPTCHA verification successful!");
+                    } else {
+                        console.log("reCAPTCHA verification failed!");
+                        alert("reCAPTCHA verification failed!");
+                    }
+                    })
+                    .catch(error => {
+                        console.error("Error occurred during reCAPTCHA verification:", error);
+                        alert("Error occurred during reCAPTCHA verification. Please try again later.");
+                    });
+                });
+            });
+        }
+    </script> -->
+    
+    <script>
         $(function () {
             $(window).on("scroll", function () {
                 if ($(window).scrollTop() > 50) {
@@ -310,19 +369,33 @@
             });
         });
     </script>
-    <script>
+    <!-- <script>
         function checkRecaptcha() {
-            var response = grecaptcha.getResponse();
-            var inputValue = document.getElementById("url").value.trim();
+            const inputValue = document.getElementById("url").value.trim();
+            const errorMessage = document.getElementById("error")
+            const addressRegExp = /^(0x)?[0-9a-fA-F]{40}$/;
 
-            if (response.length === 0 || inputValue === "") {
+            if (addressRegExp.test(inputValue)) {
+                alert(input + ' is a valid Ethereum address.');
+                document.getElementById("mybtn").disabled = false;
+
+            } else {
+                console.log(errorMessage)
+                document.getElementById("mybtn").disabled = true;
+                errorMessage.innerHTML='Please enter a Valid Ethereum address'
+            }
+            if (inputValue === "") {
                 document.getElementById("mybtn").disabled = true;
             } else {
                 document.getElementById("mybtn").disabled = false;
             }
+
+          
+          
         }
+    
         setInterval(checkRecaptcha, 2000);
-    </script>
+    </script> -->
     <!-- <script>
         $(document).ready(function() {
             $("#requests .hideDiv").fadeTo(5000, 500).slideUp(500, function(){
@@ -426,6 +499,24 @@
             })
         </script>
     <script>
+        var captchaToken
+        window.addEventListener('load', function() {
+            verifyCaptcha();
+        });
+    
+        function verifyCaptcha() {
+            var captchaSiteKey
+            if(url.includes('testnet')){
+                captchaSiteKey = '6LfD_qQpAAAAALk957r0c0-H_OpTDyCgAe42oamE'
+            }else if(url.includes('vanguard')){
+                captchaSiteKey = '6Lfh_qQpAAAAAEeqWhpvmLn5a12n6zib_vJWJ9Fz'
+            }
+            grecaptcha.ready(function() {
+                grecaptcha.execute(captchaSiteKey, {action: 'submit'}).then((res)=> {
+                    captchaToken = res
+                });
+            });
+        }
         // Global variables to hold the current status of the faucet
         var attempt = 0;
         var server;
@@ -444,12 +535,17 @@
             }
         };
         // Define the function that submits a gist url to the server
-        var submit = function({{if .Recaptcha}}captcha{{end}}) {
-            server.send(JSON.stringify({url: $("#url")[0].value, tier: tier{{if .Recaptcha}}, captcha: captcha{{end}}}));{{if .Recaptcha}}
-            grecaptcha.reset();{{end}}
-            document.getElementById("url").value=''
-            grecaptcha.reset();
+        // const token = localStorage.getItem('reCaptchaToken')
+        var submit = function() {
+            var data = { url: $("#url")[0].value, tier: tier };
+            if(captchaToken){
+                data.captcha = captchaToken;
+            }
+                server.send(JSON.stringify(data));
+          
+          
         };
+
         // Define a method to reconnect upon server loss
         var reconnect = function() {
             server = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/api");
@@ -480,6 +576,8 @@
                     noty({layout: 'topCenter', text: msg.error, type: 'error', timeout: 5000, progressBar: true});
                 }
                 if (msg.success !== undefined) {
+                    document.getElementById("url").value = '';
+                    verifyCaptcha();
                     noty({layout: 'topCenter', text: msg.success, type: 'success', timeout: 5000, progressBar: true});
                 }
                 if (msg.requests !== undefined && msg.requests !== null) {

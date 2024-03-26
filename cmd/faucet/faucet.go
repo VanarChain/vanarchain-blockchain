@@ -92,7 +92,9 @@ var (
 	testnetFlag = flag.Bool("testnet", false, "Initializes the faucet with Testnet network config")
 	faucetURLFlag = flag.String("faucet.url", "", "CDN url to be assigned")
 	bearerTokenFlag = flag.String("bearer.token", "","Authentication bearer token for faucet API")
+	v3RecaptchaSecret = flag.String("v3.secret", "", "Recaptcha secret key to authenticate server side")
 )
+
 
 var (
 	ether = new(big.Int).Exp(big.NewInt(10), big.NewInt(18), nil) 
@@ -108,6 +110,7 @@ type APIRequestBody struct {
 var websiteTmpl string
 
 func main() {
+	
 	// Parse the flags and set up the logger to print everything requested
 	flag.Parse()
 	log.Root().SetHandler(log.LvlFilterHandler(log.Lvl(*logFlag), log.StreamHandler(os.Stderr, log.TerminalFormat(true))))
@@ -232,6 +235,7 @@ type wsConn struct {
 	wlock sync.Mutex
 }
 
+
 func newFaucet(genesis *core.Genesis, port int, enodes []*enode.Node, network uint64, stats string, ks *keystore.KeyStore, index []byte) (*faucet, error) {
 	// Assemble the raw devp2p protocol stack
 	git, _ := version.VCS()
@@ -314,8 +318,6 @@ func (f *faucet) listenAndServe(port int) error {
 
 	http.HandleFunc("/", f.webHandler)
 	http.HandleFunc("/api", f.apiHandler)
-	
-	
 	return http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 }
 
@@ -425,12 +427,14 @@ func (f *faucet) apiHandler(w http.ResponseWriter, r *http.Request) {
 		log.Info("Faucet funds requested", "url", msg.URL, "tier", msg.Tier)
 
 		// If captcha verifications are enabled, make sure we're not dealing with a robot
-		if *captchaToken != "" {
+		if msg.Captcha != "" {
 			form := url.Values{}
-			form.Add("secret", *captchaSecret)
+
+			form.Add("secret", *v3RecaptchaSecret)
 			form.Add("response", msg.Captcha)
 
 			res, err := http.PostForm("https://www.google.com/recaptcha/api/siteverify", form)
+
 			if err != nil {
 				if err = sendError(wsconn, err); err != nil {
 					log.Warn("Failed to send captcha post error to client", "err", err)
@@ -440,6 +444,7 @@ func (f *faucet) apiHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			var result struct {
 				Success bool            `json:"success"`
+				Score   float64         `json:"score"`
 				Errors  json.RawMessage `json:"error-codes"`
 			}
 			err = json.NewDecoder(res.Body).Decode(&result)
@@ -451,7 +456,8 @@ func (f *faucet) apiHandler(w http.ResponseWriter, r *http.Request) {
 				}
 				continue
 			}
-			if !result.Success {
+
+			if result.Score < 0.5 {
 				log.Warn("Captcha verification failed", "err", string(result.Errors))
 				//lint:ignore ST1005 it's funny and the robot won't mind
 				if err = sendError(wsconn, errors.New("Beep-bop, you're a robot!")); err != nil {
