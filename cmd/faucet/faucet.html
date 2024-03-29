@@ -18,7 +18,6 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.0/moment.min.js"></script>
-    <script src="https://www.google.com/recaptcha/api.js?render=6Ld4V68jAAAAAFnDg8qvjdEjYYi2gkCrtuYTuJps"></script>    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YTBYZP6BCP"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -320,6 +319,25 @@
 
         setInterval(checkInput, 2000);
     </script>
+    <script>
+        function loadReCaptchaScript() {
+          if (!window.grecaptcha) {
+            var script = document.createElement('script');
+            var captchaSiteKey
+              if(url?.includes('testnet')){
+                script.src = 'https://www.google.com/recaptcha/api.js?render=6LfD_qQpAAAAALk957r0c0-H_OpTDyCgAe42oamE';
+              }else if(url?.includes('vanguard')){
+                script.src = 'https://www.google.com/recaptcha/api.js?render=6Lfh_qQpAAAAAEeqWhpvmLn5a12n6zib_vJWJ9Fz';
+              }
+                script.async = true;
+                document.body.appendChild(script);
+            }
+        }
+        if(!window.grecaptcha){
+            setInterval(loadReCaptchaScript, 2000);
+        }
+      </script>
+      
 
     <!-- <script>
         window.addEventListener('load', function() {
