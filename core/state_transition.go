@@ -264,7 +264,12 @@ func (st *StateTransition) buyGas() error {
 	st.initialGas = st.msg.GasLimit
 
 	if st.evm.ChainConfig().IsLahore(st.evm.Context.BlockNumber) {
-		feeMultiplier :=  new(big.Int).SetUint64(st.feeTiers(new(big.Int).SetUint64(st.msg.GasLimit)))
+		feeMultiplier :=  new(big.Int)
+		if st.evm.ChainConfig().IsKarachi(st.evm.Context.BlockNumber) {
+			feeMultiplier =  new(big.Int).SetUint64(st.feeTiersV2(new(big.Int).SetUint64(st.msg.GasLimit)))
+		} else {
+			feeMultiplier =  new(big.Int).SetUint64(st.feeTiers(new(big.Int).SetUint64(st.msg.GasLimit)))
+		}
 		agrFee := new(big.Int)
 		agrFee = agrFee.Mul(subFee, feeMultiplier)
 		st.state.SubBalance(st.msg.From, agrFee)
@@ -307,6 +312,30 @@ func (st *StateTransition) feeTiers(gas *big.Int) uint64 {
     }
 
 	return 8000
+}
+
+func (st *StateTransition) feeTiersV2(gas *big.Int) uint64 {
+    // Define the tier thresholds
+    tier1 := big.NewInt(12_000_000)   // 12M
+    tier2 := big.NewInt(15_000_000)   // 15M
+    tier3 := big.NewInt(20_000_000)   // 20M
+    tier4 := big.NewInt(25_000_000)   // 25M
+    tier5 := big.NewInt(30_000_000)    // 30M
+
+     // Check the gas amount against the tier thresholds
+    if gas.Cmp(tier1) <= 0 {
+        return 1
+    } else if gas.Cmp(tier1) > 0 && gas.Cmp(tier2) <= 0 {
+        return 1500
+    } else if gas.Cmp(tier2) > 0 && gas.Cmp(tier3) <= 0 {
+        return 2000
+    } else if gas.Cmp(tier3) > 0 && gas.Cmp(tier4) <= 0 {
+        return 3000
+    } else if gas.Cmp(tier4) > 0 && gas.Cmp(tier5) <= 0 {
+        return 4000
+	}
+
+    return 8000
 }
 
 func (st *StateTransition) preCheck() error {
@@ -484,7 +513,12 @@ func (st *StateTransition) TransitionDb() (*ExecutionResult, error) {
 		
 		if st.evm.ChainConfig().IsLahore(st.evm.Context.BlockNumber) {
 			feeForGasUsed := new(big.Int).SetUint64(st.gasUsed())
-			feeMultiplier :=  new(big.Int).SetUint64(st.feeTiers(feeForGasUsed))
+			feeMultiplier :=  new(big.Int)
+			if st.evm.ChainConfig().IsKarachi(st.evm.Context.BlockNumber) {
+				feeMultiplier = new(big.Int).SetUint64(st.feeTiersV2(feeForGasUsed))
+			} else {
+				feeMultiplier =  new(big.Int).SetUint64(st.feeTiers(feeForGasUsed))
+			}
 			agrFee := new(big.Int)
 			agrFee = agrFee.Mul(fixedFee, feeMultiplier)
 			st.state.AddBalance(st.evm.Context.Coinbase, agrFee)
@@ -511,11 +545,20 @@ func (st *StateTransition) refundGas(refundQuotient uint64) {
 	if st.evm.ChainConfig().IsLahore(st.evm.Context.BlockNumber) {
 		baseFeePerTx := st.evm.Context.FeePerTx
 
-		initialFeeMultiplier := new(big.Int).SetUint64(st.feeTiers(new(big.Int).SetUint64(st.initialGas)))
+		initialFeeMultiplier := new(big.Int)
+		usedFeeMultiplier := new(big.Int)
+
+		if st.evm.ChainConfig().IsKarachi(st.evm.Context.BlockNumber) {
+			initialFeeMultiplier = new(big.Int).SetUint64(st.feeTiersV2(new(big.Int).SetUint64(st.initialGas)))
+			usedFeeMultiplier = new(big.Int).SetUint64(st.feeTiersV2(new(big.Int).SetUint64(st.gasUsed())))
+		} else {
+			initialFeeMultiplier = new(big.Int).SetUint64(st.feeTiers(new(big.Int).SetUint64(st.initialGas)))
+			usedFeeMultiplier = new(big.Int).SetUint64(st.feeTiers(new(big.Int).SetUint64(st.gasUsed())))
+		}
+
 		initialFee := new(big.Int)
 		initialFee = initialFee.Mul(baseFeePerTx, initialFeeMultiplier)
-
-		usedFeeMultiplier := new(big.Int).SetUint64(st.feeTiers(new(big.Int).SetUint64(st.gasUsed())))
+		
 		usedFee := new(big.Int)
 		usedFee = usedFee.Mul(baseFeePerTx, usedFeeMultiplier)
 
