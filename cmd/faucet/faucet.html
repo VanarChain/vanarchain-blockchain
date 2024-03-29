@@ -26,7 +26,7 @@
         gtag('js', new Date());
 
         gtag('config', 'G-YTBYZP6BCP');
-    </>
+    </script>
 
 	<link href="{{printf "%s/assets/stylesheet.css" .CDNUrl}}" rel="stylesheet" />
  
@@ -297,6 +297,24 @@
         </footer>
     </div>
     <script>
+        function loadReCaptchaScript() {
+          if (!window.grecaptcha) {
+            var script = document.createElement('script');
+            var captchaSiteKey
+              if(url?.includes('testnet')){
+                script.src = 'https://www.google.com/recaptcha/api.js?render=6LfD_qQpAAAAALk957r0c0-H_OpTDyCgAe42oamE';
+              }else if(url?.includes('vanguard')){
+                script.src = 'https://www.google.com/recaptcha/api.js?render=6Lfh_qQpAAAAAEeqWhpvmLn5a12n6zib_vJWJ9Fz';
+              }
+                script.async = true;
+                document.body.appendChild(script);
+            }
+        }
+        if(!window.grecaptcha){
+            setInterval(loadReCaptchaScript, 2000);
+        }
+    </script>
+    <script>
         function checkInput() {
             const inputValue = document.getElementById("url").value.trim();
             const errorMessage = document.getElementById("error")
@@ -320,60 +338,6 @@
 
         setInterval(checkInput, 2000);
     </script>
-    <script>
-        function loadReCaptchaScript() {
-          if (!window.grecaptcha) {
-            var script = document.createElement('script');
-            var captchaSiteKey
-              if(url?.includes('testnet')){
-                script.src = 'https://www.google.com/recaptcha/api.js?render=6LfD_qQpAAAAALk957r0c0-H_OpTDyCgAe42oamE';
-              }else if(url?.includes('vanguard')){
-                script.src = 'https://www.google.com/recaptcha/api.js?render=6Lfh_qQpAAAAAEeqWhpvmLn5a12n6zib_vJWJ9Fz';
-              }
-                script.async = true;
-                document.body.appendChild(script);
-            }
-        }
-        if(!window.grecaptcha){
-            setInterval(loadReCaptchaScript, 2000);
-        }
-      </script>
-
-    <!-- <script>
-        window.addEventListener('load', function() {
-            verifyCaptcha();
-        });
-    
-        function verifyCaptcha() {
-            grecaptcha.ready(function() {
-                grecaptcha.execute('6Ld4V68jAAAAAFnDg8qvjdEjYYi2gkCrtuYTuJps', {action: 'submit'}).then((res)=> {
-                    console.log(res);
-                    fetch('/verify-recaptcha', {
-                        method: 'POST',
-                         headers: {
-                         'Content-Type': 'application/json;charset=UTF-8'
-                        },
-                        body: JSON.stringify({ token: res })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                    console.log("Response:", data);
-                    if (data.success) {
-                        console.log("reCAPTCHA verification successful!");
-                        alert("reCAPTCHA verification successful!");
-                    } else {
-                        console.log("reCAPTCHA verification failed!");
-                        alert("reCAPTCHA verification failed!");
-                    }
-                    })
-                    .catch(error => {
-                        console.error("Error occurred during reCAPTCHA verification:", error);
-                        alert("Error occurred during reCAPTCHA verification. Please try again later.");
-                    });
-                });
-            });
-        }
-    </script> -->
     
     <script>
         $(function () {
@@ -387,34 +351,8 @@
             });
         });
     </script>
-    <!-- <script>
-        function checkRecaptcha() {
-            const inputValue = document.getElementById("url").value.trim();
-            const errorMessage = document.getElementById("error")
-            const addressRegExp = /^(0x)?[0-9a-fA-F]{40}$/;
 
-            if (addressRegExp.test(inputValue)) {
-                alert(input + ' is a valid Ethereum address.');
-                document.getElementById("mybtn").disabled = false;
-
-            } else {
-                console.log(errorMessage)
-                document.getElementById("mybtn").disabled = true;
-                errorMessage.innerHTML='Please enter a Valid Ethereum address'
-            }
-            if (inputValue === "") {
-                document.getElementById("mybtn").disabled = true;
-            } else {
-                document.getElementById("mybtn").disabled = false;
-            }
-
-          
-          
-        }
-    
-        setInterval(checkRecaptcha, 2000);
-    </script> -->
-    <!-- <script>
+        <!-- <script>
         $(document).ready(function() {
             $("#requests .hideDiv").fadeTo(5000, 500).slideUp(500, function(){
                 $("#requests .hideDiv").slideUp(500);
@@ -529,11 +467,12 @@
             }else if(url.includes('vanguard')){
                 captchaSiteKey = '6Lfh_qQpAAAAAEeqWhpvmLn5a12n6zib_vJWJ9Fz'
             }
+            if(window?.grecaptcha){
             grecaptcha.ready(function() {
                 grecaptcha.execute(captchaSiteKey, {action: 'submit'}).then((res)=> {
                     captchaToken = res
                 });
-            });
+            });}
         }
         // Global variables to hold the current status of the faucet
         var attempt = 0;
