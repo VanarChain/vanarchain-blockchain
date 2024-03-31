@@ -282,6 +282,9 @@ func prepare(ctx *cli.Context) {
 	case ctx.IsSet(utils.HoleskyFlag.Name):
 		log.Info("Starting Geth on Holesky testnet...")
 
+	case ctx.IsSet(utils.VanarFlag.Name):
+		log.Info("Starting Geth on Vanar...")
+
 	case ctx.IsSet(utils.VanguardFlag.Name):
 		log.Info("Starting Geth on Vanguard...")
 
@@ -315,6 +318,7 @@ func prepare(ctx *cli.Context) {
 		if !ctx.IsSet(utils.HoleskyFlag.Name) &&
 			!ctx.IsSet(utils.SepoliaFlag.Name) &&
 			!ctx.IsSet(utils.GoerliFlag.Name) &&
+			!ctx.IsSet(utils.VanarFlag.Name) &&
 			!ctx.IsSet(utils.VanguardFlag.Name) &&
 			!ctx.IsSet(utils.TestnetFlag.Name) &&
 			!ctx.IsSet(utils.DeveloperFlag.Name) {

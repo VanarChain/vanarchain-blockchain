@@ -29,6 +29,7 @@ var (
 	HoleskyGenesisHash = common.HexToHash("0xb5f7f912443c940f21fd611f12828d75b534364ed9e95ca4e307729a4661bde4")
 	SepoliaGenesisHash = common.HexToHash("0x25a5cc106eea7138acab33231d7160d69cb777ee0c2c553fcddf5138993e6dd9")
 	GoerliGenesisHash  = common.HexToHash("0xbf7e331f7f7c1dd2e05159666b3bf8bc7a8a3a9eb1d518969eab529dd9b88c1a")
+	VanarGenesisHash = common.HexToHash("0x5487b7589ead3bc7ce76e9119e003f787e5c8b7daafaa698f5e21e36f25a4713");
 	VanguardGenesisHash = common.HexToHash("0x6309fe9c5eef695c083aea83ccb671da98480b30e558e50a695f49d0b29c7626");
 	TestnetGenesisHash = common.HexToHash("0x6309fe9c5eef695c083aea83ccb671da98480b30e558e50a695f49d0b29c7626");
 )
@@ -131,6 +132,26 @@ var (
 		ShanghaiTime:                  newUint64(1678832736),
 		Clique: &CliqueConfig{
 			Period: 15,
+			Epoch:  30000,
+		},
+	}
+
+	// VanarChainConfig contains the chain parameters to run a node on the Vanar network.
+	VanarChainConfig = &ChainConfig{
+		ChainID:                       big.NewInt(2040),
+		HomesteadBlock:                big.NewInt(0),
+		EIP150Block:                   big.NewInt(0),
+		EIP155Block:                   big.NewInt(0),
+		EIP158Block:                   big.NewInt(0),
+		ByzantiumBlock:                big.NewInt(0),
+		ConstantinopleBlock:           big.NewInt(0),
+		PetersburgBlock:               big.NewInt(0),
+		IstanbulBlock:                 big.NewInt(0),
+		BerlinBlock:                   big.NewInt(0),
+		LahoreBlock:                   big.NewInt(0),
+		KarachiBlock:				   big.NewInt(0),
+		Clique: &CliqueConfig{
+			Period: 3,
 			Epoch:  30000,
 		},
 	}
@@ -323,6 +344,7 @@ var NetworkNames = map[string]string{
 	GoerliChainConfig.ChainID.String():  "goerli",
 	SepoliaChainConfig.ChainID.String(): "sepolia",
 	HoleskyChainConfig.ChainID.String(): "holesky",
+	VanarChainConfig.ChainID.String(): "vanar",
 	VanguardChainConfig.ChainID.String(): "vanguard",
 	TestnetChainConfig.ChainID.String(): "testnet",
 }

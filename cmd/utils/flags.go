@@ -160,6 +160,11 @@ var (
 		Usage:    "Holesky network: pre-configured proof-of-stake test network",
 		Category: flags.EthCategory,
 	}
+	VanarFlag = &cli.BoolFlag{
+		Name:     "vanar",
+		Usage:    "Vanar network",
+		Category: flags.EthCategory,
+	}
 	VanguardFlag = &cli.BoolFlag{
 		Name:     "vanguard",
 		Usage:    "Vanguard network: pre-configured proof-of-authority test network",
@@ -967,6 +972,7 @@ var (
 		GoerliFlag,
 		SepoliaFlag,
 		HoleskyFlag,
+		VanarFlag,
 		VanguardFlag,
 		TestnetFlag,
 	}
@@ -1002,6 +1008,9 @@ func MakeDataDir(ctx *cli.Context) string {
 		}
 		if ctx.Bool(HoleskyFlag.Name) {
 			return filepath.Join(path, "holesky")
+		}
+		if ctx.Bool(VanarFlag.Name) {
+			return filepath.Join(path, "vanar")
 		}
 		if ctx.Bool(VanguardFlag.Name) {
 			return filepath.Join(path, "vanguard")
@@ -1071,6 +1080,8 @@ func setBootstrapNodes(ctx *cli.Context, cfg *p2p.Config) {
 			urls = params.SepoliaBootnodes
 		case ctx.Bool(GoerliFlag.Name):
 			urls = params.GoerliBootnodes
+		case ctx.Bool(VanarFlag.Name):
+			urls = params.VanarBootnodes
 		case ctx.Bool(VanguardFlag.Name):
 			urls = params.VanguardBootnodes
 		case ctx.Bool(TestnetFlag.Name):
@@ -1685,7 +1696,7 @@ func CheckExclusive(ctx *cli.Context, args ...interface{}) {
 // SetEthConfig applies eth-related command line flags to the config.
 func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 	// Avoid conflicting network flags
-	CheckExclusive(ctx, MainnetFlag, DeveloperFlag, GoerliFlag, SepoliaFlag, HoleskyFlag, VanguardFlag, TestnetFlag)
+	CheckExclusive(ctx, MainnetFlag, DeveloperFlag, GoerliFlag, SepoliaFlag, HoleskyFlag, VanarFlag, VanguardFlag, TestnetFlag)
 	CheckExclusive(ctx, LightServeFlag, SyncModeFlag, "light")
 	CheckExclusive(ctx, DeveloperFlag, ExternalSignerFlag) // Can't use both ephemeral unlocked and external signer
 
@@ -1856,6 +1867,12 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 		}
 		cfg.Genesis = core.DefaultGoerliGenesisBlock()
 		SetDNSDiscoveryDefaults(cfg, params.GoerliGenesisHash)
+	case ctx.Bool(VanarFlag.Name):
+		if !ctx.IsSet(NetworkIdFlag.Name) {
+			cfg.NetworkId = 2040
+		}
+		cfg.Genesis = core.DefaultVanarGenesisBlock()
+		SetDNSDiscoveryDefaults(cfg, params.VanarGenesisHash)
 	case ctx.Bool(VanguardFlag.Name):
 		if !ctx.IsSet(NetworkIdFlag.Name) {
 			cfg.NetworkId = 78600
@@ -2194,6 +2211,8 @@ func MakeGenesis(ctx *cli.Context) *core.Genesis {
 		genesis = core.DefaultSepoliaGenesisBlock()
 	case ctx.Bool(GoerliFlag.Name):
 		genesis = core.DefaultGoerliGenesisBlock()
+	case ctx.Bool(VanarFlag.Name):
+		genesis = core.DefaultVanarGenesisBlock()
 	case ctx.Bool(VanguardFlag.Name):
 		genesis = core.DefaultVanguardGenesisBlock()
 	case ctx.Bool(TestnetFlag.Name):
