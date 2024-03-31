@@ -57,7 +57,7 @@ const (
 	wiggleTime = 500 * time.Millisecond // Random delay (per signer) to allow concurrent signers
 	testnetId  = 1947
 	vanguardId = 78600
-	mainnetId  = 2024
+	vanarId  = 2040
 )
 
 // Clique proof-of-authority protocol constants.
@@ -80,47 +80,66 @@ var (
 
 	//////
 
-	RewardFinalizeBlock = uint64(9600)
+	RewardFinalizeBlock = uint64(203904000)
 	BlockReward         = big.NewInt(0)
-
-	BlocksInAYear = uint64(1200) //10512000)
+	BlockInFirstYear = uint64(6912000);
+	BlocksInAYear = uint64(10368000)
 	YearlyReward  = map[uint64]*big.Int{
-
-		1:  new(big.Int).SetUint64(12e+18),
-		2:  new(big.Int).SetUint64(12e+18),
-		3:  new(big.Int).SetUint64(11e+18),
-		4:  new(big.Int).SetUint64(11e+18),
-		5:  new(big.Int).SetUint64(10e+18),
-		6:  new(big.Int).SetUint64(10e+18),
-		7:  new(big.Int).SetUint64(9e+18),
-		8:  new(big.Int).SetUint64(9e+18),
-		9:  new(big.Int).SetUint64(8e+18),
-		10: new(big.Int).SetUint64(8e+18),
-		11: new(big.Int).SetUint64(7e+18),
-		12: new(big.Int).SetUint64(7e+18),
-		13: new(big.Int).SetUint64(6e+18),
-		14: new(big.Int).SetUint64(6e+18),
-		15: new(big.Int).SetUint64(5e+18),
-		16: new(big.Int).SetUint64(5e+18),
-		17: new(big.Int).SetUint64(4e+18),
-		18: new(big.Int).SetUint64(4e+18),
-		19: new(big.Int).SetUint64(3e+18),
+		1:  new(big.Int).SetUint64(14_163386381200000000),
+		2:  new(big.Int).SetUint64(11_968682388100000000),
+		3:  new(big.Int).SetUint64( 9_821820216000000000),
+		4:  new(big.Int).SetUint64( 7_881158950600000000),
+		5:  new(big.Int).SetUint64( 6_221429976900000000),
+		6:  new(big.Int).SetUint64( 4_850464409700000000),
+		7:  new(big.Int).SetUint64( 3_745957368800000000),
+		8:  new(big.Int).SetUint64( 2_872253761600000000),
+		9:  new(big.Int).SetUint64( 2_190392168200000000),
+		10: new(big.Int).SetUint64( 1_663554398100000000),
+		11: new(big.Int).SetUint64( 1_259521894300000000),
+		12: new(big.Int).SetUint64(   951391300200000000),
+		13: new(big.Int).SetUint64(   717377411300000000),
+		14: new(big.Int).SetUint64(   540206790100000000),
+		15: new(big.Int).SetUint64(   406385898900000000),
+		16: new(big.Int).SetUint64(   305485725300000000),
+		17: new(big.Int).SetUint64(   229507716000000000),
+		18: new(big.Int).SetUint64(   172353105700000000),
+		19: new(big.Int).SetUint64(   129391589500000000),
 	}
 
-	BlocksInAMonth         = uint64(100)
+	BlocksInAMonth         = uint64(864000)
 	FirstYearMonthlyReward = map[uint64]*big.Int{
-		0:  new(big.Int).SetUint64(18e+18),
-		1:  new(big.Int).SetUint64(18e+18),
-		2:  new(big.Int).SetUint64(17e+18),
-		3:  new(big.Int).SetUint64(17e+18),
-		4:  new(big.Int).SetUint64(16e+18),
-		5:  new(big.Int).SetUint64(16e+18),
-		6:  new(big.Int).SetUint64(15e+18),
-		7:  new(big.Int).SetUint64(15e+18),
-		8:  new(big.Int).SetUint64(14e+18),
-		9:  new(big.Int).SetUint64(14e+18),
-		10: new(big.Int).SetUint64(13e+18),
-		11: new(big.Int).SetUint64(13e+18),
+		0: func() *big.Int {
+			val, _ := new(big.Int).SetString("57870370370400000000", 10) 
+			return val
+		}(),
+		1:  func() *big.Int {
+			val, _ := new(big.Int).SetString("46296296296300000000", 10) 
+			return val
+		}(),
+		2:  func() *big.Int {
+			val, _ := new(big.Int).SetString("46296296296300000000", 10) 
+			return val
+		}(),
+		3:  func() *big.Int {
+			val, _ := new(big.Int).SetString("34722222222200000000", 10) 
+			return val
+		}(),
+		4:  func() *big.Int {
+			val, _ := new(big.Int).SetString("34722222222200000000", 10) 
+			return val
+		}(),
+		5:  func() *big.Int {
+			val, _ := new(big.Int).SetString("23148148148100000000", 10) 
+			return val
+		}(),
+		6:  func() *big.Int {
+			val, _ := new(big.Int).SetString("23148148148100000000", 10) 
+			return val
+		}(),
+		7:  func() *big.Int {
+			val, _ := new(big.Int).SetString("16550925925900000000", 10) 
+			return val
+		}(),//new(big.Int).SetUint64(15e+18),
 	}
 )
 
@@ -688,6 +707,8 @@ func (c *Clique) fetchFee(chainReference uint64) *big.Int {
 		url = "https://oxuanqzlalug.bimtvi.com/price"
 	} else if chainReference == vanguardId {
 		url = "https://oxuanqzlalug.vanarchain.com/price"
+	} else if chainReference == vanarId {
+		url = "https://edpdnprcjobs.vanarchain.com/price"
 	}
 	
 	// Create a HTTP client with a timeout
@@ -736,13 +757,13 @@ func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Heade
 
 	if chain.Config().ChainID.Uint64() == testnetId || chain.Config().ChainID.Uint64() == vanguardId {	
 		state.AddBalance(rewardAddress, InitialBlockReward)	
-	} else if chain.Config().ChainID.Uint64() == mainnetId {
+	} else if chain.Config().ChainID.Uint64() == vanarId {
 		if currentBlockNumber <= RewardFinalizeBlock {
-			currentYearOfReward := (currentBlockNumber - 1) / BlocksInAYear
-			if currentYearOfReward < 1 {
-				Month := (currentBlockNumber - 1) / BlocksInAMonth
+			if currentBlockNumber <= BlockInFirstYear {
+				Month := uint64((currentBlockNumber - 1) / BlocksInAMonth)
 				BlockReward = FirstYearMonthlyReward[Month]
 			} else {
+				currentYearOfReward := uint64((currentBlockNumber + (BlocksInAYear - BlockInFirstYear) - 1) / BlocksInAYear)
 				BlockReward = YearlyReward[currentYearOfReward]
 			}
 			state.AddBalance(rewardAddress, BlockReward)

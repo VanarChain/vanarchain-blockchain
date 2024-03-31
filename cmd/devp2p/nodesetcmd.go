@@ -236,6 +236,8 @@ func ethFilter(args []string) (nodeFilter, error) {
 		filter = forkid.NewStaticFilter(params.SepoliaChainConfig, core.DefaultSepoliaGenesisBlock().ToBlock())
 	case "holesky":
 		filter = forkid.NewStaticFilter(params.HoleskyChainConfig, core.DefaultHoleskyGenesisBlock().ToBlock())
+	case "vanar":
+		filter = forkid.NewStaticFilter(params.VanarChainConfig, core.DefaultVanarGenesisBlock().ToBlock())
 	case "vanguard":
 		filter = forkid.NewStaticFilter(params.VanguardChainConfig, core.DefaultVanguardGenesisBlock().ToBlock())
 	case "testnet":

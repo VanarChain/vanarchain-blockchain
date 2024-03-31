@@ -212,6 +212,8 @@ func CommitGenesisState(db ethdb.Database, triedb *trie.Database, blockhash comm
 			genesis = DefaultGoerliGenesisBlock()
 		case params.SepoliaGenesisHash:
 			genesis = DefaultSepoliaGenesisBlock()
+		case params.VanarGenesisHash:
+			genesis = DefaultVanarGenesisBlock()
 		case params.VanguardGenesisHash:
 			genesis = DefaultVanguardGenesisBlock()
 		case params.TestnetGenesisHash:
@@ -456,6 +458,8 @@ func (g *Genesis) configOrDefault(ghash common.Hash) *params.ChainConfig {
 		return params.SepoliaChainConfig
 	case ghash == params.GoerliGenesisHash:
 		return params.GoerliChainConfig
+	case ghash == params.VanarGenesisHash:
+		return params.VanarChainConfig
 	case ghash == params.VanguardGenesisHash:
 		return params.VanguardChainConfig
 	case ghash == params.TestnetGenesisHash:
@@ -608,6 +612,22 @@ func DefaultSepoliaGenesisBlock() *Genesis {
 		Difficulty: big.NewInt(0x20000),
 		Timestamp:  1633267481,
 		Alloc:      decodePrealloc(sepoliaAllocData),
+	}
+}
+
+// DefaultVanarGenesisBlock returns the Vanar network genesis block.
+func DefaultVanarGenesisBlock() *Genesis {
+	return &Genesis{
+		Config:     params.VanarChainConfig,
+		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000655c8f83f6B917b60912A1605A3Fa4d7BC9D98C60000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+		GasLimit:   8000000,
+		Difficulty: big.NewInt(1),
+		Signer: common.HexToAddress("0x655c8f83f6B917b60912A1605A3Fa4d7BC9D98C6"),
+		FeePerTx:   big.NewInt(1785561044434731),
+		ProposedFee: big.NewInt(0),
+		Votes:      uint64(0),
+		VSigners:   []common.Address{},
+		Alloc:      decodePrealloc(vanarAllocData),
 	}
 }
 

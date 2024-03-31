@@ -47,6 +47,11 @@ var SepoliaBootnodes = []string{
 	"enode://9e9492e2e8836114cc75f5b929784f4f46c324ad01daf87d956f98b3b6c5fcba95524d6e5cf9861dc96a2c8a171ea7105bb554a197455058de185fa870970c7c@138.68.123.152:30303", // sepolia-bootnode-1-ams3
 }
 
+var VanarBootnodes = []string{
+	"enode://b3f71171d4c33dd408275bd2724b1c62d3337a5357d3f3219d9220606ba4e23968290da21c0d936f0280e4c35a30eeaadc1eb1523387e4c7ad5c4a91b31f78a2@bootnode1.vanarchain.com:30311",
+	"enode://01549cce62fcbf3bf5b939a9dd17d94980083927a34aaa9dd67455277b457c19a86d9d29c2f178a2b3ba6826f06b0085132b0277849327be026073b1a0f2c928@bootnode2.vanarchain.com:30311",
+}
+
 var VanguardBootnodes = []string{
 	//"enode://bfe747af336911ac305ce58abfe5e3da2d3f4bc0fa46d2eccc0b51f3cc43f8cc28b27b463072db8d71c2d5c09e7ecd87a81d24299b0730d951e6c0f2fae684b3@bootnode1-vanguard.vanarchain.com:30303",
 	//"enode://a0887bf2f2e2dda814c710767dae7aee30695e90a8de54f5655b9f2e3d389257959b65991a5900246a3d422acc8bc96f7ac1188e350f8569df473f68b03d2006@bootnode2-vanguard.vanarchain.com:30303",
@@ -116,6 +121,12 @@ func KnownDNSNetwork(genesis common.Hash, protocol string) string {
 		net = "sepolia"
 	case HoleskyGenesisHash:
 		net = "holesky"
+	case VanarGenesisHash:
+		net = "vanar"
+	case VanguardGenesisHash:
+		net = "vanguard"
+	case TestnetGenesisHash:
+		net = "testnet"
 	default:
 		return ""
 	}

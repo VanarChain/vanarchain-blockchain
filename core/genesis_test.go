@@ -184,6 +184,7 @@ func TestGenesisHashes(t *testing.T) {
 		{DefaultGenesisBlock(), params.MainnetGenesisHash},
 		{DefaultGoerliGenesisBlock(), params.GoerliGenesisHash},
 		{DefaultSepoliaGenesisBlock(), params.SepoliaGenesisHash},
+		{DefaultVanarGenesisBlock(), params.VanarGenesisHash},
 		{DefaultVanguardGenesisBlock(), params.VanguardGenesisHash},
 		{DefaultTestnetGenesisBlock(), params.TestnetGenesisHash},
 	} {
