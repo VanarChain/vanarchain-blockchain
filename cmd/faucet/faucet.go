@@ -409,6 +409,12 @@ func (f *faucet) apiHandler(w http.ResponseWriter, r *http.Request) {
 		if err = conn.ReadJSON(&msg); err != nil {
 			return
 		}
+		if len(strings.TrimSpace(msg.Captcha)) == 0 || msg.Captcha == "null" {
+			if err = sendError(wsconn, errors.New("Beep-bop, you're a robot!")); err != nil {
+				log.Warn("Failed to send captcha empty error to client", "err", err)
+			}
+			return
+		}
 		if !*noauthFlag && !strings.HasPrefix(msg.URL, "https://twitter.com/") && !strings.HasPrefix(msg.URL, "https://www.facebook.com/") {
 			if err = sendError(wsconn, errors.New("URL doesn't link to supported services")); err != nil {
 				log.Warn("Failed to send URL error to client", "err", err)
@@ -426,10 +432,10 @@ func (f *faucet) apiHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		log.Info("Faucet funds requested", "url", msg.URL, "tier", msg.Tier)
 
-		// If captcha verifications are enabled, make sure we're not dealing with a robot
-		if msg.Captcha != "" {
-			form := url.Values{}
 
+		// If captcha verifications are enabled, make sure we're not dealing with a robot
+		if len(strings.TrimSpace(msg.Captcha)) > 0 {
+			form := url.Values{}
 			form.Add("secret", *v3RecaptchaSecret)
 			form.Add("response", msg.Captcha)
 
