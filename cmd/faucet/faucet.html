@@ -498,9 +498,9 @@
             if(captchaToken){
                 data.captcha = captchaToken;
             }
-                server.send(JSON.stringify(data));
-          
-          
+            server.send(JSON.stringify(data));
+            document.getElementById("url").value = '';
+            verifyCaptcha();
         };
 
         // Define a method to reconnect upon server loss
@@ -533,8 +533,6 @@
                     noty({layout: 'topCenter', text: msg.error, type: 'error', timeout: 5000, progressBar: true});
                 }
                 if (msg.success !== undefined) {
-                    document.getElementById("url").value = '';
-                    verifyCaptcha();
                     noty({layout: 'topCenter', text: msg.success, type: 'success', timeout: 5000, progressBar: true});
                 }
                 if (msg.requests !== undefined && msg.requests !== null) {
