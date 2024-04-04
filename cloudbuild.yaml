@@ -1,0 +1,17 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/prj-testnet/ghcr.io/vanarchain/rpc', '.']
+    
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/prj-testnet/ghcr.io/vanarchain/rpc']
+    
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: [
+      'run',
+      'deploy',
+      'testnet-rpc',
+      '--image', 'gcr.io/prj-testnet/ghcr.io/vanarchain/rpc',
+      '--platform', 'managed',
+      '--region', 'us-central1'  # Change to your desired region
+    ]
+
