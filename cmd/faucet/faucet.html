@@ -297,6 +297,13 @@
         </footer>
     </div>
     <script>
+            sessionStorage.removeItem('isTokenGenerated')
+            window.addEventListener('load', function() {
+            verifyCaptcha();
+        });
+    </script>
+
+    <script>
         function loadReCaptchaScript() {
           if (!window.grecaptcha) {
             var script = document.createElement('script');
@@ -319,17 +326,20 @@
             const inputValue = document.getElementById("url").value.trim();
             const errorMessage = document.getElementById("error")
             const addressRegExp = /^(0x)?[0-9a-fA-F]{40}$/;
-            if (inputValue !== '') {
-                document.getElementById("mybtn").disabled = false;
+            const isTokenGenerated = sessionStorage.getItem('isTokenGenerated')
+
+            if (inputValue !== '' ) {
+                if(isTokenGenerated==='true'){
+                    document.getElementById("mybtn").disabled = false;
+                }
                 if (addressRegExp.test(inputValue)) {
                     errorMessage.innerHTML = ''
-                    document.getElementById("mybtn").disabled = false;
-
                 } else {
                     errorMessage.innerHTML = 'Invalid Address'
                     document.getElementById("mybtn").disabled = true;
                 }
-            }else{
+            }
+            else{
                 errorMessage.innerHTML = ''
                 document.getElementById("mybtn").disabled = true;
             }
@@ -456,9 +466,6 @@
         </script>
     <script>
         var captchaToken
-        window.addEventListener('load', function() {
-            verifyCaptcha();
-        });
     
         function verifyCaptcha() {
             var captchaSiteKey
@@ -471,6 +478,7 @@
             grecaptcha.ready(function() {
                 grecaptcha.execute(captchaSiteKey, {action: 'submit'}).then((res)=> {
                     captchaToken = res
+                    sessionStorage.setItem('isTokenGenerated',true)
                 });
             });}
         }
@@ -499,6 +507,7 @@
                 data.captcha = captchaToken;
             }
             server.send(JSON.stringify(data));
+            sessionStorage.removeItem('isTokenGenerated')
             document.getElementById("url").value = '';
             verifyCaptcha();
         };
