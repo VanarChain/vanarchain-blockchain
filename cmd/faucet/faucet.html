@@ -511,6 +511,7 @@
             server.send(JSON.stringify(data));
             sessionStorage.removeItem('isTokenGenerated')
             document.getElementById("url").value = '';
+            document.getElementById("mybtn").disabled = true;
         };
 
         // Define a method to reconnect upon server loss
