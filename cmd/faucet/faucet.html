@@ -296,14 +296,10 @@
             </div>
         </footer>
     </div>
-    <script>
-            sessionStorage.removeItem('isTokenGenerated')
-            window.addEventListener('load', function() {
-            verifyCaptcha();
-        });
-    </script>
 
     <script>
+        sessionStorage.removeItem('isTokenGenerated')
+
         function loadReCaptchaScript() {
           if (!window.grecaptcha) {
             var script = document.createElement('script');
@@ -315,6 +311,8 @@
               }
                 script.async = true;
                 document.body.appendChild(script);
+            }else{
+                verifyCaptcha();
             }
         }
         if(!window.grecaptcha){
@@ -468,7 +466,9 @@
         var captchaToken
     
         function verifyCaptcha() {
+            const isTokenGenerated = sessionStorage.getItem('isTokenGenerated')
             var captchaSiteKey
+            if(!isTokenGenerated){
             if(url.includes('testnet')){
                 captchaSiteKey = '6LfD_qQpAAAAALk957r0c0-H_OpTDyCgAe42oamE'
             }else if(url.includes('vanguard')){
@@ -480,7 +480,8 @@
                     captchaToken = res
                     sessionStorage.setItem('isTokenGenerated',true)
                 });
-            });}
+            });} 
+            }
         }
         // Global variables to hold the current status of the faucet
         var attempt = 0;
@@ -509,7 +510,6 @@
             server.send(JSON.stringify(data));
             sessionStorage.removeItem('isTokenGenerated')
             document.getElementById("url").value = '';
-            verifyCaptcha();
         };
 
         // Define a method to reconnect upon server loss
