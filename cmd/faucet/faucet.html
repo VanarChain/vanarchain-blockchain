@@ -469,18 +469,19 @@
             const isTokenGenerated = sessionStorage.getItem('isTokenGenerated')
             var captchaSiteKey
             if(!isTokenGenerated){
-            if(url.includes('testnet')){
-                captchaSiteKey = '6LfD_qQpAAAAALk957r0c0-H_OpTDyCgAe42oamE'
-            }else if(url.includes('vanguard')){
-                captchaSiteKey = '6Lfh_qQpAAAAAEeqWhpvmLn5a12n6zib_vJWJ9Fz'
-            }
-            if(window?.grecaptcha){
-            grecaptcha.ready(function() {
-                grecaptcha.execute(captchaSiteKey, {action: 'submit'}).then((res)=> {
-                    captchaToken = res
-                    sessionStorage.setItem('isTokenGenerated',true)
-                });
-            });} 
+                if(url.includes('testnet')){
+                    captchaSiteKey = '6LfD_qQpAAAAALk957r0c0-H_OpTDyCgAe42oamE'
+                }else if(url.includes('vanguard')){
+                    captchaSiteKey = '6Lfh_qQpAAAAAEeqWhpvmLn5a12n6zib_vJWJ9Fz'
+                }
+                if(window?.grecaptcha){
+                    grecaptcha.ready(function() {
+                        grecaptcha.execute(captchaSiteKey, {action: 'submit'}).then((res)=> {
+                            captchaToken = res
+                            sessionStorage.setItem('isTokenGenerated',true)
+                        });
+                    });
+                }    
             }
         }
         // Global variables to hold the current status of the faucet
