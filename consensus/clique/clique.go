@@ -85,25 +85,25 @@ var (
 	BlockInFirstYear = uint64(6912000);
 	BlocksInAYear = uint64(10368000)
 	YearlyReward  = map[uint64]*big.Int{
-		1:  new(big.Int).SetUint64(14_163386381200000000),
-		2:  new(big.Int).SetUint64(11_968682388100000000),
-		3:  new(big.Int).SetUint64( 9_821820216000000000),
-		4:  new(big.Int).SetUint64( 7_881158950600000000),
-		5:  new(big.Int).SetUint64( 6_221429976900000000),
-		6:  new(big.Int).SetUint64( 4_850464409700000000),
-		7:  new(big.Int).SetUint64( 3_745957368800000000),
-		8:  new(big.Int).SetUint64( 2_872253761600000000),
-		9:  new(big.Int).SetUint64( 2_190392168200000000),
-		10: new(big.Int).SetUint64( 1_663554398100000000),
-		11: new(big.Int).SetUint64( 1_259521894300000000),
-		12: new(big.Int).SetUint64(   951391300200000000),
-		13: new(big.Int).SetUint64(   717377411300000000),
-		14: new(big.Int).SetUint64(   540206790100000000),
-		15: new(big.Int).SetUint64(   406385898900000000),
-		16: new(big.Int).SetUint64(   305485725300000000),
-		17: new(big.Int).SetUint64(   229507716000000000),
-		18: new(big.Int).SetUint64(   172353105700000000),
-		19: new(big.Int).SetUint64(   129391589500000000),
+		1:  new(big.Int).SetUint64(15_059508873500000000),
+		2:  new(big.Int).SetUint64(10_129595196800000000),
+		3:  new(big.Int).SetUint64( 6_813548804000000000),
+		4:  new(big.Int).SetUint64( 4_583050540100000000),
+		5:  new(big.Int).SetUint64( 3_082733217600000000),
+		6:  new(big.Int).SetUint64( 2_073562789400000000),
+		7:  new(big.Int).SetUint64( 1_394756751500000000),
+		8:  new(big.Int).SetUint64(   938166184400000000),
+		9:  new(big.Int).SetUint64(   631046006900000000),
+		10: new(big.Int).SetUint64(   424465374200000000),
+		11: new(big.Int).SetUint64(   285511477600000000),
+		12: new(big.Int).SetUint64(   192045814000000000),
+		13: new(big.Int).SetUint64(   129177276200000000),
+		14: new(big.Int).SetUint64(    86889467600000000),
+		15: new(big.Int).SetUint64(    58445216000000000),
+		16: new(big.Int).SetUint64(    39312403500000000),
+		17: new(big.Int).SetUint64(    26442901200000000),
+		18: new(big.Int).SetUint64(    17786554800000000),
+		19: new(big.Int).SetUint64(    11964409700000000),
 	}
 
 	BlocksInAMonth         = uint64(864000)
@@ -113,15 +113,15 @@ var (
 			return val
 		}(),
 		1:  func() *big.Int {
-			val, _ := new(big.Int).SetString("46296296296300000000", 10) 
+			val, _ := new(big.Int).SetString("219907407407400000000", 10) 
 			return val
 		}(),
 		2:  func() *big.Int {
-			val, _ := new(big.Int).SetString("46296296296300000000", 10) 
+			val, _ := new(big.Int).SetString("104166666666700000000", 10) 
 			return val
 		}(),
 		3:  func() *big.Int {
-			val, _ := new(big.Int).SetString("34722222222200000000", 10) 
+			val, _ := new(big.Int).SetString("92592592592600000000", 10) 
 			return val
 		}(),
 		4:  func() *big.Int {
@@ -139,7 +139,7 @@ var (
 		7:  func() *big.Int {
 			val, _ := new(big.Int).SetString("16550925925900000000", 10) 
 			return val
-		}(),//new(big.Int).SetUint64(15e+18),
+		}(),
 	}
 )
 
