@@ -20,8 +20,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"time"
-	// "math/big"
-	// "errors"
 
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/lru"

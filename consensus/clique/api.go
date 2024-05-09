@@ -19,7 +19,6 @@ package clique
 import (
 	"encoding/json"
 	"fmt"
-	// "math/big"
 
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/hexutil"

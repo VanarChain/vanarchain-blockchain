@@ -55,7 +55,7 @@ const (
 	inmemorySignatures = 4096 // Number of recent block signatures to keep in memory
 
 	wiggleTime = 500 * time.Millisecond // Random delay (per signer) to allow concurrent signers
-	testnetId  = 6055014
+	testnetId  = 1947
 	vanguardId = 78600
 	vanarId  = 2040
 )
