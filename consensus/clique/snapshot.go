@@ -20,8 +20,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"time"
-	"math/big"
-	"errors"
+	// "math/big"
+	// "errors"
 
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/lru"
@@ -62,7 +62,6 @@ type Snapshot struct {
 	Recents map[uint64]common.Address   `json:"recents"` // Set of recent signers for spam protections
 	Votes   []*Vote                     `json:"votes"`   // List of votes cast in chronological order
 	Tally   map[common.Address]Tally    `json:"tally"`   // Current vote tally to avoid recalculating
-	ProposedFee *big.Int
 }
 
 // newSnapshot creates a new snapshot with the specified startup parameters. This
@@ -77,7 +76,6 @@ func newSnapshot(config *params.CliqueConfig, sigcache *sigLRU, number uint64, h
 		Signers:  make(map[common.Address]struct{}),
 		Recents:  make(map[uint64]common.Address),
 		Tally:    make(map[common.Address]Tally),
-		ProposedFee: new(big.Int),
 	}
 	for _, signer := range signers {
 		snap.Signers[signer] = struct{}{}
@@ -85,40 +83,6 @@ func newSnapshot(config *params.CliqueConfig, sigcache *sigLRU, number uint64, h
 	return snap
 }
 
-func (s *Snapshot) ProposeFee(signer common.Address, 
-	fee *big.Int, existingProposedFee *big.Int, currentFee *big.Int) (*big.Int, error) {
-    // Ensure the signer is authorized
-    if _, authorized := s.Signers[signer]; !authorized {
-        return nil, errors.New("signer not authorized")
-    }
-	if fee.Sign() == -1{
-		return nil, errors.New("Negative value is not allowed")
-	}
-    if existingProposedFee.Cmp(new(big.Int)) == 0 {
-        // Set the proposed fee
-		if fee.Cmp(currentFee) != 0{
-			s.ProposedFee = fee
-		} else {
-			return nil, errors.New("Fee already implemented")
-		}
-    } else {
-        if existingProposedFee.Cmp(fee) == 0 {
-            if s.ProposedFee.Cmp(fee) == 0 {
-                return nil, errors.New("fee already proposed")
-            } else {
-                s.ProposedFee = fee
-            }
-        } else {
-            return nil, errors.New("fee not matched with current proposal")
-        }
-    }
-
-    return s.ProposedFee, nil
-} 
-
-func (s *Snapshot) GetProposedFee() *big.Int {
-	return s.ProposedFee
-}
 
 // loadSnapshot loads an existing snapshot from the database.
 func loadSnapshot(config *params.CliqueConfig, sigcache *sigLRU, db ethdb.Database, hash common.Hash) (*Snapshot, error) {
@@ -156,7 +120,6 @@ func (s *Snapshot) copy() *Snapshot {
 		Recents:  make(map[uint64]common.Address),
 		Votes:    make([]*Vote, len(s.Votes)),
 		Tally:    make(map[common.Address]Tally),
-		ProposedFee: s.ProposedFee,
 	}
 	for signer := range s.Signers {
 		cpy.Signers[signer] = struct{}{}
