@@ -68,10 +68,8 @@ var VanguardBootnodes = []string{
 }
 
 var TestnetBootnodes = []string{
-	//"enode://5322f21c033312024498eaea181e54c9f2dc0eb78190923093444dc22a8d9276e0ed6cacf231207d093cf5192dae3be744346911872d815a13c7bc0dcf1ed8e1@bootnode-testnet.vanarchain.com:0?discport=30301",
-        //"enode://569d83763016c1e2f04fa3ecb6c058bfc6b659be3f376413702107924e06e995a89c086e99396365497b2389f551dbc1ea750d00ef3cb2e8a73157ac2a173d07@bootnode-testnet.vanarchain.com:30311",
-	 "enode://544322ae2fd8c82e05e54122465276a698258f31557dfa4f31dc8a594bb8730eaa979fd4fb05b53b0725c56af086267f18b627e6433f2bb15e5e2e6fbae154ef@bootnode-testnet.vanarchain.com:30311",
-	 "enode://0ea9f5a6285fd29a0883ad08e8d1ad22956e9e70f251d5dd5415db67c5c3d28fd4ed3ab17da86fa2055f09192ef6a7e0cddd81334538f6dae5432c9084205f25@bootnode2-testnet.vanarchain.com:30311",
+	"enode://7d92f1024395e6b6edba64683b221f93bd63dc84eaddddfbe9a2a80908cc2106dd081e729e94cd7bbb371467e344c15dd82b22cb8de364a26b1befbd17c32814@bootnode1.bimtvi.com:30311",
+	"enode://70424047d5647192eec5bc1ca4a79a998ca7ecdb30d711695063e8e4be7bc38136644678781ce462ac57cada35edc31d701865e4f7a9877059264a4a195dc7c9@bootnode2.bimtvi.com:30311",
 }
 
 // GoerliBootnodes are the enode URLs of the P2P bootstrap nodes running on the
