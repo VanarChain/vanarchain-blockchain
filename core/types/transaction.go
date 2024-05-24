@@ -335,16 +335,16 @@ func (tx *Transaction) feeTiers(gas *big.Int) uint64 {
     if gas.Cmp(tier1) <= 0 {
         return 1
     } else if gas.Cmp(tier1) > 0 && gas.Cmp(tier2) <= 0 {
-        return 1500
-    } else if gas.Cmp(tier2) > 0 && gas.Cmp(tier3) <= 0 {
-        return 2000
-    } else if gas.Cmp(tier3) > 0 && gas.Cmp(tier4) <= 0 {
         return 3000
+    } else if gas.Cmp(tier2) > 0 && gas.Cmp(tier3) <= 0 {
+        return 6000
+    } else if gas.Cmp(tier3) > 0 && gas.Cmp(tier4) <= 0 {
+        return 15000
     } else if gas.Cmp(tier4) > 0 && gas.Cmp(tier5) <= 0 {
-        return 4000
+        return 30000
 	}
 
-    return 8000
+    return 60000
 }
 
 // RawSignatureValues returns the V, R, S signature values of the transaction.
