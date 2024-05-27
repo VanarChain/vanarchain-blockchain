@@ -80,16 +80,6 @@ web3._extend({
 			params: 1,
 			inputFormatter: [null]
 		}),
-		new web3._extend.Method({
-			name: 'getProposedFee',
-			call: 'clique_getProposedFee',
-			params: 0
-		}),
-		new web3._extend.Method({
-			name: 'proposeFee',
-			call: 'clique_proposeFee',
-			params: 2
-		}),
 	],
 	properties: [
 		new web3._extend.Property({

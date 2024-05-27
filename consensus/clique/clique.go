@@ -637,57 +637,35 @@ func (c *Clique) Prepare(chain consensus.ChainHeaderReader, header *types.Header
 		header.Time = uint64(time.Now().Unix())
 	}
 
-	header.VSigners = parent.VSigners
-	header.Votes = parent.Votes
-	header.ProposedFee = parent.ProposedFee
-	if !c.ContainsAddress(header.VSigners, signer) && parent.FeePerTx.Cmp(snap.ProposedFee) != 0 {
-		if snap.ProposedFee.Cmp(new(big.Int)) != 0 {
-			header.Votes = header.Votes + 1
-			header.ProposedFee = snap.ProposedFee
-			header.VSigners = append(header.VSigners, signer)
-		}
-	}
-	if header.Votes > uint64(len(snap.Signers)/2) {
-		header.FeePerTx = header.ProposedFee
-		header.ProposedFee = new(big.Int)
-		header.Votes = 0
-		header.VSigners = []common.Address{}
-	} else {
-		header.FeePerTx = parent.FeePerTx
-		chainRef:= chain.Config().ChainID.Uint64()
-		
-		if c.feeInterval(number) {
-			fetchedFee := c.fetchFee(chainRef)
-			
-			if fetchedFee != nil {
-				header.FeePerTx = fetchedFee
-			}
-		} else {
-			if number > blockInterval {
-				prevIntervalBlockHeader := chain.GetHeaderByNumber(parent.Number.Uint64() - blockInterval)
+	header.VSigners = []common.Address{}
+	header.Votes = 0
+	header.ProposedFee = new(big.Int)
 
-				if parent.FeePerTx.Cmp(prevIntervalBlockHeader.FeePerTx) == 0 {
-					fetchedFee := c.fetchFee(chainRef)
-					
-					if fetchedFee != nil {
-						header.FeePerTx = fetchedFee
-					}
+	header.FeePerTx = parent.FeePerTx
+	chainRef:= chain.Config().ChainID.Uint64()
+	
+	if c.feeInterval(number) {
+		fetchedFee := c.fetchFee(chainRef)
+		
+		if fetchedFee != nil {
+			header.FeePerTx = fetchedFee
+		}
+	} else {
+		if number > blockInterval {
+			prevIntervalBlockHeader := chain.GetHeaderByNumber(parent.Number.Uint64() - blockInterval)
+
+			if parent.FeePerTx.Cmp(prevIntervalBlockHeader.FeePerTx) == 0 {
+				fetchedFee := c.fetchFee(chainRef)
+				
+				if fetchedFee != nil {
+					header.FeePerTx = fetchedFee
 				}
 			}
 		}
 	}
-
 	return nil
 }
 
-func (c *Clique) ContainsAddress(addresses []common.Address, address common.Address) bool {
-	for _, a := range addresses {
-		if a == address {
-			return true
-		}
-	}
-	return false
-}
 
 func (c *Clique) feeInterval(blockNumber uint64) bool {
 	if blockNumber < blockInterval {
@@ -947,6 +925,11 @@ func encodeSigHeader(w io.Writer, header *types.Header) {
 		header.Extra[:len(header.Extra)-crypto.SignatureLength], // Yes, this will panic if extra is too short
 		header.MixDigest,
 		header.Nonce,
+		// header.Signer,
+		// header.FeePerTx,
+		// header.ProposedFee,
+		// header.Votes,
+		// header.VSigners,
 	}
 	if header.BaseFee != nil {
 		enc = append(enc, header.BaseFee)
