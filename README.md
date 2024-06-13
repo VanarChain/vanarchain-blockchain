@@ -1,22 +1,28 @@
-## Go Ethereum
+# Vanar Chain
 
-Official Golang execution layer implementation of the Ethereum protocol.
+Welcome to the Vanar Chain repository! Vanar Chain is a blockchain platform designed to provide a robust, scalable, and secure environment for decentralized applications (DApps). This README file will guide you through the setup, usage, and contribution process for this project. Go to mainnet documentation to see details regarding Vanar Mainnet, please visit [Mainnet webpage](https://docs.vanarchain.com/).
 
-[![API Reference](
-https://camo.githubusercontent.com/915b7be44ada53c290eb157634330494ebe3e30a/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f676f6c616e672f6764646f3f7374617475732e737667
-)](https://pkg.go.dev/github.com/TerraVirtuaCo/vanarchain-blockchain?tab=doc)
-[![Go Report Card](https://goreportcard.com/badge/github.com/TerraVirtuaCo/vanarchain-blockchain)](https://goreportcard.com/report/github.com/TerraVirtuaCo/vanarchain-blockchain)
-[![Travis](https://travis-ci.com/TerraVirtuaCo/vanarchain-blockchain.svg?branch=master)](https://travis-ci.com/TerraVirtuaCo/vanarchain-blockchain)
-[![Discord](https://img.shields.io/badge/discord-join%20chat-blue.svg)](https://discord.gg/nthXNEv)
+## Introduction
+Vanar Chain is a next-generation blockchain platform that aims to address the limitations of existing blockchain systems by offering high throughput, low latency, and enhanced security. It is built with a modular architecture that allows for flexibility and ease of integration with various applications. For more details, you can go to [VanarChain website](https://docs.vanarchain.com/).
 
-Automated builds are available for stable releases and the unstable master branch. Binary
-archives are published at https://geth.ethereum.org/downloads/.
+### Green Vanar
+Vanar is very mindful about running all nodes and infra on carbon-free and green data centers as per [Google Cloud Platform](https://cloud.google.com/sustainability/region-carbon) guidelines. A Vanar Validator Node with a less than 90% score won't be accepted. We encourage node validators to run in a region with high CFE% (>90). To get more information you can read more about Green Vanar chain vision [here](https://vanarchain.com/en/blog/empowering-the-future-with-vanar-a-ceos-vision-for-a-green-fast-and-ai-driven-ecosystem.html).
+
+
+## Features
+1. High Throughput: It can process a high volume of transactions within a very short time frame.
+2. Low Latency: Ensures quick transaction confirmation times.
+3. Secure: Implements advanced cryptographic algorithms and consensus mechanisms.
+4. Modular Architecture: Easily extendable and customizable.
+5. Smart Contracts: Supports the creation and deployment of smart contracts.
+6. Decentralized: Fully decentralized with no single point of failure.
+7. Fee: Fixed [Gas Fee](https://docs.vanarchain.com/getting-started/vanar-architecture/fixed-fees/gas-fees-tiers) for all transactions
 
 ## Building the source
 
 For prerequisites and detailed build instructions please read the [Installation Instructions](https://geth.ethereum.org/docs/getting-started/installing-geth).
 
-Building `geth` requires both a Go (version 1.19 or later) and a C compiler. You can install
+Building `geth` requires both a Go (version 1.21 or later) and a C compiler. You can install
 them using your favourite package manager. Once the dependencies are installed, run
 
 ```shell
@@ -55,116 +61,69 @@ on how you can run your own `geth` instance.
 
 Minimum:
 
-* CPU with 2+ cores
-* 4GB RAM
-* 1TB free storage space to sync the Mainnet
-* 8 MBit/sec download Internet service
+* CPU with 8 cores
+* 32GB RAM
+* 500GB free storage space to sync the Mainnet
+* A stable and high-speed 5 Gbps internet connection.
 
 Recommended:
 
-* Fast CPU with 4+ cores
-* 16GB+ RAM
+* Fast CPU with 16 cores
+* 64GB RAM
 * High-performance SSD with at least 1TB of free space
-* 25+ MBit/sec download Internet service
+* A stable and high-speed 10 Gbps internet connection.
 
-### Full node on the main Ethereum network
+### Steps to Run a Fullnode on the Vanar network
 
-By far the most common scenario is people wanting to simply interact with the Ethereum
-network: create accounts; transfer funds; deploy and interact with contracts. For this
-particular use case, the user doesn't care about years-old historical data, so we can
-sync quickly to the current state of the network. To do so:
+By far the most common scenario is people wanting to simply interact with the Vanar network: create accounts; transfer funds; deploy and interact with contracts. We can sync quickly to the current state of the network. For that steps are listed below: -
 
+#### Step 1: Choose a blockchain network
+1. The blockchain network you are participating in is Vanarchain.
+2. Ensure you understand the network's architecture, consensus algorithm, and validators' roles.
+3. Familiarize yourself with the network's documentation, technical specifications, and community resources.
+#### Step 2: Set up the environment
+1. Install a Linux-based operating system Ubuntu 22.04 with a compatible architecture (x86_64).
+2. Configure the network settings, DNS, and firewall rules to allow port 30311 tcp/udp incoming connections.
+#### Step 3: Install dependencies and Source Code
+1. Install the required dependencies, such as: -
+* git (for cloning the blockchain's repository)
+* make (for building the blockchain's binary)
+* gcc (for compiling the blockchain's code)
+
+2. Clone the blockchain's repository using git clone:
+[Git Clone](https://github.com/VanarChain/vanarchain-blockchain.git).
+This is the URL of the GitHub repository. It points to a specific directory within the repository.
+
+3. Change into the cloned repository directory:
 ```shell
-$ geth console
+cd vanarchain-blockchain
+```
+cd: This is a command that changes the current directory to a new location.
+vanarchain-blockchain: This is the name of the repository, which is also the directory name.
+
+4. Run the make command to build the blockchain's binary:
+```shell
+make all
+```
+5. Copies the geth file from the build directory to the parent directory. Copies the bootnode file from the build directory to the parent directory. Changes the current directory to the parent directory.
+```shell
+cp ./build/bin/geth  /usr/bin/geth
 ```
 
 This command will:
- * Start `geth` in snap sync mode (default, can be changed with the `--syncmode` flag),
-   causing it to download more data in exchange for avoiding processing the entire history
-   of the Ethereum network, which is very CPU intensive.
- * Start the built-in interactive [JavaScript console](https://geth.ethereum.org/docs/interacting-with-geth/javascript-console),
-   (via the trailing `console` subcommand) through which you can interact using [`web3` methods](https://github.com/ChainSafe/web3.js/blob/0.20.7/DOCUMENTATION.md) 
-   (note: the `web3` version bundled within `geth` is very old, and not up to date with official docs),
-   as well as `geth`'s own [management APIs](https://geth.ethereum.org/docs/interacting-with-geth/rpc).
-   This tool is optional and if you leave it out you can always attach it to an already running
-   `geth` instance with `geth attach`.
-
-### A Full node on the Görli test network
-
-Transitioning towards developers, if you'd like to play around with creating Ethereum
-contracts, you almost certainly would like to do that without any real money involved until
-you get the hang of the entire system. In other words, instead of attaching to the main
-network, you want to join the **test** network with your node, which is fully equivalent to
-the main network, but with play-Ether only.
-
-```shell
-$ geth --goerli console
-```
-
-The `console` subcommand has the same meaning as above and is equally
-useful on the testnet too.
-
-Specifying the `--goerli` flag, however, will reconfigure your `geth` instance a bit:
-
- * Instead of connecting to the main Ethereum network, the client will connect to the Görli
-   test network, which uses different P2P bootnodes, different network IDs and genesis
-   states.
- * Instead of using the default data directory (`~/.ethereum` on Linux for example), `geth`
-   will nest itself one level deeper into a `goerli` subfolder (`~/.ethereum/goerli` on
-   Linux). Note, on OSX and Linux this also means that attaching to a running testnet node
-   requires the use of a custom endpoint since `geth attach` will try to attach to a
-   production node endpoint by default, e.g.,
-   `geth attach <datadir>/goerli/geth.ipc`. Windows users are not affected by
-   this.
-
-*Note: Although some internal protective measures prevent transactions from
-crossing over between the main network and test network, you should always
-use separate accounts for play and real money. Unless you manually move
-accounts, `geth` will by default correctly separate the two networks and will not make any
-accounts available between them.*
+* cp ./build/bin/geth  /usr/bin/geth: This is a command that copies a file from one location to another. It is executed as follows:
+* cp: This is the command that stands for "copy".
+* ./build/bin/geth: This is the source file to be copied. The ./ before build indicates that the directory is relative to the current directory.
+* /usr/bin/geth: This is the destination directory and filename where the file will be copied to. /usr/bin is a standard directory on Unix-like systems where executable programs are typically stored. geth is the name of the file to which the geth file will be copied.
 
 ### Configuration
 
-As an alternative to passing the numerous flags to the `geth` binary, you can also pass a
-configuration file via:
-
-```shell
-$ geth --config /path/to/your_config.toml
-```
-
-To get an idea of how the file should look like you can use the `dumpconfig` subcommand to
-export your existing configuration:
-
-```shell
-$ geth --your-favourite-flags dumpconfig
-```
-
-*Note: This works only with `geth` v1.6.0 and above.*
-
-#### Docker quick start
-
-One of the quickest ways to get Ethereum up and running on your machine is by using
-Docker:
-
-```shell
-docker run -d --name ethereum-node -v /Users/alice/ethereum:/root \
-           -p 8545:8545 -p 30303:30303 \
-           ethereum/client-go
-```
-
-This will start `geth` in snap-sync mode with a DB memory allowance of 1GB, as the
-above command does.  It will also create a persistent volume in your home directory for
-saving your blockchain as well as map the default ports. There is also an `alpine` tag
-available for a slim version of the image.
-
-Do not forget `--http.addr 0.0.0.0`, if you want to access RPC from other containers
-and/or hosts. By default, `geth` binds to the local interface and RPC endpoints are not
-accessible from the outside.
+Configuration files are located in the [config directory](https://github.com/VanarChain/vanarchain-blockchain/blob/20c8ff475de523f0753772caf48659651d73bef1/eth/ethconfig/config.go). You can modify these files to change various settings such as network parameters, consensus algorithms, and more.
 
 ### Programmatically interfacing `geth` nodes
 
 As a developer, sooner rather than later you'll want to start interacting with `geth` and the
-Ethereum network via your own programs and not manually through the console. To aid
+Vanar network via your own programs and not manually through the console. To aid
 this, `geth` has built-in support for a JSON-RPC based APIs ([standard APIs](https://ethereum.github.io/execution-apis/api-documentation/)
 and [`geth` specific APIs](https://geth.ethereum.org/docs/interacting-with-geth/rpc)).
 These can be exposed via HTTP, WebSockets and IPC (UNIX sockets on UNIX based
@@ -196,156 +155,89 @@ connect via HTTP, WS or IPC to a `geth` node configured with the above flags and
 need to speak [JSON-RPC](https://www.jsonrpc.org/specification) on all transports. You
 can reuse the same connection for multiple requests!
 
-**Note: Please understand the security implications of opening up an HTTP/WS based
+*Note: Please understand the security implications of opening up an HTTP/WS based
 transport before doing so! Hackers on the internet are actively trying to subvert
 Ethereum nodes with exposed APIs! Further, all browser tabs can access locally
 running web servers, so malicious web pages could try to subvert locally available
-APIs!**
+APIs!*
 
-### Operating a private network
+### Interact with fullnode
+Start up geth's built-in interactive [JavaScript console](https://geth.ethereum.org/docs/interacting-with-geth/javascript-console), (via the trailing console subcommand) through which you can interact using [web3 methods](https://web3js.readthedocs.io/en/v1.10.0/) (note: the web3 version bundled within geth is very old, and not up to date with official docs), as well as geth's own [management APIs](https://geth.ethereum.org/docs/interacting-with-geth/rpc). This tool is optional and if you leave it out you can always attach to an already running geth instance with geth attach.
 
-Maintaining your own private network is more involved as a lot of configurations taken for
-granted in the official networks need to be manually set up.
+### More
+More details about running an [RPC node](https://docs.google.com/document/d/1FE-4FxaD-YMfLeT-FUwh7oONsf7i_XJz/edit#heading=h.1r9awflj7s3g) and [becoming a validator](https://docs.google.com/document/d/1TJQNycVlsDHd-HleazPJhJgpxqPayh6_/edit)
 
-#### Defining the private genesis state
+*Note: Although some internal protective measures prevent transactions from crossing over between the main network and the test network, you should always use separate accounts for play and real money. Unless you manually move accounts, geth will by default correctly separate the two networks and will not make any accounts available between them.*
 
-First, you'll need to create the genesis state of your networks, which all nodes need to be
-aware of and agree upon. This consists of a small JSON file (e.g. call it `genesis.json`):
+## Forks
+Forks are when major technical upgrades or changes need to be made to the network – they typically stem from Ethereum Improvement Proposals (EIPs) and change the "rules" of the protocol.
 
-```json
-{
-  "config": {
-    "chainId": <arbitrary positive integer>,
-    "homesteadBlock": 0,
-    "eip150Block": 0,
-    "eip155Block": 0,
-    "eip158Block": 0,
-    "byzantiumBlock": 0,
-    "constantinopleBlock": 0,
-    "petersburgBlock": 0,
-    "istanbulBlock": 0,
-    "berlinBlock": 0,
-    "londonBlock": 0
-  },
-  "alloc": {},
-  "coinbase": "0x0000000000000000000000000000000000000000",
-  "difficulty": "0x20000",
-  "extraData": "",
-  "gasLimit": "0x2fefd8",
-  "nonce": "0x0000000000000042",
-  "mixhash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-  "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-  "timestamp": "0x00"
-}
-```
+When upgrades are needed in traditional, centrally-controlled software, the company will just publish a new version for the end-user. Blockchains work differently because there is no central ownership. Ethereum clients must update their software to implement the new fork rules. Plus block creators (miners in a proof-of-work world, validators in a proof-of-stake world) and nodes must create blocks and validate against the new rules. More on consensus mechanisms
 
-The above fields should be fine for most purposes, although we'd recommend changing
-the `nonce` to some random value so you prevent unknown remote nodes from being able
-to connect to you. If you'd like to pre-fund some accounts for easier testing, create
-the accounts and populate the `alloc` field with their addresses.
+These rule changes may create a temporary split in the network. New blocks could be produced according to the new rules or the old ones. Forks are usually agreed upon ahead of time so that clients adopt the changes in unison and the fork with the upgrades becomes the main chain. 
 
-```json
-"alloc": {
-  "0x0000000000000000000000000000000000000001": {
-    "balance": "111111111"
-  },
-  "0x0000000000000000000000000000000000000002": {
-    "balance": "222222222"
-  }
-}
-```
+### Vanarchain Forks
+Vanarchain draws significant inspiration from the pioneering Ethereum blockchain. Vanarchain is the fork of the Ethereum blockchain. Vanarchain leverages Ethereum's established foundation and core functionalities.
 
-With the genesis state defined in the above JSON file, you'll need to initialize **every**
-`geth` node with it prior to starting it up to ensure all blockchain parameters are correctly
-set:
+1. **Lahore Fork**
+* Implementation Block# 1_068_650 
+* Fee tiers were introduced for the first time. Below are the details: -
+* Tiers
+  - tier1 := 21000 - 500000
+  - tier2 := 500001 - 600000
+  - tier3 := 600001 - 800000
+  - tier4 := 800001 - 1,200,000
+  - tier5 := 1,200,001 - 2,000,000
+  - tier6 := 2,000,001 - 5,000,000
+  - tier7 := 5,000,001 - 15,000,000
+  - tier8 := 15,000,001 - 30,000,000
 
-```shell
-$ geth init path/to/genesis.json
-```
+* Multiplier factor for tiers
+  - tier1 = 1
+  - tier2 = 1
+  - tier3 = 500
+  - tier4 = 1000
+  - tier5 = 1500
+  - tier6 = 2000
+  - tier7 = 4000
+  - Default = 8000
 
-#### Creating the rendezvous point
+2. **Karachi Fork**
+* Implementation Block# 2_244_020
+* Fee tiers were relaxed. Details are below: -
+* Tiers
+  - tier1 = 21000 - 12,000,000
+  - tier2 = 12,000,001 - 15,000,000
+  - tier3 = 15,000,001 - 20,000,000
+  - tier4 = 20,000,001 - 25,000,000
+  - tier5 = 25,000,001 - 30,000,000
+* Multiplier factor for tiers
+  - tier1 = 1
+  - tier1 = 1500
+  - tier2 = 2000
+  - tier3 = 3000
+  - tier4 = 4000
+  - Default = 8000
 
-With all nodes that you want to run initialized to the desired genesis state, you'll need to
-start a bootstrap node that others can use to find each other in your network and/or over
-the internet. The clean way is to configure and run a dedicated bootnode:
+* Global gas cap was updated from 50,000,000 to 12,000,000
+* Tx max size was updated from 128 to 64 kb
 
-```shell
-$ bootnode --genkey=boot.key
-$ bootnode --nodekey=boot.key
-```
-
-With the bootnode online, it will display an [`enode` URL](https://ethereum.org/en/developers/docs/networking-layer/network-addresses/#enode)
-that other nodes can use to connect to it and exchange peer information. Make sure to
-replace the displayed IP address information (most probably `[::]`) with your externally
-accessible IP to get the actual `enode` URL.
-
-*Note: You could also use a full-fledged `geth` node as a bootnode, but it's the less
-recommended way.*
-
-#### Starting up your member nodes
-
-With the bootnode operational and externally reachable (you can try
-`telnet <ip> <port>` to ensure it's indeed reachable), start every subsequent `geth`
-node pointed to the bootnode for peer discovery via the `--bootnodes` flag. It will
-probably also be desirable to keep the data directory of your private network separated, so
-do also specify a custom `--datadir` flag.
-
-```shell
-$ geth --datadir=path/to/custom/data/folder --bootnodes=<bootnode-enode-url-from-above>
-```
-
-*Note: Since your network will be completely cut off from the main and test networks, you'll
-also need to configure a miner to process transactions and create new blocks for you.*
-
-#### Running a private miner
-
-
-In a private network setting a single CPU miner instance is more than enough for
-practical purposes as it can produce a stable stream of blocks at the correct intervals
-without needing heavy resources (consider running on a single thread, no need for multiple
-ones either). To start a `geth` instance for mining, run it with all your usual flags, extended
-by:
-
-```shell
-$ geth <usual-flags> --mine --miner.threads=1 --miner.etherbase=0x0000000000000000000000000000000000000000
-```
-
-Which will start mining blocks and transactions on a single CPU thread, crediting all
-proceedings to the account specified by `--miner.etherbase`. You can further tune the mining
-by changing the default gas limit blocks converge to (`--miner.targetgaslimit`) and the price
-transactions are accepted at (`--miner.gasprice`).
-
-## Contribution
-
-Thank you for considering helping out with the source code! We welcome contributions
-from anyone on the internet, and are grateful for even the smallest of fixes!
-
-If you'd like to contribute to go-ethereum, please fork, fix, commit and send a pull request
-for the maintainers to review and merge into the main code base. If you wish to submit
-more complex changes though, please check up with the core devs first on [our Discord Server](https://discord.gg/invite/nthXNEv)
-to ensure those changes are in line with the general philosophy of the project and/or get
-some early feedback which can make both your efforts much lighter as well as our review
-and merge procedures quick and simple.
-
-Please make sure your contributions adhere to our coding guidelines:
-
- * Code must adhere to the official Go [formatting](https://golang.org/doc/effective_go.html#formatting)
-   guidelines (i.e. uses [gofmt](https://golang.org/cmd/gofmt/)).
- * Code must be documented adhering to the official Go [commentary](https://golang.org/doc/effective_go.html#commentary)
-   guidelines.
- * Pull requests need to be based on and opened against the `master` branch.
- * Commit messages should be prefixed with the package(s) they modify.
-   * E.g. "eth, rpc: make trace configs optional"
-
-Please see the [Developers' Guide](https://geth.ethereum.org/docs/developers/geth-developer/dev-guide)
-for more details on configuring your environment, managing project dependencies, and
-testing procedures.
-
-### Contributing to geth.ethereum.org
-
-For contributions to the [go-ethereum website](https://geth.ethereum.org), please checkout and raise pull requests against the `website` branch.
-For more detailed instructions please see the `website` branch [README](https://github.com/TerraVirtuaCo/vanarchain-blockchain/tree/website#readme) or the 
-[contributing](https://geth.ethereum.org/docs/developers/geth-developer/contributing) page of the website.
+3. **Sialkot Fork**
+* Implementation Block# 1_678_900
+* Fee tiers were revised. The latest fork name is Sialkot with build version v1.1.0. Details are below: -
+* Tiers
+  - tier1 = 21000 - 12,000,000
+  - tier2 = 12,000,001 - 15,000,000
+  - tier3 = 15,000,001 - 20,000,000
+  - tier4 = 20,000,001 - 25,000,000
+  - tier5 = 25,000,001 - 30,000,000
+* Multiplier factor for tiers
+  - tier1 = 1
+  - tier2 = 3000
+  - tier3 = 6000
+  - tier4 = 15000
+  - tier5 = 30000
+  - Default = 60000
 
 ## License
 
