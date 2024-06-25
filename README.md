@@ -153,7 +153,7 @@ APIs!*
 Start up geth's built-in interactive [JavaScript console](https://geth.ethereum.org/docs/interacting-with-geth/javascript-console), (via the trailing console subcommand) through which you can interact using [web3 methods](https://web3js.readthedocs.io/en/v1.10.0/) (note: the web3 version bundled within geth is very old, and not up to date with official docs), as well as geth's own [management APIs](https://geth.ethereum.org/docs/interacting-with-geth/rpc). This tool is optional and if you leave it out you can always attach to an already running geth instance with geth attach.
 
 ### More
-More details about running an [RPC node](https://docs.google.com/document/d/1FE-4FxaD-YMfLeT-FUwh7oONsf7i_XJz/edit#heading=h.1r9awflj7s3g) and [becoming a validator](https://docs.google.com/document/d/1TJQNycVlsDHd-HleazPJhJgpxqPayh6_/edit)
+More details about running an [RPC node](https://docs.vanarchain.com/nodes-and-validators/setup-a-rpc-node) and [becoming a validator](https://docs.vanarchain.com/nodes-and-validators/setup-a-validator-node)
 
 *Note: Although some internal protective measures prevent transactions from crossing over between the main network and the test network, you should always use separate accounts for play and real money. Unless you manually move accounts, geth will by default correctly separate the two networks and will not make any accounts available between them.*
 
