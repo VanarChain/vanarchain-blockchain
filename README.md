@@ -1,29 +1,17 @@
 # Vanar Chain
 
-Welcome to the Vanar Chain repository! Vanar Chain is a blockchain platform designed to provide a robust, scalable, and secure environment for decentralized applications (DApps). This README file will guide you through the setup, usage, and contribution process for this project. Go to mainnet documentation to see details regarding Vanar Mainnet, please visit [Mainnet webpage](https://docs.vanarchain.com/).
+Welcome to the Vanar Chain code repository!
 
-## Introduction
-Vanar Chain is a next-generation blockchain platform that aims to address the limitations of existing blockchain systems by offering high throughput, low latency, and enhanced security. It is built with a modular architecture that allows for flexibility and ease of integration with various applications. For more details, you can go to [VanarChain website](https://docs.vanarchain.com/).
+Vanar Chain is a new L1 blockchain solution designed for mass market adoption. Vanar is an EVM compatible blockchain and it is a fork of GETH. Vanar’s architectural strength lies in its strategic alignment with the robust Ethereum infrastructure. Leveraging the well-established and secure Ethereum codebase, Vanar carefully infuses tailor-made customizations to actualize its core objectives. These objectives pivot around three pivotal pillars: speed, affordability, and the pivotal drive for widespread adoption.
 
-### Green Vanar
-Vanar is very mindful about running all nodes and infra on carbon-free and green data centers as per [Google Cloud Platform](https://cloud.google.com/sustainability/region-carbon) guidelines. A Vanar Validator Node with a less than 90% score won't be accepted. We encourage node validators to run in a region with high CFE% (>90). To get more information you can read more about Green Vanar chain vision [here](https://vanarchain.com/en/blog/empowering-the-future-with-vanar-a-ceos-vision-for-a-green-fast-and-ai-driven-ecosystem.html).
-
-
-## Features
-1. High Throughput: It can process a high volume of transactions within a very short time frame.
-2. Low Latency: Ensures quick transaction confirmation times.
-3. Secure: Implements advanced cryptographic algorithms and consensus mechanisms.
-4. Modular Architecture: Easily extendable and customizable.
-5. Smart Contracts: Supports the creation and deployment of smart contracts.
-6. Decentralized: Fully decentralized with no single point of failure.
-7. Fee: Fixed [Gas Fee](https://docs.vanarchain.com/getting-started/vanar-architecture/fixed-fees/gas-fees-tiers) for all transactions
+This README file will guide you through the setup and usage process for this project. You can learn more about the Vanar Chain by visiting our public docs available [here](https://docs.vanarchain.com/).
 
 ## Building the source
 
 For prerequisites and detailed build instructions please read the [Installation Instructions](https://geth.ethereum.org/docs/getting-started/installing-geth).
 
 Building `geth` requires both a Go (version 1.21 or later) and a C compiler. You can install
-them using your favourite package manager. Once the dependencies are installed, run
+them using your favorite package manager. Once the dependencies are installed, run
 
 ```shell
 make geth
@@ -105,7 +93,7 @@ vanarchain-blockchain: This is the name of the repository, which is also the dir
 ```shell
 make all
 ```
-5. Copies the geth file from the build directory to the parent directory. Copies the bootnode file from the build directory to the parent directory. Changes the current directory to the parent directory.
+5. Copies the geth file from the build directory to the parent directory. Changes the current directory to the parent directory.
 ```shell
 cp ./build/bin/geth  /usr/bin/geth
 ```
@@ -169,75 +157,6 @@ More details about running an [RPC node](https://docs.google.com/document/d/1FE-
 
 *Note: Although some internal protective measures prevent transactions from crossing over between the main network and the test network, you should always use separate accounts for play and real money. Unless you manually move accounts, geth will by default correctly separate the two networks and will not make any accounts available between them.*
 
-## Forks
-Forks are when major technical upgrades or changes need to be made to the network – they typically stem from Ethereum Improvement Proposals (EIPs) and change the "rules" of the protocol.
-
-When upgrades are needed in traditional, centrally-controlled software, the company will just publish a new version for the end-user. Blockchains work differently because there is no central ownership. Ethereum clients must update their software to implement the new fork rules. Plus block creators (miners in a proof-of-work world, validators in a proof-of-stake world) and nodes must create blocks and validate against the new rules. More on consensus mechanisms
-
-These rule changes may create a temporary split in the network. New blocks could be produced according to the new rules or the old ones. Forks are usually agreed upon ahead of time so that clients adopt the changes in unison and the fork with the upgrades becomes the main chain. 
-
-### Vanarchain Forks
-Vanarchain draws significant inspiration from the pioneering Ethereum blockchain. Vanarchain is the fork of the Ethereum blockchain. Vanarchain leverages Ethereum's established foundation and core functionalities.
-
-1. **Lahore Fork**
-* Implementation Block# 1_068_650 
-* Fee tiers were introduced for the first time. Below are the details: -
-* Tiers
-  - tier1 := 21000 - 500000
-  - tier2 := 500001 - 600000
-  - tier3 := 600001 - 800000
-  - tier4 := 800001 - 1,200,000
-  - tier5 := 1,200,001 - 2,000,000
-  - tier6 := 2,000,001 - 5,000,000
-  - tier7 := 5,000,001 - 15,000,000
-  - tier8 := 15,000,001 - 30,000,000
-
-* Multiplier factor for tiers
-  - tier1 = 1
-  - tier2 = 1
-  - tier3 = 500
-  - tier4 = 1000
-  - tier5 = 1500
-  - tier6 = 2000
-  - tier7 = 4000
-  - Default = 8000
-
-2. **Karachi Fork**
-* Implementation Block# 2_244_020
-* Fee tiers were relaxed. Details are below: -
-* Tiers
-  - tier1 = 21000 - 12,000,000
-  - tier2 = 12,000,001 - 15,000,000
-  - tier3 = 15,000,001 - 20,000,000
-  - tier4 = 20,000,001 - 25,000,000
-  - tier5 = 25,000,001 - 30,000,000
-* Multiplier factor for tiers
-  - tier1 = 1
-  - tier1 = 1500
-  - tier2 = 2000
-  - tier3 = 3000
-  - tier4 = 4000
-  - Default = 8000
-
-* Global gas cap was updated from 50,000,000 to 12,000,000
-* Tx max size was updated from 128 to 64 kb
-
-3. **Sialkot Fork**
-* Implementation Block# 1_678_900
-* Fee tiers were revised. The latest fork name is Sialkot with build version v1.1.0. Details are below: -
-* Tiers
-  - tier1 = 21000 - 12,000,000
-  - tier2 = 12,000,001 - 15,000,000
-  - tier3 = 15,000,001 - 20,000,000
-  - tier4 = 20,000,001 - 25,000,000
-  - tier5 = 25,000,001 - 30,000,000
-* Multiplier factor for tiers
-  - tier1 = 1
-  - tier2 = 3000
-  - tier3 = 6000
-  - tier4 = 15000
-  - tier5 = 30000
-  - Default = 60000
 
 ## License
 
@@ -248,3 +167,7 @@ also included in our repository in the `COPYING.LESSER` file.
 The go-ethereum binaries (i.e. all code inside of the `cmd` directory) are licensed under the
 [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html), also
 included in our repository in the `COPYING` file.
+
+
+
+
