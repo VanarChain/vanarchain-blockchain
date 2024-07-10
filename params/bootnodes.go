@@ -68,8 +68,11 @@ var VanguardBootnodes = []string{
 }
 
 var TestnetBootnodes = []string{
-	"enode://7d92f1024395e6b6edba64683b221f93bd63dc84eaddddfbe9a2a80908cc2106dd081e729e94cd7bbb371467e344c15dd82b22cb8de364a26b1befbd17c32814@bootnode1.bimtvi.com:30311",
-	"enode://70424047d5647192eec5bc1ca4a79a998ca7ecdb30d711695063e8e4be7bc38136644678781ce462ac57cada35edc31d701865e4f7a9877059264a4a195dc7c9@bootnode2.bimtvi.com:30311",
+	// "enode://7d92f1024395e6b6edba64683b221f93bd63dc84eaddddfbe9a2a80908cc2106dd081e729e94cd7bbb371467e344c15dd82b22cb8de364a26b1befbd17c32814@bootnode1.bimtvi.com:30311",
+	// "enode://70424047d5647192eec5bc1ca4a79a998ca7ecdb30d711695063e8e4be7bc38136644678781ce462ac57cada35edc31d701865e4f7a9877059264a4a195dc7c9@bootnode2.bimtvi.com:30311",
+
+	"enode://fa40a8fb72fd0fe386062f93525f2d7d203b3beb8cc59ca5058c1fb18efa861bb926be0d59145ecaea42553c3dc4c961486c1349aeaa42fc7bfa9224cbfe3220@bootnode1.bimtvi.com:30311",
+	"enode://c03085d4d65a87fc8a2343e345fc91eea7daf7e7904111568b3530df16005786de64e36f683f59418d356ed5e08375235c959e3872de7a246722e5f7714a726f@bootnode2.bimtvi.com:30311",
 }
 
 // GoerliBootnodes are the enode URLs of the P2P bootstrap nodes running on the
