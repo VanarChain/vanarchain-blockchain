@@ -77,6 +77,10 @@ var TestnetBootnodes = []string{
 	"enode://fa40a8fb72fd0fe386062f93525f2d7d203b3beb8cc59ca5058c1fb18efa861bb926be0d59145ecaea42553c3dc4c961486c1349aeaa42fc7bfa9224cbfe3220@bootnode2.bimtvi.com:30311",
 }
 
+var EternalBootnodes = []string{
+	
+}
+
 // GoerliBootnodes are the enode URLs of the P2P bootstrap nodes running on the
 // Görli test network.
 var GoerliBootnodes = []string{
@@ -134,6 +138,8 @@ func KnownDNSNetwork(genesis common.Hash, protocol string) string {
 		net = "vanguard"
 	case TestnetGenesisHash:
 		net = "testnet"
+	case EternalGenesisHash:
+		net = "eternal"
 	default:
 		return ""
 	}

@@ -218,6 +218,8 @@ func CommitGenesisState(db ethdb.Database, triedb *trie.Database, blockhash comm
 			genesis = DefaultVanguardGenesisBlock()
 		case params.TestnetGenesisHash:
 			genesis = DefaultTestnetGenesisBlock()
+		case params.EternalGenesisHash:
+			genesis = DefaultEternalGenesisBlock()
 		}
 		if genesis != nil {
 			alloc = genesis.Alloc
@@ -464,6 +466,8 @@ func (g *Genesis) configOrDefault(ghash common.Hash) *params.ChainConfig {
 		return params.VanguardChainConfig
 	case ghash == params.TestnetGenesisHash:
 		return params.TestnetChainConfig
+	case ghash == params.EternalGenesisHash:
+		return params.EternalChainConfig
 	default:
 		return params.AllEthashProtocolChanges
 	}
@@ -655,6 +659,22 @@ func DefaultTestnetGenesisBlock() *Genesis {
 		GasLimit:   8000000,
 		Difficulty: big.NewInt(1),
 		Signer: common.HexToAddress("0xC0E54BEc7ad0F2bF7742014b6E4559F42C6Aa8B4"),
+		FeePerTx:   big.NewInt(21000000000000),
+		ProposedFee: big.NewInt(0),
+		Votes:      uint64(0),
+		VSigners:   []common.Address{},
+		Alloc:      decodePrealloc(testnetAllocData),
+	}
+}
+
+// DefaultTestnetGenesisBlock returns the Testnet network genesis block.
+func DefaultEternalGenesisBlock() *Genesis {
+	return &Genesis{
+		Config:     params.EternalChainConfig,
+		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000fFb371C312B707D0599833fa3d3690cb9A0c58090000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+		GasLimit:   8000000,
+		Difficulty: big.NewInt(1),
+		Signer: common.HexToAddress("0xfFb371C312B707D0599833fa3d3690cb9A0c5809"),
 		FeePerTx:   big.NewInt(21000000000000),
 		ProposedFee: big.NewInt(0),
 		Votes:      uint64(0),
