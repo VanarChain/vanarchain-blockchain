@@ -32,6 +32,7 @@ import (
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/ethdb"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/params"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/trie"
+	"github.com/holiman/uint256"
 )
 
 // BlockGen creates blocks for testing.
@@ -145,7 +146,7 @@ func (b *BlockGen) AddTxWithVMConfig(tx *types.Transaction, config vm.Config) {
 }
 
 // GetBalance returns the balance of the given address at the generated block.
-func (b *BlockGen) GetBalance(addr common.Address) *big.Int {
+func (b *BlockGen) GetBalance(addr common.Address) *uint256.Int {
 	return b.statedb.GetBalance(addr)
 }
 
