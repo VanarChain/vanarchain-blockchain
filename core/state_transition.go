@@ -281,23 +281,22 @@ func (st *StateTransition) buyGas() error {
 		}
 		agrFee := new(big.Int)
 		agrFee = agrFee.Mul(subFee, feeMultiplier)
-		agrFeeCheck , ovflow := uint256.FromBig(agrFee)
+
+		agrFeeCheck := new(big.Int).Set(agrFee)
+		agrFeeCheck.Add(agrFeeCheck, st.msg.Value)
+		
+		agrFeeCheckU256 , ovflow := uint256.FromBig(agrFeeCheck)
 		if ovflow {
 			return fmt.Errorf("%w: address %v required balance exceeds 256 bits", ErrInsufficientFunds, st.msg.From.Hex())
 		}
-		if haveBalance, wantBalance := st.state.GetBalance(st.msg.From), agrFeeCheck; haveBalance.Cmp(wantBalance) < 0 {
+		if haveBalance, wantBalance := st.state.GetBalance(st.msg.From), agrFeeCheckU256; haveBalance.Cmp(wantBalance) < 0 {
 			return fmt.Errorf("%w: address %v haveBalance %v wantBalance %v", ErrInsufficientFunds, st.msg.From.Hex(), haveBalance, wantBalance)
 		}
-		st.state.SubBalance(st.msg.From, agrFeeCheck)
+		agrFeeU256, _ := uint256.FromBig(agrFee)
+		st.state.SubBalance(st.msg.From, agrFeeU256)
 	} else {
 		// st.state.SubBalance(st.msg.From, mgval)
-		subFeeCheck , ovflowSubFee := uint256.FromBig(subFee)
-		if ovflowSubFee {
-			return fmt.Errorf("%w: address %v required balance exceeds 256 bits", ErrInsufficientFunds, st.msg.From.Hex())
-		}
-		if haveBalanceSubFee, wantBalanceSubFee := st.state.GetBalance(st.msg.From), subFeeCheck; haveBalanceSubFee.Cmp(wantBalanceSubFee) < 0 {
-			return fmt.Errorf("%w: address %v haveBalanceSubFee %v wantBalanceSubFee %v", ErrInsufficientFunds, st.msg.From.Hex(), haveBalanceSubFee, wantBalanceSubFee)
-		}
+		subFeeCheck , _ := uint256.FromBig(subFee)
 		st.state.SubBalance(st.msg.From, subFeeCheck)
 	}
 	

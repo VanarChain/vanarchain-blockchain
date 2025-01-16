@@ -1100,6 +1100,7 @@ func doCall(ctx context.Context, b Backend, args TransactionArgs, state *state.S
 
 	// Execute the message.
 	gp := new(core.GasPool).AddGas(math.MaxUint64)
+	evm.Context.FeePerTx = new(big.Int)
 	result, err := core.ApplyMessage(evm, msg, gp)
 	if err := vmError(); err != nil {
 		return nil, err
