@@ -211,9 +211,6 @@ func (tx *Transaction) decodeTyped(b []byte) (TxData, error) {
 
 // setDecoded sets the inner transaction and size after decoding.
 func (tx *Transaction) setDecoded(inner TxData, size uint64) {
-	if inner.value().Sign() < 0 {
-		panic("transaction value cannot be negative")
-	}
 	tx.inner = inner
 	tx.time = time.Now()
 	if size > 0 {
