@@ -242,6 +242,8 @@ func ethFilter(args []string) (nodeFilter, error) {
 		filter = forkid.NewStaticFilter(params.VanguardChainConfig, core.DefaultVanguardGenesisBlock().ToBlock())
 	case "testnet":
 		filter = forkid.NewStaticFilter(params.TestnetChainConfig, core.DefaultTestnetGenesisBlock().ToBlock())
+	case "eternal":
+		filter = forkid.NewStaticFilter(params.EternalChainConfig, core.DefaultEternalGenesisBlock().ToBlock())
 	default:
 		return nil, fmt.Errorf("unknown network %q", args[0])
 	}

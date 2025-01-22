@@ -41,6 +41,7 @@ import (
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/trie"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/trie/triedb/hashdb"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/trie/triedb/pathdb"
+	"github.com/holiman/uint256"
 )
 
 // A BlockTest checks handling of entire blocks.
@@ -324,7 +325,7 @@ func (t *BlockTest) validatePostState(statedb *state.StateDB) error {
 		if !bytes.Equal(code2, acct.Code) {
 			return fmt.Errorf("account code mismatch for addr: %s want: %v have: %s", addr, acct.Code, hex.EncodeToString(code2))
 		}
-		if balance2.Cmp(acct.Balance) != 0 {
+		if balance2.Cmp(uint256.MustFromBig(acct.Balance)) != 0 {
 			return fmt.Errorf("account balance mismatch for addr: %s, want: %d, have: %d", addr, acct.Balance, balance2)
 		}
 		if nonce2 != acct.Nonce {

@@ -46,6 +46,7 @@ import (
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/rlp"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/rpc"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/trie"
+	"github.com/holiman/uint256"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -55,6 +56,7 @@ const (
 	inmemorySignatures = 4096 // Number of recent block signatures to keep in memory
 
 	wiggleTime = 500 * time.Millisecond // Random delay (per signer) to allow concurrent signers
+	eternalId = 6703333
 	testnetId  = 1947
 	vanguardId = 78600
 	vanarId  = 2040
@@ -681,7 +683,7 @@ type Response struct {
 
 func (c *Clique) fetchFee(chainReference uint64) *big.Int {
 	url := ""
-	if chainReference == testnetId {
+	if chainReference == testnetId || chainReference == eternalId{
 		url = "https://oxuanqzlalug.bimtvi.com/price"
 	} else if chainReference == vanguardId {
 		url = "https://oxuanqzlalug.vanarchain.com/price"
@@ -733,8 +735,8 @@ func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Heade
 	currentBlockNumber := header.Number.Uint64()
 	rewardAddress := common.HexToAddress("0x8DE5B80a0C1B02Fe4976851D030B36122dbb8624")
 
-	if chain.Config().ChainID.Uint64() == testnetId || chain.Config().ChainID.Uint64() == vanguardId {	
-		state.AddBalance(rewardAddress, InitialBlockReward)	
+	if chain.Config().ChainID.Uint64() == testnetId || chain.Config().ChainID.Uint64() == vanguardId || chain.Config().ChainID.Uint64() == eternalId{	
+		state.AddBalance(rewardAddress, uint256.MustFromBig(InitialBlockReward))	
 	} else if chain.Config().ChainID.Uint64() == vanarId {
 		if currentBlockNumber <= RewardFinalizeBlock {
 			if currentBlockNumber <= BlockInFirstYear {
@@ -744,7 +746,7 @@ func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Heade
 				currentYearOfReward := uint64((currentBlockNumber + (BlocksInAYear - BlockInFirstYear) - 1) / BlocksInAYear)
 				BlockReward = YearlyReward[currentYearOfReward]
 			}
-			state.AddBalance(rewardAddress, BlockReward)
+			state.AddBalance(rewardAddress, uint256.MustFromBig(BlockReward))
 		}
 	}
 	
