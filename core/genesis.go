@@ -37,6 +37,7 @@ import (
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/params"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/rlp"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/trie"
+	"github.com/holiman/uint256"
 )
 
 //go:generate go run github.com/fjl/gencodec -type Genesis -field-override genesisSpecMarshaling -out gen_genesis.go
@@ -141,7 +142,7 @@ func (ga *GenesisAlloc) deriveHash() (common.Hash, error) {
 	}
 	for addr, account := range *ga {
 		if account.Balance != nil {
-			statedb.AddBalance(addr, account.Balance)
+			statedb.AddBalance(addr, uint256.MustFromBig(account.Balance))
 		}
 		statedb.SetCode(addr, account.Code)
 		statedb.SetNonce(addr, account.Nonce)
@@ -162,7 +163,7 @@ func (ga *GenesisAlloc) flush(db ethdb.Database, triedb *trie.Database, blockhas
 	}
 	for addr, account := range *ga {
 		if account.Balance != nil {
-			statedb.AddBalance(addr, account.Balance)
+			statedb.AddBalance(addr, uint256.MustFromBig(account.Balance))
 		}
 		statedb.SetCode(addr, account.Code)
 		statedb.SetNonce(addr, account.Nonce)
@@ -218,6 +219,8 @@ func CommitGenesisState(db ethdb.Database, triedb *trie.Database, blockhash comm
 			genesis = DefaultVanguardGenesisBlock()
 		case params.TestnetGenesisHash:
 			genesis = DefaultTestnetGenesisBlock()
+		case params.EternalGenesisHash:
+			genesis = DefaultEternalGenesisBlock()
 		}
 		if genesis != nil {
 			alloc = genesis.Alloc
@@ -464,6 +467,8 @@ func (g *Genesis) configOrDefault(ghash common.Hash) *params.ChainConfig {
 		return params.VanguardChainConfig
 	case ghash == params.TestnetGenesisHash:
 		return params.TestnetChainConfig
+	case ghash == params.EternalGenesisHash:
+		return params.EternalChainConfig
 	default:
 		return params.AllEthashProtocolChanges
 	}
@@ -660,6 +665,22 @@ func DefaultTestnetGenesisBlock() *Genesis {
 		Votes:      uint64(0),
 		VSigners:   []common.Address{},
 		Alloc:      decodePrealloc(testnetAllocData),
+	}
+}
+
+// DefaultTestnetGenesisBlock returns the Testnet network genesis block.
+func DefaultEternalGenesisBlock() *Genesis {
+	return &Genesis{
+		Config:     params.EternalChainConfig,
+		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000fFb371C312B707D0599833fa3d3690cb9A0c58090000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+		GasLimit:   8000000,
+		Difficulty: big.NewInt(1),
+		Signer: common.HexToAddress("0xfFb371C312B707D0599833fa3d3690cb9A0c5809"),
+		FeePerTx:   big.NewInt(21000000000000),
+		ProposedFee: big.NewInt(0),
+		Votes:      uint64(0),
+		VSigners:   []common.Address{},
+		Alloc:      decodePrealloc(eternalAllocData),
 	}
 }
 

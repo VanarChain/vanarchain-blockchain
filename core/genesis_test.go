@@ -187,6 +187,7 @@ func TestGenesisHashes(t *testing.T) {
 		{DefaultVanarGenesisBlock(), params.VanarGenesisHash},
 		{DefaultVanguardGenesisBlock(), params.VanguardGenesisHash},
 		{DefaultTestnetGenesisBlock(), params.TestnetGenesisHash},
+		{DefaultEternalGenesisBlock(), params.EternalGenesisHash},
 	} {
 		// Test via MustCommit
 		db := rawdb.NewMemoryDatabase()

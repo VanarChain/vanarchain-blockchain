@@ -175,6 +175,11 @@ var (
 		Usage:    "Testnet network: pre-configured proof-of-authority test network",
 		Category: flags.EthCategory,
 	}
+	EternalFlag = &cli.BoolFlag{
+		Name:     "eternal",
+		Usage:    "Eternal network: pre-configured proof-of-authority test network",
+		Category: flags.EthCategory,
+	}
 	// Dev mode
 	DeveloperFlag = &cli.BoolFlag{
 		Name:     "dev",
@@ -975,6 +980,7 @@ var (
 		VanarFlag,
 		VanguardFlag,
 		TestnetFlag,
+		EternalFlag,
 	}
 	// NetworkFlags is the flag group of all built-in supported networks.
 	NetworkFlags = append([]cli.Flag{MainnetFlag}, TestnetFlags...)
@@ -1017,6 +1023,9 @@ func MakeDataDir(ctx *cli.Context) string {
 		}
 		if ctx.Bool(TestnetFlag.Name) {
 			return filepath.Join(path, "testnet")
+		}
+		if ctx.Bool(EternalFlag.Name) {
+			return filepath.Join(path, "eternal")
 		}
 		return path
 	}
@@ -1086,6 +1095,8 @@ func setBootstrapNodes(ctx *cli.Context, cfg *p2p.Config) {
 			urls = params.VanguardBootnodes
 		case ctx.Bool(TestnetFlag.Name):
 			urls = params.TestnetBootnodes
+		case ctx.Bool(EternalFlag.Name):
+			urls = params.EternalBootnodes
 		}
 	}
 	cfg.BootstrapNodes = mustParseBootnodes(urls)
@@ -1540,6 +1551,8 @@ func SetDataDir(ctx *cli.Context, cfg *node.Config) {
 		cfg.DataDir = filepath.Join(node.DefaultDataDir(), "vanguard")
 	case ctx.Bool(TestnetFlag.Name) && cfg.DataDir == node.DefaultDataDir():
 		cfg.DataDir = filepath.Join(node.DefaultDataDir(), "testnet")
+	case ctx.Bool(EternalFlag.Name) && cfg.DataDir == node.DefaultDataDir():
+		cfg.DataDir = filepath.Join(node.DefaultDataDir(), "eternal")
 	}
 }
 
@@ -1696,7 +1709,7 @@ func CheckExclusive(ctx *cli.Context, args ...interface{}) {
 // SetEthConfig applies eth-related command line flags to the config.
 func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 	// Avoid conflicting network flags
-	CheckExclusive(ctx, MainnetFlag, DeveloperFlag, GoerliFlag, SepoliaFlag, HoleskyFlag, VanarFlag, VanguardFlag, TestnetFlag)
+	CheckExclusive(ctx, MainnetFlag, DeveloperFlag, GoerliFlag, SepoliaFlag, HoleskyFlag, VanarFlag, VanguardFlag, TestnetFlag, EternalFlag)
 	CheckExclusive(ctx, LightServeFlag, SyncModeFlag, "light")
 	CheckExclusive(ctx, DeveloperFlag, ExternalSignerFlag) // Can't use both ephemeral unlocked and external signer
 
@@ -1885,6 +1898,12 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 		}
 		cfg.Genesis = core.DefaultTestnetGenesisBlock()
 		SetDNSDiscoveryDefaults(cfg, params.TestnetGenesisHash)
+	case ctx.Bool(EternalFlag.Name):
+		if !ctx.IsSet(NetworkIdFlag.Name) {
+			cfg.NetworkId = 6703333
+		}
+		cfg.Genesis = core.DefaultEternalGenesisBlock()
+		SetDNSDiscoveryDefaults(cfg, params.EternalGenesisHash)
 	case ctx.Bool(DeveloperFlag.Name):
 		if !ctx.IsSet(NetworkIdFlag.Name) {
 			cfg.NetworkId = 1337
@@ -2217,6 +2236,8 @@ func MakeGenesis(ctx *cli.Context) *core.Genesis {
 		genesis = core.DefaultVanguardGenesisBlock()
 	case ctx.Bool(TestnetFlag.Name):
 		genesis = core.DefaultTestnetGenesisBlock()
+	case ctx.Bool(EternalFlag.Name):
+		genesis = core.DefaultEternalGenesisBlock()
 	case ctx.Bool(DeveloperFlag.Name):
 		Fatalf("Developer chains are ephemeral")
 	}
