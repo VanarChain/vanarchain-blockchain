@@ -43,7 +43,6 @@ import (
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/log"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/params"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/rpc"
-	"github.com/holiman/uint256"
 )
 
 // This nil assignment ensures at compile time that SimulatedBackend implements bind.ContractBackend.
@@ -212,7 +211,7 @@ func (b *SimulatedBackend) BalanceAt(ctx context.Context, contract common.Addres
 	if err != nil {
 		return nil, err
 	}
-	return stateDB.GetBalance(contract).ToBig(), nil
+	return stateDB.GetBalance(contract), nil
 }
 
 // NonceAt returns the nonce of a certain account in the blockchain.
@@ -527,7 +526,7 @@ func (b *SimulatedBackend) EstimateGas(ctx context.Context, call ethereum.CallMs
 	// Recap the highest gas allowance with account's balance.
 	if feeCap.BitLen() != 0 {
 		balance := b.pendingState.GetBalance(call.From) // from can't be nil
-		available := new(big.Int).Set(balance.ToBig())
+		available := new(big.Int).Set(balance)
 		if call.Value != nil {
 			if call.Value.Cmp(available) >= 0 {
 				return 0, core.ErrInsufficientFundsForTransfer
@@ -644,10 +643,7 @@ func (b *SimulatedBackend) callContract(ctx context.Context, call ethereum.CallM
 
 	// Set infinite balance to the fake caller account.
 	from := stateDB.GetOrNewStateObject(call.From)
-	// from.SetBalance(math.MaxBig256)
-	maxUint256 := uint256.NewInt(0)      // Initialize a new uint256
-	maxUint256.SetAllOne() 
-	from.SetBalance(maxUint256)
+	from.SetBalance(math.MaxBig256)
 
 	// Execute the call.
 	msg := &core.Message{
