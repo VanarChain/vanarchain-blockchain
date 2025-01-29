@@ -680,7 +680,7 @@ func DefaultEternalGenesisBlock() *Genesis {
 		ProposedFee: big.NewInt(0),
 		Votes:      uint64(0),
 		VSigners:   []common.Address{},
-		Alloc:      decodePrealloc(eternalAllocData),
+		Alloc:      decodePrealloc(testnetAllocData),
 	}
 }
 
