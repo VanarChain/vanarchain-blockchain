@@ -35,7 +35,6 @@ import (
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/types"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/vm"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/eth/tracers/logger"
-	"github.com/holiman/uint256"
 )
 
 func TestState(t *testing.T) {
@@ -282,7 +281,7 @@ func runBenchmark(b *testing.B, t *StateTest) {
 				start := time.Now()
 
 				// Execute the message.
-				_, leftOverGas, err := evm.Call(sender, *msg.To, msg.Data, msg.GasLimit, uint256.MustFromBig(msg.Value))
+				_, leftOverGas, err := evm.Call(sender, *msg.To, msg.Data, msg.GasLimit, msg.Value)
 				if err != nil {
 					b.Error(err)
 					return

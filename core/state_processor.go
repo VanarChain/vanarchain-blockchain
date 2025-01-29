@@ -186,6 +186,6 @@ func ProcessBeaconBlockRoot(beaconRoot common.Hash, vmenv *vm.EVM, statedb *stat
 	}
 	vmenv.Reset(NewEVMTxContext(msg), statedb)
 	statedb.AddAddressToAccessList(params.BeaconRootsStorageAddress)
-	_, _, _ = vmenv.Call(vm.AccountRef(msg.From), *msg.To, msg.Data, 30_000_000, common.U2560)
+	_, _, _ = vmenv.Call(vm.AccountRef(msg.From), *msg.To, msg.Data, 30_000_000, common.Big0)
 	statedb.Finalise(true)
 }
