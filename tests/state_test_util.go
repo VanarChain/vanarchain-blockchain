@@ -42,7 +42,6 @@ import (
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/trie/triedb/hashdb"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/trie/triedb/pathdb"
 	"golang.org/x/crypto/sha3"
-	"github.com/holiman/uint256"
 )
 
 // StateTest checks transaction processing without block context.
@@ -296,7 +295,7 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 	// - the coinbase self-destructed, or
 	// - there are only 'bad' transactions, which aren't executed. In those cases,
 	//   the coinbase gets no txfee, so isn't created, and thus needs to be touched
-	statedb.AddBalance(block.Coinbase(), common.U2560)
+	statedb.AddBalance(block.Coinbase(), new(big.Int))
 
 	// Commit state mutations into database.
 	root, _ := statedb.Commit(block.NumberU64(), config.IsEIP158(block.Number()))
@@ -320,7 +319,7 @@ func MakePreState(db ethdb.Database, accounts core.GenesisAlloc, snapshotter boo
 	for addr, a := range accounts {
 		statedb.SetCode(addr, a.Code)
 		statedb.SetNonce(addr, a.Nonce)
-		statedb.SetBalance(addr, uint256.MustFromBig(a.Balance))
+		statedb.SetBalance(addr, a.Balance)
 		for k, v := range a.Storage {
 			statedb.SetState(addr, k, v)
 		}
