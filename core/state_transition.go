@@ -280,8 +280,14 @@ func (st *StateTransition) buyGas() error {
 		agrFeeCheck := new(big.Int).Set(agrFee)
 		agrFeeCheck.Add(agrFeeCheck, st.msg.Value)
 
-		if haveBalance, wantBalance := st.state.GetBalance(st.msg.From), agrFeeCheck; haveBalance.Cmp(wantBalance) < 0 {
-			return fmt.Errorf("%w: address %v haveBalance %v wantBalance %v", ErrInsufficientFunds, st.msg.From.Hex(), haveBalance, wantBalance)
+		if st.evm.ChainConfig().IsKasur(st.evm.Context.BlockNumber){
+			if haveBalance, wantBalance := st.state.GetBalance(st.msg.From), agrFeeCheck; haveBalance.Cmp(wantBalance) < 0 {
+				return fmt.Errorf("%w: address %v haveBalance %v wantBalance %v", ErrInsufficientFunds, st.msg.From.Hex(), haveBalance, wantBalance)
+			}
+		} else {
+			if haveBalance, wantBalance := st.state.GetBalance(st.msg.From), agrFeeCheck; haveBalance.Cmp(wantBalance) < 0 {
+				return fmt.Errorf("%w: address %v haveBalance %v wantBalance %v", ErrInsufficientFunds, st.msg.From.Hex(), haveBalance, wantBalance)
+			}
 		}
 
 		st.state.SubBalance(st.msg.From, agrFee)
