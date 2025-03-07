@@ -78,7 +78,7 @@ var TestnetBootnodes = []string{
 }
 
 var EternalBootnodes = []string{
-	"enode://2508e4734141379121aec10d7858477b2f78c30438c390d17ead4c2a0c86175e45c8b07de88404cdbd4e3408e4f7a328f71ddf8a3fb6d288b022e8043e707f52@10.10.10.21:30311",
+	"enode://2a52562dfb6bc7502c70233022bda55e90437c076a7bcb44f38739b9aa7d2a6c903ec8eec208586fdb2cda898b98bd23857ed8717419f9cfa70caccd242b928f@34.68.245.254:30311",
 }
 
 // GoerliBootnodes are the enode URLs of the P2P bootstrap nodes running on the
