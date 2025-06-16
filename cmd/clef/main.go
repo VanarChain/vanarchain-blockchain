@@ -40,6 +40,8 @@ import (
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/cmd/utils"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/hexutil"
+	coreBlockchain "github.com/TerraVirtuaCo/vanarchain-blockchain/core"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/rawdb"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/types"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/crypto"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/internal/ethapi"
@@ -54,6 +56,7 @@ import (
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/signer/fourbyte"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/signer/rules"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/signer/storage"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/trie"
 	"github.com/mattn/go-colorable"
 	"github.com/mattn/go-isatty"
 	"github.com/urfave/cli/v2"
@@ -257,6 +260,7 @@ Prints the address.
 The keyfile is assumed to contain an unencrypted private key in hexadecimal format.
 The account is saved in encrypted format, you are prompted for a password.
 `}
+	errGenesisNoConfig = errors.New("genesis has no chain configuration")
 )
 
 var app = flags.NewApp("Manage Ethereum account operations")
@@ -398,6 +402,16 @@ func attestFile(ctx *cli.Context) error {
 	return nil
 }
 
+// fourbyteValidator wraps a fourbyte.Database to implement the core.Validator interface
+type fourbyteValidator struct {
+	db *fourbyte.Database
+}
+
+func (v *fourbyteValidator) ValidateTransaction(selector *string, tx *apitypes.SendTxArgs) (*apitypes.ValidationMessages, error) {
+	// For now, just return empty validation messages
+	return &apitypes.ValidationMessages{}, nil
+}
+
 func initInternalApi(c *cli.Context) (*core.UIServerAPI, core.UIClientAPI, error) {
 	if err := initialize(c); err != nil {
 		return nil, nil, err
@@ -407,9 +421,93 @@ func initInternalApi(c *cli.Context) (*core.UIServerAPI, core.UIClientAPI, error
 		pwStorage storage.Storage = &storage.NoStorage{}
 		ksLoc                     = c.String(keystoreFlag.Name)
 		lightKdf                  = c.Bool(utils.LightKDFFlag.Name)
+		chainId                   = c.Int64(chainIdFlag.Name)
 	)
 	am := core.StartClefAccountManager(ksLoc, true, lightKdf, "")
-	api := core.NewSignerAPI(am, 0, true, ui, nil, false, pwStorage)
+
+	// Get the appropriate chain config based on chain ID
+	var chainConfig *params.ChainConfig
+	log.Info("Initializing chain config", "chainId", chainId)
+	switch chainId {
+	case params.MainnetChainConfig.ChainID.Int64():
+		chainConfig = params.MainnetChainConfig
+	case params.GoerliChainConfig.ChainID.Int64():
+		chainConfig = params.GoerliChainConfig
+	case params.SepoliaChainConfig.ChainID.Int64():
+		chainConfig = params.SepoliaChainConfig
+	case params.HoleskyChainConfig.ChainID.Int64():
+		chainConfig = params.HoleskyChainConfig
+	case params.VanarChainConfig.ChainID.Int64():
+		chainConfig = params.VanarChainConfig
+	case params.VanguardChainConfig.ChainID.Int64():
+		chainConfig = params.VanguardChainConfig
+	case params.TestnetChainConfig.ChainID.Int64():
+		chainConfig = params.TestnetChainConfig
+	case params.EternalChainConfig.ChainID.Int64():
+		chainConfig = params.EternalChainConfig
+
+	default:
+		// For custom networks, try to load from genesis.json using Geth's logic
+		genesisPath := filepath.Join(c.String(configdirFlag.Name), "genesis.json")
+		log.Info("Attempting to load chain config from genesis", "path", genesisPath)
+
+		if _, err := os.Stat(genesisPath); err != nil {
+			log.Error("Genesis file not found", "path", genesisPath, "err", err)
+			return nil, nil, fmt.Errorf("genesis file not found at %s: %v", genesisPath, err)
+		}
+
+		genesisFile, err := os.Open(genesisPath)
+		if err != nil {
+			log.Error("Failed to open genesis file", "err", err)
+			return nil, nil, err
+		}
+		defer genesisFile.Close()
+
+		var genesis coreBlockchain.Genesis
+		if err := json.NewDecoder(genesisFile).Decode(&genesis); err != nil {
+			log.Error("Failed to parse genesis file", "err", err)
+			return nil, nil, err
+		}
+
+		if genesis.Config == nil {
+			log.Error("Genesis file does not contain chain configuration")
+			return nil, nil, errGenesisNoConfig
+		}
+
+		memdb := rawdb.NewMemoryDatabase()
+		triedb := trie.NewDatabase(memdb, &trie.Config{})
+
+		if _, err := genesis.Commit(memdb, triedb); err != nil {
+			log.Error("Failed to commit genesis to in-memory DB", "err", err)
+			return nil, nil, err
+		}
+
+		loadedConfig, err := coreBlockchain.LoadChainConfig(memdb, &genesis)
+		if err != nil {
+			log.Error("Failed to load chain config from genesis", "err", err)
+			return nil, nil, err
+		}
+		if loadedConfig == nil {
+			log.Error("Loaded chain config is nil")
+			return nil, nil, fmt.Errorf("loaded chain config is nil")
+		}
+		chainConfig = loadedConfig
+		log.Info("Successfully loaded chain config from genesis", "config", chainConfig)
+	}
+
+	if chainConfig == nil {
+		log.Error("No chain config found", "chainId", chainId)
+		return nil, nil, fmt.Errorf("no chain config found for chain ID %d", chainId)
+	}
+
+	// Create a validator for transaction validation
+	db, err := fourbyte.New()
+	if err != nil {
+		return nil, nil, err
+	}
+	validator := &fourbyteValidator{db: db}
+	// Create the signer API with the validator
+	api := core.NewSignerAPI(am, chainId, chainConfig, true, ui, validator, false, pwStorage)
 	internalApi := core.NewUIServerAPI(api)
 	return internalApi, ui, nil
 }
@@ -498,6 +596,7 @@ func initialize(c *cli.Context) error {
 }
 
 func newAccount(c *cli.Context) error {
+
 	internalApi, _, err := initInternalApi(c)
 	if err != nil {
 		return err
@@ -510,6 +609,7 @@ func newAccount(c *cli.Context) error {
 }
 
 func listAccounts(c *cli.Context) error {
+
 	internalApi, _, err := initInternalApi(c)
 	if err != nil {
 		return err
@@ -529,6 +629,7 @@ func listAccounts(c *cli.Context) error {
 }
 
 func listWallets(c *cli.Context) error {
+
 	internalApi, _, err := initInternalApi(c)
 	if err != nil {
 		return err
@@ -553,6 +654,7 @@ func accountImport(c *cli.Context) error {
 	if c.Args().Len() != 1 {
 		return errors.New("<keyfile> must be given as first argument.")
 	}
+
 	internalApi, ui, err := initInternalApi(c)
 	if err != nil {
 		return err
@@ -628,6 +730,7 @@ func signer(c *cli.Context) error {
 	if err := initialize(c); err != nil {
 		return err
 	}
+
 	var (
 		ui core.UIClientAPI
 	)
@@ -702,7 +805,71 @@ func signer(c *cli.Context) error {
 	log.Info("Starting signer", "chainid", chainId, "keystore", ksLoc,
 		"light-kdf", lightKdf, "advanced", advanced)
 	am := core.StartClefAccountManager(ksLoc, nousb, lightKdf, scpath)
-	apiImpl := core.NewSignerAPI(am, chainId, nousb, ui, db, advanced, pwStorage)
+
+	validator := &fourbyteValidator{db: db}
+	// Get the appropriate chain config based on chain ID
+	var chainConfig *params.ChainConfig
+	switch chainId {
+	case params.MainnetChainConfig.ChainID.Int64():
+		chainConfig = params.MainnetChainConfig
+	case params.GoerliChainConfig.ChainID.Int64():
+		chainConfig = params.GoerliChainConfig
+	case params.SepoliaChainConfig.ChainID.Int64():
+		chainConfig = params.SepoliaChainConfig
+	case params.HoleskyChainConfig.ChainID.Int64():
+		chainConfig = params.HoleskyChainConfig
+	case params.VanarChainConfig.ChainID.Int64():
+		chainConfig = params.VanarChainConfig
+	case params.VanguardChainConfig.ChainID.Int64():
+		chainConfig = params.VanguardChainConfig
+	case params.TestnetChainConfig.ChainID.Int64():
+		chainConfig = params.TestnetChainConfig
+	case params.EternalChainConfig.ChainID.Int64():
+		chainConfig = params.EternalChainConfig
+	default:
+		// For custom networks, try to load from genesis.json using Geth's logic
+		genesisPath := filepath.Join(c.String(configdirFlag.Name), "genesis.json")
+		log.Info("Attempting to load chain config from genesis", "path", genesisPath)
+
+		if _, err := os.Stat(genesisPath); err != nil {
+			log.Error("Genesis file not found", "path", genesisPath, "err", err)
+			return fmt.Errorf("genesis file not found at %s: %v", genesisPath, err)
+		}
+
+		genesisFile, err := os.Open(genesisPath)
+		if err != nil {
+			log.Error("Failed to open genesis file", "err", err)
+			return err
+		}
+		defer genesisFile.Close()
+
+		var genesis coreBlockchain.Genesis
+		if err := json.NewDecoder(genesisFile).Decode(&genesis); err != nil {
+			log.Error("Failed to parse genesis file", "err", err)
+			return err
+		}
+		memdb := rawdb.NewMemoryDatabase()
+		triedb := trie.NewDatabase(memdb, &trie.Config{})
+
+		if _, err := genesis.Commit(memdb, triedb); err != nil {
+			log.Error("Failed to commit genesis to in-memory DB", "err", err)
+			return err
+		}
+
+		loadedConfig, err := coreBlockchain.LoadChainConfig(memdb, &genesis)
+		if err != nil {
+			log.Error("Failed to load chain config from genesis", "err", err)
+			return err
+		}
+		if loadedConfig == nil {
+			log.Error("Loaded chain config is nil")
+			return fmt.Errorf("loaded chain config is nil")
+		}
+		chainConfig = loadedConfig
+
+	}
+
+	apiImpl := core.NewSignerAPI(am, chainId, chainConfig, nousb, ui, validator, advanced, pwStorage)
 
 	// Establish the bidirectional communication, by creating a new UI backend and registering
 	// it with the UI.

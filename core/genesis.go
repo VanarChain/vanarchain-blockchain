@@ -47,20 +47,20 @@ var errGenesisNoConfig = errors.New("genesis has no chain configuration")
 // Genesis specifies the header fields, state of a genesis block. It also defines hard
 // fork switch-over blocks through the chain configuration.
 type Genesis struct {
-	Config     *params.ChainConfig `json:"config"`
-	Nonce      uint64              `json:"nonce"`
-	Timestamp  uint64              `json:"timestamp"`
-	ExtraData  []byte              `json:"extraData"`
-	GasLimit   uint64              `json:"gasLimit"   gencodec:"required"`
-	Difficulty *big.Int            `json:"difficulty" gencodec:"required"`
-	Mixhash    common.Hash         `json:"mixHash"`
-	Coinbase   common.Address      `json:"coinbase"`
-	Alloc      GenesisAlloc        `json:"alloc"      gencodec:"required"`
-	Signer	   common.Address	   `json:"signer"`
-	FeePerTx   *big.Int			   `json:"feePerTx" gencodec:"required"`
-	ProposedFee *big.Int		   `json:"proposedFee" gencodec:"required"`
-	Votes      uint64			   `json:"votes" gencodec:"required"`
-	VSigners   []common.Address      `json:"vSigners"`
+	Config      *params.ChainConfig `json:"config"`
+	Nonce       uint64              `json:"nonce"`
+	Timestamp   uint64              `json:"timestamp"`
+	ExtraData   []byte              `json:"extraData"`
+	GasLimit    uint64              `json:"gasLimit"   gencodec:"required"`
+	Difficulty  *big.Int            `json:"difficulty" gencodec:"required"`
+	Mixhash     common.Hash         `json:"mixHash"`
+	Coinbase    common.Address      `json:"coinbase"`
+	Alloc       GenesisAlloc        `json:"alloc"      gencodec:"required"`
+	Signer      common.Address      `json:"signer"`
+	FeePerTx    *big.Int            `json:"feePerTx" gencodec:"required"`
+	ProposedFee *big.Int            `json:"proposedFee" gencodec:"required"`
+	Votes       uint64              `json:"votes" gencodec:"required"`
+	VSigners    []common.Address    `json:"vSigners"`
 
 	// These fields are used for consensus tests. Please don't use them
 	// in actual genesis blocks.
@@ -252,11 +252,11 @@ type genesisSpecMarshaling struct {
 	BaseFee       *math.HexOrDecimal256
 	ExcessBlobGas *math.HexOrDecimal64
 	BlobGasUsed   *math.HexOrDecimal64
-	Signer		  hexutil.Bytes
-	FeePerTx	  *math.HexOrDecimal256
-	ProposedFee	  math.HexOrDecimal64
-	Votes	  	  *math.HexOrDecimal256
-	VSigners 	  []hexutil.Bytes
+	Signer        hexutil.Bytes
+	FeePerTx      *math.HexOrDecimal256
+	ProposedFee   math.HexOrDecimal64
+	Votes         *math.HexOrDecimal256
+	VSigners      []hexutil.Bytes
 }
 
 type genesisAccountMarshaling struct {
@@ -480,23 +480,23 @@ func (g *Genesis) ToBlock() *types.Block {
 		panic(err)
 	}
 	head := &types.Header{
-		Number:     new(big.Int).SetUint64(g.Number),
-		Nonce:      types.EncodeNonce(g.Nonce),
-		Time:       g.Timestamp,
-		ParentHash: g.ParentHash,
-		Extra:      g.ExtraData,
-		GasLimit:   g.GasLimit,
-		GasUsed:    g.GasUsed,
-		BaseFee:    g.BaseFee,
-		Difficulty: g.Difficulty,
-		MixDigest:  g.Mixhash,
-		Coinbase:   g.Coinbase,
-		Signer:		g.Signer,
-		FeePerTx:	g.FeePerTx,
-		ProposedFee:	g.ProposedFee,
-		Votes:		g.Votes,
-		VSigners: 	make([]common.Address, len(g.VSigners)),
-		Root:       root,
+		Number:      new(big.Int).SetUint64(g.Number),
+		Nonce:       types.EncodeNonce(g.Nonce),
+		Time:        g.Timestamp,
+		ParentHash:  g.ParentHash,
+		Extra:       g.ExtraData,
+		GasLimit:    g.GasLimit,
+		GasUsed:     g.GasUsed,
+		BaseFee:     g.BaseFee,
+		Difficulty:  g.Difficulty,
+		MixDigest:   g.Mixhash,
+		Coinbase:    g.Coinbase,
+		Signer:      g.Signer,
+		FeePerTx:    g.FeePerTx,
+		ProposedFee: g.ProposedFee,
+		Votes:       g.Votes,
+		VSigners:    make([]common.Address, len(g.VSigners)),
+		Root:        root,
 	}
 	copy(head.VSigners, g.VSigners)
 	if g.GasLimit == 0 {
@@ -622,64 +622,64 @@ func DefaultSepoliaGenesisBlock() *Genesis {
 // DefaultVanarGenesisBlock returns the Vanar network genesis block.
 func DefaultVanarGenesisBlock() *Genesis {
 	return &Genesis{
-		Config:     params.VanarChainConfig,
-		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000655c8f83f6B917b60912A1605A3Fa4d7BC9D98C60000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
-		GasLimit:   8000000,
-		Difficulty: big.NewInt(1),
-		Signer: common.HexToAddress("0x655c8f83f6B917b60912A1605A3Fa4d7BC9D98C6"),
-		FeePerTx:   big.NewInt(1785561044434731),
+		Config:      params.VanarChainConfig,
+		ExtraData:   hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000655c8f83f6B917b60912A1605A3Fa4d7BC9D98C60000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+		GasLimit:    8000000,
+		Difficulty:  big.NewInt(1),
+		Signer:      common.HexToAddress("0x655c8f83f6B917b60912A1605A3Fa4d7BC9D98C6"),
+		FeePerTx:    big.NewInt(1785561044434731),
 		ProposedFee: big.NewInt(0),
-		Votes:      uint64(0),
-		VSigners:   []common.Address{},
-		Alloc:      decodePrealloc(vanarAllocData),
+		Votes:       uint64(0),
+		VSigners:    []common.Address{},
+		Alloc:       decodePrealloc(vanarAllocData),
 	}
 }
 
 // DefaultVanguardGenesisBlock returns the Vanguard network genesis block.
 func DefaultVanguardGenesisBlock() *Genesis {
 	return &Genesis{
-		Config:     params.VanguardChainConfig,
-		ExtraData:  hexutil.MustDecode("0x000000000000000000000000000000000000000000000000000000000000000013fd5936cD983e6282F94dA6123aa3b5a1395C220000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
-		GasLimit:   8000000,
-		Difficulty: big.NewInt(1),
-		Signer: common.HexToAddress("0x13fd5936cD983e6282F94dA6123aa3b5a1395C22"),
-		FeePerTx:   big.NewInt(21000000000000),
+		Config:      params.VanguardChainConfig,
+		ExtraData:   hexutil.MustDecode("0x000000000000000000000000000000000000000000000000000000000000000013fd5936cD983e6282F94dA6123aa3b5a1395C220000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+		GasLimit:    8000000,
+		Difficulty:  big.NewInt(1),
+		Signer:      common.HexToAddress("0x13fd5936cD983e6282F94dA6123aa3b5a1395C22"),
+		FeePerTx:    big.NewInt(21000000000000),
 		ProposedFee: big.NewInt(0),
-		Votes:      uint64(0),
-		VSigners:   []common.Address{},
-		Alloc:      decodePrealloc(vanguardAllocData),
+		Votes:       uint64(0),
+		VSigners:    []common.Address{},
+		Alloc:       decodePrealloc(vanguardAllocData),
 	}
 }
 
 // DefaultTestnetGenesisBlock returns the Testnet network genesis block.
 func DefaultTestnetGenesisBlock() *Genesis {
 	return &Genesis{
-		Config:     params.TestnetChainConfig,
-		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000C0E54BEc7ad0F2bF7742014b6E4559F42C6Aa8B40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
-		GasLimit:   8000000,
-		Difficulty: big.NewInt(1),
-		Signer: common.HexToAddress("0xC0E54BEc7ad0F2bF7742014b6E4559F42C6Aa8B4"),
-		FeePerTx:   big.NewInt(21000000000000),
+		Config:      params.TestnetChainConfig,
+		ExtraData:   hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000C0E54BEc7ad0F2bF7742014b6E4559F42C6Aa8B40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+		GasLimit:    8000000,
+		Difficulty:  big.NewInt(1),
+		Signer:      common.HexToAddress("0xC0E54BEc7ad0F2bF7742014b6E4559F42C6Aa8B4"),
+		FeePerTx:    big.NewInt(21000000000000),
 		ProposedFee: big.NewInt(0),
-		Votes:      uint64(0),
-		VSigners:   []common.Address{},
-		Alloc:      decodePrealloc(testnetAllocData),
+		Votes:       uint64(0),
+		VSigners:    []common.Address{},
+		Alloc:       decodePrealloc(testnetAllocData),
 	}
 }
 
 // DefaultTestnetGenesisBlock returns the Testnet network genesis block.
 func DefaultEternalGenesisBlock() *Genesis {
 	return &Genesis{
-		Config:     params.EternalChainConfig,
-		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000fFb371C312B707D0599833fa3d3690cb9A0c58090000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
-		GasLimit:   8000000,
-		Difficulty: big.NewInt(1),
-		Signer: common.HexToAddress("0xfFb371C312B707D0599833fa3d3690cb9A0c5809"),
-		FeePerTx:   big.NewInt(21000000000000),
+		Config:      params.EternalChainConfig,
+		ExtraData:   hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000263cffbba0d54f9ef0fd390cc57e3ad5539936ddb818dd398d2c2154659d9f1b448e15bdd54f82740000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+		GasLimit:    8000000,
+		Difficulty:  big.NewInt(1),
+		Signer:      common.HexToAddress("0x655c8f83f6B917b60912A1605A3Fa4d7BC9D98C6"),
+		FeePerTx:    big.NewInt(21000000000000),
 		ProposedFee: big.NewInt(0),
-		Votes:      uint64(0),
-		VSigners:   []common.Address{},
-		Alloc:      decodePrealloc(eternalAllocData),
+		Votes:       uint64(0),
+		VSigners:    []common.Address{},
+		Alloc:       decodePrealloc(eternalAllocData),
 	}
 }
 

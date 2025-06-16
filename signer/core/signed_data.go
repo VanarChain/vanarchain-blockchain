@@ -150,7 +150,7 @@ func (api *SignerAPI) determineSignatureFormat(ctx context.Context, contentType 
 		header.Extra = newExtra
 
 		// Get back the rlp data, encoded by us
-		sighash, cliqueRlp, err := cliqueHeaderHashAndRlp(header)
+		sighash, cliqueRlp, err := api.cliqueHeaderHashAndRlp(header)
 		if err != nil {
 			return nil, useEthereumV, err
 		}
@@ -209,13 +209,13 @@ func SignTextValidator(validatorData apitypes.ValidatorData) (hexutil.Bytes, str
 // The method requires the extra data to be at least 65 bytes -- the original implementation
 // in clique.go panics if this is the case, thus it's been reimplemented here to avoid the panic
 // and simply return an error instead
-func cliqueHeaderHashAndRlp(header *types.Header) (hash, rlp []byte, err error) {
+func (api *SignerAPI) cliqueHeaderHashAndRlp(header *types.Header) (hash, rlp []byte, err error) {
 	if len(header.Extra) < 65 {
 		err = fmt.Errorf("clique header extradata too short, %d < 65", len(header.Extra))
 		return
 	}
-	rlp = clique.CliqueRLP(header)
-	hash = clique.SealHash(header).Bytes()
+	rlp = clique.CliqueRLP(header, api.chainConfig)
+	hash = clique.SealHash(header, api.chainConfig).Bytes()
 	return hash, rlp, err
 }
 
@@ -310,6 +310,22 @@ func (api *SignerAPI) EcRecover(ctx context.Context, data hexutil.Bytes, sig hex
 		return common.Address{}, errors.New("invalid Ethereum signature (V is not 27 or 28)")
 	}
 	sig[64] -= 27 // Transform yellow paper V from 27/28 to 0/1
+
+	// Try to decode as a header first
+	var header types.Header
+	if err := rlp.DecodeBytes(data, &header); err == nil {
+		// If it's a header, use the appropriate hash based on the chain config
+		if api.chainConfig != nil {
+			hash := clique.SealHash(&header, api.chainConfig)
+			rpk, err := crypto.SigToPub(hash.Bytes(), sig)
+			if err != nil {
+				return common.Address{}, err
+			}
+			return crypto.PubkeyToAddress(*rpk), nil
+		}
+	}
+
+	// If not a header or no chain config, fall back to text hash
 	hash := accounts.TextHash(data)
 	rpk, err := crypto.SigToPub(hash, sig)
 	if err != nil {

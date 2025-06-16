@@ -174,7 +174,7 @@ type Config struct {
 func CreateConsensusEngine(config *params.ChainConfig, db ethdb.Database) (consensus.Engine, error) {
 	// If proof-of-authority is requested, set it up
 	if config.Clique != nil {
-		return beacon.New(clique.New(config.Clique, db)), nil
+		return beacon.New(clique.New(config.Clique, config, db)), nil
 	}
 	// If defaulting to proof-of-work, enforce an already merged network since
 	// we cannot run PoW algorithms and more, so we cannot even follow a chain

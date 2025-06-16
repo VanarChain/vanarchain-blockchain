@@ -35,6 +35,7 @@ import (
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/math"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/internal/ethapi"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/log"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/params"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/rpc"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/signer/core/apitypes"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/signer/storage"
@@ -114,6 +115,7 @@ type Validator interface {
 // SignerAPI defines the actual implementation of ExternalAPI
 type SignerAPI struct {
 	chainID     *big.Int
+	chainConfig *params.ChainConfig
 	am          *accounts.Manager
 	UI          UIClientAPI
 	validator   Validator
@@ -283,11 +285,11 @@ var ErrRequestDenied = errors.New("request denied")
 // key that is generated when a new Account is created.
 // noUSB disables USB support that is required to support hardware devices such as
 // ledger and trezor.
-func NewSignerAPI(am *accounts.Manager, chainID int64, noUSB bool, ui UIClientAPI, validator Validator, advancedMode bool, credentials storage.Storage) *SignerAPI {
+func NewSignerAPI(am *accounts.Manager, chainID int64, chainConfig *params.ChainConfig, noUSB bool, ui UIClientAPI, validator Validator, advancedMode bool, credentials storage.Storage) *SignerAPI {
 	if advancedMode {
 		log.Info("Clef is in advanced mode: will warn instead of reject")
 	}
-	signer := &SignerAPI{big.NewInt(chainID), am, ui, validator, !advancedMode, credentials}
+	signer := &SignerAPI{big.NewInt(chainID), chainConfig, am, ui, validator, !advancedMode, credentials}
 	if !noUSB {
 		signer.startUSBListener()
 	}

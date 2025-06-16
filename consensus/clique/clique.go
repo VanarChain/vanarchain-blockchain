@@ -55,10 +55,10 @@ const (
 	inmemorySignatures = 4096 // Number of recent block signatures to keep in memory
 
 	wiggleTime = 500 * time.Millisecond // Random delay (per signer) to allow concurrent signers
-	eternalId = 6703333
+	eternalId  = 6703333
 	testnetId  = 1947
 	vanguardId = 78600
-	vanarId  = 2040
+	vanarId    = 2040
 )
 
 // Clique proof-of-authority protocol constants.
@@ -83,62 +83,62 @@ var (
 
 	RewardFinalizeBlock = uint64(203904000)
 	BlockReward         = big.NewInt(0)
-	BlockInFirstYear = uint64(6912000);
-	BlocksInAYear = uint64(10368000)
-	YearlyReward  = map[uint64]*big.Int{
+	BlockInFirstYear    = uint64(6912000)
+	BlocksInAYear       = uint64(10368000)
+	YearlyReward        = map[uint64]*big.Int{
 		1:  new(big.Int).SetUint64(15_059508873500000000),
 		2:  new(big.Int).SetUint64(10_129595196800000000),
-		3:  new(big.Int).SetUint64( 6_813548804000000000),
-		4:  new(big.Int).SetUint64( 4_583050540100000000),
-		5:  new(big.Int).SetUint64( 3_082733217600000000),
-		6:  new(big.Int).SetUint64( 2_073562789400000000),
-		7:  new(big.Int).SetUint64( 1_394756751500000000),
-		8:  new(big.Int).SetUint64(   938166184400000000),
-		9:  new(big.Int).SetUint64(   631046006900000000),
-		10: new(big.Int).SetUint64(   424465374200000000),
-		11: new(big.Int).SetUint64(   285511477600000000),
-		12: new(big.Int).SetUint64(   192045814000000000),
-		13: new(big.Int).SetUint64(   129177276200000000),
-		14: new(big.Int).SetUint64(    86889467600000000),
-		15: new(big.Int).SetUint64(    58445216000000000),
-		16: new(big.Int).SetUint64(    39312403500000000),
-		17: new(big.Int).SetUint64(    26442901200000000),
-		18: new(big.Int).SetUint64(    17786554800000000),
-		19: new(big.Int).SetUint64(    11964409700000000),
+		3:  new(big.Int).SetUint64(6_813548804000000000),
+		4:  new(big.Int).SetUint64(4_583050540100000000),
+		5:  new(big.Int).SetUint64(3_082733217600000000),
+		6:  new(big.Int).SetUint64(2_073562789400000000),
+		7:  new(big.Int).SetUint64(1_394756751500000000),
+		8:  new(big.Int).SetUint64(938166184400000000),
+		9:  new(big.Int).SetUint64(631046006900000000),
+		10: new(big.Int).SetUint64(424465374200000000),
+		11: new(big.Int).SetUint64(285511477600000000),
+		12: new(big.Int).SetUint64(192045814000000000),
+		13: new(big.Int).SetUint64(129177276200000000),
+		14: new(big.Int).SetUint64(86889467600000000),
+		15: new(big.Int).SetUint64(58445216000000000),
+		16: new(big.Int).SetUint64(39312403500000000),
+		17: new(big.Int).SetUint64(26442901200000000),
+		18: new(big.Int).SetUint64(17786554800000000),
+		19: new(big.Int).SetUint64(11964409700000000),
 	}
 
 	BlocksInAMonth         = uint64(864000)
 	FirstYearMonthlyReward = map[uint64]*big.Int{
 		0: func() *big.Int {
-			val, _ := new(big.Int).SetString("57870370370400000000", 10) 
+			val, _ := new(big.Int).SetString("57870370370400000000", 10)
 			return val
 		}(),
-		1:  func() *big.Int {
-			val, _ := new(big.Int).SetString("219907407407400000000", 10) 
+		1: func() *big.Int {
+			val, _ := new(big.Int).SetString("219907407407400000000", 10)
 			return val
 		}(),
-		2:  func() *big.Int {
-			val, _ := new(big.Int).SetString("104166666666700000000", 10) 
+		2: func() *big.Int {
+			val, _ := new(big.Int).SetString("104166666666700000000", 10)
 			return val
 		}(),
-		3:  func() *big.Int {
-			val, _ := new(big.Int).SetString("92592592592600000000", 10) 
+		3: func() *big.Int {
+			val, _ := new(big.Int).SetString("92592592592600000000", 10)
 			return val
 		}(),
-		4:  func() *big.Int {
-			val, _ := new(big.Int).SetString("34722222222200000000", 10) 
+		4: func() *big.Int {
+			val, _ := new(big.Int).SetString("34722222222200000000", 10)
 			return val
 		}(),
-		5:  func() *big.Int {
-			val, _ := new(big.Int).SetString("23148148148100000000", 10) 
+		5: func() *big.Int {
+			val, _ := new(big.Int).SetString("23148148148100000000", 10)
 			return val
 		}(),
-		6:  func() *big.Int {
-			val, _ := new(big.Int).SetString("23148148148100000000", 10) 
+		6: func() *big.Int {
+			val, _ := new(big.Int).SetString("23148148148100000000", 10)
 			return val
 		}(),
-		7:  func() *big.Int {
-			val, _ := new(big.Int).SetString("16550925925900000000", 10) 
+		7: func() *big.Int {
+			val, _ := new(big.Int).SetString("16550925925900000000", 10)
 			return val
 		}(),
 	}
@@ -218,7 +218,7 @@ var (
 type SignerFn func(signer accounts.Account, mimeType string, message []byte) ([]byte, error)
 
 // ecrecover extracts the Ethereum account address from a signed header.
-func ecrecover(header *types.Header, sigcache *sigLRU) (common.Address, error) {
+func ecrecover(header *types.Header, sigcache *sigLRU, config *params.ChainConfig) (common.Address, error) {
 	// If the signature's already cached, return that
 	hash := header.Hash()
 	if address, known := sigcache.Get(hash); known {
@@ -231,7 +231,7 @@ func ecrecover(header *types.Header, sigcache *sigLRU) (common.Address, error) {
 	signature := header.Extra[len(header.Extra)-extraSeal:]
 
 	// Recover the public key and the Ethereum address
-	pubkey, err := crypto.Ecrecover(SealHash(header).Bytes(), signature)
+	pubkey, err := crypto.Ecrecover(SealHash(header, config).Bytes(), signature)
 	if err != nil {
 		return common.Address{}, err
 	}
@@ -245,8 +245,9 @@ func ecrecover(header *types.Header, sigcache *sigLRU) (common.Address, error) {
 // Clique is the proof-of-authority consensus engine proposed to support the
 // Ethereum testnet following the Ropsten attacks.
 type Clique struct {
-	config *params.CliqueConfig // Consensus engine configuration parameters
-	db     ethdb.Database       // Database to store and retrieve snapshot checkpoints
+	config      *params.CliqueConfig // Consensus engine configuration parameters
+	chainConfig *params.ChainConfig  // Chain configuration parameters
+	db          ethdb.Database       // Database to store and retrieve snapshot checkpoints
 
 	recents    *lru.Cache[common.Hash, *Snapshot] // Snapshots for recent block to speed up reorgs
 	signatures *sigLRU                            // Signatures of recent blocks to speed up mining
@@ -263,7 +264,7 @@ type Clique struct {
 
 // New creates a Clique proof-of-authority consensus engine with the initial
 // signers set to the ones provided by the user.
-func New(config *params.CliqueConfig, db ethdb.Database) *Clique {
+func New(config *params.CliqueConfig, chainConfig *params.ChainConfig, db ethdb.Database) *Clique {
 	// Set any missing consensus parameters to their defaults
 	conf := *config
 	if conf.Epoch == 0 {
@@ -274,18 +275,19 @@ func New(config *params.CliqueConfig, db ethdb.Database) *Clique {
 	signatures := lru.NewCache[common.Hash, common.Address](inmemorySignatures)
 
 	return &Clique{
-		config:     &conf,
-		db:         db,
-		recents:    recents,
-		signatures: signatures,
-		proposals:  make(map[common.Address]bool),
+		config:      &conf,
+		chainConfig: chainConfig,
+		db:          db,
+		recents:     recents,
+		signatures:  signatures,
+		proposals:   make(map[common.Address]bool),
 	}
 }
 
 // Author implements consensus.Engine, returning the Ethereum address recovered
 // from the signature in the header's extra-data section.
 func (c *Clique) Author(header *types.Header) (common.Address, error) {
-	return ecrecover(header, c.signatures)
+	return ecrecover(header, c.signatures, c.chainConfig)
 }
 
 // VerifyHeader checks whether a header conforms to the consensus rules.
@@ -457,7 +459,7 @@ func (c *Clique) snapshot(chain consensus.ChainHeaderReader, number uint64, hash
 		}
 		// If an on-disk checkpoint snapshot can be found, use that
 		if number%checkpointInterval == 0 {
-			if s, err := loadSnapshot(c.config, c.signatures, c.db, hash); err == nil {
+			if s, err := loadSnapshot(c.config, c.chainConfig, c.signatures, c.db, hash); err == nil {
 				log.Trace("Loaded voting snapshot from disk", "number", number, "hash", hash)
 				snap = s
 				break
@@ -476,7 +478,7 @@ func (c *Clique) snapshot(chain consensus.ChainHeaderReader, number uint64, hash
 				for i := 0; i < len(signers); i++ {
 					copy(signers[i][:], checkpoint.Extra[extraVanity+i*common.AddressLength:])
 				}
-				snap = newSnapshot(c.config, c.signatures, number, hash, signers)
+				snap = newSnapshot(c.config, c.chainConfig, c.signatures, number, hash, signers)
 				if err := snap.store(c.db); err != nil {
 					return nil, err
 				}
@@ -543,7 +545,7 @@ func (c *Clique) verifySeal(snap *Snapshot, header *types.Header, parents []*typ
 		return errUnknownBlock
 	}
 	// Resolve the authorization key and check against signers
-	signer, err := ecrecover(header, c.signatures)
+	signer, err := ecrecover(header, c.signatures, c.chainConfig)
 	if err != nil {
 		return err
 	}
@@ -643,11 +645,11 @@ func (c *Clique) Prepare(chain consensus.ChainHeaderReader, header *types.Header
 	header.ProposedFee = new(big.Int)
 
 	header.FeePerTx = parent.FeePerTx
-	chainRef:= chain.Config().ChainID.Uint64()
-	
+	chainRef := chain.Config().ChainID.Uint64()
+
 	if c.feeInterval(number) {
 		fetchedFee := c.fetchFee(chainRef)
-		
+
 		if fetchedFee != nil {
 			header.FeePerTx = fetchedFee
 		}
@@ -657,7 +659,7 @@ func (c *Clique) Prepare(chain consensus.ChainHeaderReader, header *types.Header
 
 			if parent.FeePerTx.Cmp(prevIntervalBlockHeader.FeePerTx) == 0 {
 				fetchedFee := c.fetchFee(chainRef)
-				
+
 				if fetchedFee != nil {
 					header.FeePerTx = fetchedFee
 				}
@@ -666,7 +668,6 @@ func (c *Clique) Prepare(chain consensus.ChainHeaderReader, header *types.Header
 	}
 	return nil
 }
-
 
 func (c *Clique) feeInterval(blockNumber uint64) bool {
 	if blockNumber < blockInterval {
@@ -682,14 +683,14 @@ type Response struct {
 
 func (c *Clique) fetchFee(chainReference uint64) *big.Int {
 	url := ""
-	if chainReference == testnetId || chainReference == eternalId{
+	if chainReference == testnetId || chainReference == eternalId {
 		url = "https://oxuanqzlalug.bimtvi.com/price"
 	} else if chainReference == vanguardId {
 		url = "https://oxuanqzlalug.vanarchain.com/price"
 	} else if chainReference == vanarId {
 		url = "https://edpdnprcjobs.vanarchain.com/price"
 	}
-	
+
 	// Create a HTTP client with a timeout
 	client := &http.Client{
 		Timeout: 1 * time.Second,
@@ -734,8 +735,8 @@ func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Heade
 	currentBlockNumber := header.Number.Uint64()
 	rewardAddress := common.HexToAddress("0x8DE5B80a0C1B02Fe4976851D030B36122dbb8624")
 
-	if chain.Config().ChainID.Uint64() == testnetId || chain.Config().ChainID.Uint64() == vanguardId || chain.Config().ChainID.Uint64() == eternalId{	
-		state.AddBalance(rewardAddress, InitialBlockReward)	
+	if chain.Config().ChainID.Uint64() == testnetId || chain.Config().ChainID.Uint64() == vanguardId || chain.Config().ChainID.Uint64() == eternalId {
+		state.AddBalance(rewardAddress, InitialBlockReward)
 	} else if chain.Config().ChainID.Uint64() == vanarId {
 		if currentBlockNumber <= RewardFinalizeBlock {
 			if currentBlockNumber <= BlockInFirstYear {
@@ -748,7 +749,7 @@ func (c *Clique) Finalize(chain consensus.ChainHeaderReader, header *types.Heade
 			state.AddBalance(rewardAddress, BlockReward)
 		}
 	}
-	
+
 }
 
 // FinalizeAndAssemble implements consensus.Engine, ensuring no uncles are set,
@@ -823,7 +824,7 @@ func (c *Clique) Seal(chain consensus.ChainHeaderReader, block *types.Block, res
 		log.Trace("Out-of-turn signing requested", "wiggle", common.PrettyDuration(wiggle))
 	}
 	// Sign all the things!
-	sighash, err := signFn(accounts.Account{Address: signer}, accounts.MimetypeClique, CliqueRLP(header))
+	sighash, err := signFn(accounts.Account{Address: signer}, accounts.MimetypeClique, CliqueRLP(header, c.chainConfig))
 	if err != nil {
 		return err
 	}
@@ -840,7 +841,7 @@ func (c *Clique) Seal(chain consensus.ChainHeaderReader, block *types.Block, res
 		select {
 		case results <- block.WithSeal(header):
 		default:
-			log.Warn("Sealing result is not read by miner", "sealhash", SealHash(header))
+			log.Warn("Sealing result is not read by miner", "sealhash", SealHash(header, c.chainConfig))
 		}
 	}()
 
@@ -871,7 +872,7 @@ func calcDifficulty(snap *Snapshot, signer common.Address) *big.Int {
 
 // SealHash returns the hash of a block prior to it being sealed.
 func (c *Clique) SealHash(header *types.Header) common.Hash {
-	return SealHash(header)
+	return SealHash(header, c.chainConfig)
 }
 
 // Close implements consensus.Engine. It's a noop for clique as there are no background threads.
@@ -889,9 +890,9 @@ func (c *Clique) APIs(chain consensus.ChainHeaderReader) []rpc.API {
 }
 
 // SealHash returns the hash of a block prior to it being sealed.
-func SealHash(header *types.Header) (hash common.Hash) {
+func SealHash(header *types.Header, config *params.ChainConfig) (hash common.Hash) {
 	hasher := sha3.NewLegacyKeccak256()
-	encodeSigHeader(hasher, header)
+	encodeSigHeader(hasher, header, config)
 	hasher.(crypto.KeccakState).Read(hash[:])
 	return hash
 }
@@ -903,35 +904,63 @@ func SealHash(header *types.Header) (hash common.Hash) {
 // Note, the method requires the extra data to be at least 65 bytes, otherwise it
 // panics. This is done to avoid accidentally using both forms (signature present
 // or not), which could be abused to produce different hashes for the same header.
-func CliqueRLP(header *types.Header) []byte {
+func (c *Clique) CliqueRLP(header *types.Header) []byte {
+	return CliqueRLP(header, c.chainConfig)
+}
+
+func CliqueRLP(header *types.Header, config *params.ChainConfig) []byte {
 	b := new(bytes.Buffer)
-	encodeSigHeader(b, header)
+	encodeSigHeader(b, header, config)
 	return b.Bytes()
 }
 
-func encodeSigHeader(w io.Writer, header *types.Header) {
-	enc := []interface{}{
-		header.ParentHash,
-		header.UncleHash,
-		header.Coinbase,
-		header.Root,
-		header.TxHash,
-		header.ReceiptHash,
-		header.Bloom,
-		header.Difficulty,
-		header.Number,
-		header.GasLimit,
-		header.GasUsed,
-		header.Time,
-		header.Extra[:len(header.Extra)-crypto.SignatureLength], // Yes, this will panic if extra is too short
-		header.MixDigest,
-		header.Nonce,
-		// header.Signer,
-		// header.FeePerTx,
-		// header.ProposedFee,
-		// header.Votes,
-		// header.VSigners,
+func encodeSigHeader(w io.Writer, header *types.Header, config *params.ChainConfig) {
+	var enc []interface{}
+	if !config.IsNewHeader(header.Number) {
+		// Old format (without the 5 additional fields)
+		enc = []interface{}{
+			header.ParentHash,
+			header.UncleHash,
+			header.Coinbase,
+			header.Root,
+			header.TxHash,
+			header.ReceiptHash,
+			header.Bloom,
+			header.Difficulty,
+			header.Number,
+			header.GasLimit,
+			header.GasUsed,
+			header.Time,
+			header.Extra[:len(header.Extra)-crypto.SignatureLength],
+			header.MixDigest,
+			header.Nonce,
+		}
+	} else {
+		// New format (with all fields)
+		enc = []interface{}{
+			header.ParentHash,
+			header.UncleHash,
+			header.Coinbase,
+			header.Root,
+			header.TxHash,
+			header.ReceiptHash,
+			header.Bloom,
+			header.Difficulty,
+			header.Number,
+			header.GasLimit,
+			header.GasUsed,
+			header.Time,
+			header.Extra[:len(header.Extra)-crypto.SignatureLength],
+			header.MixDigest,
+			header.Nonce,
+			header.Signer,
+			header.FeePerTx,
+			header.ProposedFee,
+			header.Votes,
+			header.VSigners,
+		}
 	}
+
 	if header.BaseFee != nil {
 		enc = append(enc, header.BaseFee)
 	}

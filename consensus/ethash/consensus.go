@@ -22,7 +22,6 @@ import (
 	"math/big"
 	"time"
 
-	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/math"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/consensus"
@@ -33,6 +32,7 @@ import (
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/params"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/rlp"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/trie"
+	mapset "github.com/deckarep/golang-set/v2"
 	"golang.org/x/crypto/sha3"
 )
 

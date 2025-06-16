@@ -31,6 +31,7 @@ import (
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/core/types"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/crypto"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/log"
+	"github.com/TerraVirtuaCo/vanarchain-blockchain/params"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/rlp"
 	"github.com/urfave/cli/v2"
 )
@@ -194,8 +195,32 @@ func (i *bbInput) sealClique(block *types.Block) (*types.Block, error) {
 	header.Extra = make([]byte, 32+65)
 	copy(header.Extra[0:32], i.Clique.Vanity.Bytes()[:])
 
+	// Get chain config for proper sealing
+	chainConfig := &params.ChainConfig{
+		ChainID:             header.Number,
+		HomesteadBlock:      big.NewInt(0),
+		EIP150Block:         big.NewInt(0),
+		EIP155Block:         big.NewInt(0),
+		EIP158Block:         big.NewInt(0),
+		ByzantiumBlock:      big.NewInt(0),
+		ConstantinopleBlock: big.NewInt(0),
+		PetersburgBlock:     big.NewInt(0),
+		IstanbulBlock:       big.NewInt(0),
+		BerlinBlock:         big.NewInt(0),
+		LahoreBlock:         big.NewInt(0),
+		KarachiBlock:        big.NewInt(0),
+		SialkotBlock:        big.NewInt(0),
+		KasurBlock:          big.NewInt(0),
+		NewHeaderBlock:      big.NewInt(5),
+		LondonBlock:         big.NewInt(0),
+		Clique: &params.CliqueConfig{
+			Period: 3,
+			Epoch:  30000,
+		},
+	}
+
 	// Sign the seal hash and fill in the rest of the extra data
-	h := clique.SealHash(header)
+	h := clique.SealHash(header, chainConfig)
 	sighash, err := crypto.Sign(h[:], i.Clique.Key)
 	if err != nil {
 		return nil, err

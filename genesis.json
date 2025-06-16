@@ -1,0 +1,37 @@
+{
+  "config": {
+    "chainId": 1212,
+    "homesteadBlock": 0,
+    "eip150Block": 0,
+    "eip155Block": 0,
+    "eip158Block": 0,
+    "byzantiumBlock": 0,
+    "constantinopleBlock": 0,
+    "petersburgBlock": 0,
+    "istanbulBlock": 0,
+    "berlinBlock": 0,
+    "londonBlock": 0,
+    "mergeNetsplitBlock": 0,
+    "lahoreBlock": 5,
+    "karachiBlock": 5,
+    "sialkotBlock": 5,
+    "kasurBlock": 5,
+    "newHeaderBlock": 10,
+    "clique": {
+      "period": 5,
+      "epoch": 30000
+    }
+  },
+  "signer": "0x263cffbba0d54f9ef0fd390cc57e3ad5539936dd",
+  "difficulty": "1",
+  "feePerTx": "21000000000000",
+  "proposedFee": "0",
+  "votes": "0",
+  "vSigners": [],
+  "gasLimit": "8000000",
+  "extradata": "0x0000000000000000000000000000000000000000000000000000000000000000263cffbba0d54f9ef0fd390cc57e3ad5539936dd0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "alloc": {
+    "7cB8f8D13C57B4FbD2B51F122494B4D889E8Ef5d": { "balance": "20000000000000000000" },
+    "263cffbba0d54f9ef0fd390cc57e3ad5539936dd": { "balance": "20000000000000000000" }
+  }
+} 

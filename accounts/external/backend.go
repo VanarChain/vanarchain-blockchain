@@ -22,7 +22,7 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/TerraVirtuaCo/vanarchain-blockchain"
+	ethereum "github.com/TerraVirtuaCo/vanarchain-blockchain"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/accounts"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/common"
 	"github.com/TerraVirtuaCo/vanarchain-blockchain/common/hexutil"

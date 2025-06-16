@@ -25,14 +25,14 @@ import (
 
 // Genesis hashes to enforce below configs on.
 var (
-	MainnetGenesisHash = common.HexToHash("0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3")
-	HoleskyGenesisHash = common.HexToHash("0xb5f7f912443c940f21fd611f12828d75b534364ed9e95ca4e307729a4661bde4")
-	SepoliaGenesisHash = common.HexToHash("0x25a5cc106eea7138acab33231d7160d69cb777ee0c2c553fcddf5138993e6dd9")
-	GoerliGenesisHash  = common.HexToHash("0xbf7e331f7f7c1dd2e05159666b3bf8bc7a8a3a9eb1d518969eab529dd9b88c1a")
-	VanarGenesisHash = common.HexToHash("0x5487b7589ead3bc7ce76e9119e003f787e5c8b7daafaa698f5e21e36f25a4713");
-	VanguardGenesisHash = common.HexToHash("0x6309fe9c5eef695c083aea83ccb671da98480b30e558e50a695f49d0b29c7626");
-	TestnetGenesisHash = common.HexToHash("0x6309fe9c5eef695c083aea83ccb671da98480b30e558e50a695f49d0b29c7626");
-	EternalGenesisHash = common.HexToHash("0xc59f5b4804b9cbd4f6eee7e942ca98a55ab40ab4916b78c447dbedb8ad1be989");
+	MainnetGenesisHash  = common.HexToHash("0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3")
+	HoleskyGenesisHash  = common.HexToHash("0xb5f7f912443c940f21fd611f12828d75b534364ed9e95ca4e307729a4661bde4")
+	SepoliaGenesisHash  = common.HexToHash("0x25a5cc106eea7138acab33231d7160d69cb777ee0c2c553fcddf5138993e6dd9")
+	GoerliGenesisHash   = common.HexToHash("0xbf7e331f7f7c1dd2e05159666b3bf8bc7a8a3a9eb1d518969eab529dd9b88c1a")
+	VanarGenesisHash    = common.HexToHash("0x5487b7589ead3bc7ce76e9119e003f787e5c8b7daafaa698f5e21e36f25a4713")
+	VanguardGenesisHash = common.HexToHash("0x6309fe9c5eef695c083aea83ccb671da98480b30e558e50a695f49d0b29c7626")
+	TestnetGenesisHash  = common.HexToHash("0x6309fe9c5eef695c083aea83ccb671da98480b30e558e50a695f49d0b29c7626")
+	EternalGenesisHash  = common.HexToHash("0xc59f5b4804b9cbd4f6eee7e942ca98a55ab40ab4916b78c447dbedb8ad1be989")
 )
 
 func newUint64(val uint64) *uint64 { return &val }
@@ -139,20 +139,21 @@ var (
 
 	// VanarChainConfig contains the chain parameters to run a node on the Vanar network.
 	VanarChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(2040),
-		HomesteadBlock:                big.NewInt(0),
-		EIP150Block:                   big.NewInt(0),
-		EIP155Block:                   big.NewInt(0),
-		EIP158Block:                   big.NewInt(0),
-		ByzantiumBlock:                big.NewInt(0),
-		ConstantinopleBlock:           big.NewInt(0),
-		PetersburgBlock:               big.NewInt(0),
-		IstanbulBlock:                 big.NewInt(0),
-		BerlinBlock:                   big.NewInt(0),
-		LahoreBlock:                   big.NewInt(0),
-		KarachiBlock:				   big.NewInt(0),
-		SialkotBlock:				   big.NewInt(1_678_900),
-		KasurBlock:				   	   big.NewInt(11_603_450),
+		ChainID:             big.NewInt(2040),
+		HomesteadBlock:      big.NewInt(0),
+		EIP150Block:         big.NewInt(0),
+		EIP155Block:         big.NewInt(0),
+		EIP158Block:         big.NewInt(0),
+		ByzantiumBlock:      big.NewInt(0),
+		ConstantinopleBlock: big.NewInt(0),
+		PetersburgBlock:     big.NewInt(0),
+		IstanbulBlock:       big.NewInt(0),
+		BerlinBlock:         big.NewInt(0),
+		LahoreBlock:         big.NewInt(0),
+		KarachiBlock:        big.NewInt(0),
+		SialkotBlock:        big.NewInt(1_678_900),
+		KasurBlock:          big.NewInt(11_603_450),
+		NewHeaderBlock:      big.NewInt(5),
 		Clique: &CliqueConfig{
 			Period: 3,
 			Epoch:  30000,
@@ -161,20 +162,21 @@ var (
 
 	// VanguardChainConfig contains the chain parameters to run a node on the Vanguard network.
 	VanguardChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(78600),
-		HomesteadBlock:                big.NewInt(0),
-		EIP150Block:                   big.NewInt(0),
-		EIP155Block:                   big.NewInt(0),
-		EIP158Block:                   big.NewInt(0),
-		ByzantiumBlock:                big.NewInt(0),
-		ConstantinopleBlock:           big.NewInt(0),
-		PetersburgBlock:               big.NewInt(0),
-		IstanbulBlock:                 big.NewInt(0),
-		BerlinBlock:                   big.NewInt(0),
-		LahoreBlock:                   big.NewInt(1_068_650),
-		KarachiBlock:				   big.NewInt(2_244_020),
-		SialkotBlock:				   big.NewInt(3_965_300),
-		KasurBlock:				   	   big.NewInt(13_816_066),
+		ChainID:             big.NewInt(78600),
+		HomesteadBlock:      big.NewInt(0),
+		EIP150Block:         big.NewInt(0),
+		EIP155Block:         big.NewInt(0),
+		EIP158Block:         big.NewInt(0),
+		ByzantiumBlock:      big.NewInt(0),
+		ConstantinopleBlock: big.NewInt(0),
+		PetersburgBlock:     big.NewInt(0),
+		IstanbulBlock:       big.NewInt(0),
+		BerlinBlock:         big.NewInt(0),
+		LahoreBlock:         big.NewInt(1_068_650),
+		KarachiBlock:        big.NewInt(2_244_020),
+		SialkotBlock:        big.NewInt(3_965_300),
+		KasurBlock:          big.NewInt(13_816_066),
+		NewHeaderBlock:      big.NewInt(5),
 		Clique: &CliqueConfig{
 			Period: 3,
 			Epoch:  30000,
@@ -182,20 +184,21 @@ var (
 	}
 	// TestnetChainConfig contains the chain parameters to run a node on the Testnet network.
 	TestnetChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(1947),
-		HomesteadBlock:                big.NewInt(0),
-		EIP150Block:                   big.NewInt(0),
-		EIP155Block:                   big.NewInt(0),
-		EIP158Block:                   big.NewInt(0),
-		ByzantiumBlock:                big.NewInt(0),
-		ConstantinopleBlock:           big.NewInt(0),
-		PetersburgBlock:               big.NewInt(0),
-		IstanbulBlock:                 big.NewInt(0),
-		BerlinBlock:                   big.NewInt(0),
-		LahoreBlock:                   big.NewInt(1_046_000),
-		KarachiBlock:				   big.NewInt(2_011_590),
-		SialkotBlock:				   big.NewInt(3_531_900),
-		KasurBlock:				   	   big.NewInt(11_578_622),					
+		ChainID:             big.NewInt(1947),
+		HomesteadBlock:      big.NewInt(0),
+		EIP150Block:         big.NewInt(0),
+		EIP155Block:         big.NewInt(0),
+		EIP158Block:         big.NewInt(0),
+		ByzantiumBlock:      big.NewInt(0),
+		ConstantinopleBlock: big.NewInt(0),
+		PetersburgBlock:     big.NewInt(0),
+		IstanbulBlock:       big.NewInt(0),
+		BerlinBlock:         big.NewInt(0),
+		LahoreBlock:         big.NewInt(1_046_000),
+		KarachiBlock:        big.NewInt(2_011_590),
+		SialkotBlock:        big.NewInt(3_531_900),
+		KasurBlock:          big.NewInt(11_578_622),
+		NewHeaderBlock:      big.NewInt(5),
 		Clique: &CliqueConfig{
 			Period: 3,
 			Epoch:  30000,
@@ -204,20 +207,21 @@ var (
 
 	// TestnetChainConfig contains the chain parameters to run a node on the Testnet network.
 	EternalChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(6703333),
-		HomesteadBlock:                big.NewInt(0),
-		EIP150Block:                   big.NewInt(0),
-		EIP155Block:                   big.NewInt(0),
-		EIP158Block:                   big.NewInt(0),
-		ByzantiumBlock:                big.NewInt(0),
-		ConstantinopleBlock:           big.NewInt(0),
-		PetersburgBlock:               big.NewInt(0),
-		IstanbulBlock:                 big.NewInt(0),
-		BerlinBlock:                   big.NewInt(0),
-		LahoreBlock:                   big.NewInt(0),
-		KarachiBlock:				   big.NewInt(10),
-		SialkotBlock:				   big.NewInt(20),
-		KasurBlock:				   	   big.NewInt(30),					
+		ChainID:             big.NewInt(6703333),
+		HomesteadBlock:      big.NewInt(0),
+		EIP150Block:         big.NewInt(0),
+		EIP155Block:         big.NewInt(0),
+		EIP158Block:         big.NewInt(0),
+		ByzantiumBlock:      big.NewInt(0),
+		ConstantinopleBlock: big.NewInt(0),
+		PetersburgBlock:     big.NewInt(0),
+		IstanbulBlock:       big.NewInt(0),
+		BerlinBlock:         big.NewInt(0),
+		LahoreBlock:         big.NewInt(0),
+		KarachiBlock:        big.NewInt(5),
+		SialkotBlock:        big.NewInt(5),
+		KasurBlock:          big.NewInt(5),
+		NewHeaderBlock:      big.NewInt(10),
 		Clique: &CliqueConfig{
 			Period: 3,
 			Epoch:  30000,
@@ -369,14 +373,14 @@ var (
 
 // NetworkNames are user friendly names to use in the chain spec banner.
 var NetworkNames = map[string]string{
-	MainnetChainConfig.ChainID.String(): "mainnet",
-	GoerliChainConfig.ChainID.String():  "goerli",
-	SepoliaChainConfig.ChainID.String(): "sepolia",
-	HoleskyChainConfig.ChainID.String(): "holesky",
-	VanarChainConfig.ChainID.String(): "vanar",
+	MainnetChainConfig.ChainID.String():  "mainnet",
+	GoerliChainConfig.ChainID.String():   "goerli",
+	SepoliaChainConfig.ChainID.String():  "sepolia",
+	HoleskyChainConfig.ChainID.String():  "holesky",
+	VanarChainConfig.ChainID.String():    "vanar",
 	VanguardChainConfig.ChainID.String(): "vanguard",
-	TestnetChainConfig.ChainID.String(): "testnet",
-	EternalChainConfig.ChainID.String(): "eternal",
+	TestnetChainConfig.ChainID.String():  "testnet",
+	EternalChainConfig.ChainID.String():  "eternal",
 }
 
 // ChainConfig is the core config which determines the blockchain settings.
@@ -404,9 +408,10 @@ type ChainConfig struct {
 	MuirGlacierBlock    *big.Int `json:"muirGlacierBlock,omitempty"`    // Eip-2384 (bomb delay) switch block (nil = no fork, 0 = already activated)
 	BerlinBlock         *big.Int `json:"berlinBlock,omitempty"`         // Berlin switch block (nil = no fork, 0 = already on berlin)
 	LahoreBlock         *big.Int `json:"lahoreBlock,omitempty"`         // Lahore switch block (nil = no fork, 0 = already on lahore)
-	KarachiBlock		*big.Int `json:"karachiBlock,omitempty"`		// Karachi switch block (nil = no fork, 0 = already on karachi)
-	SialkotBlock		*big.Int `json:"sialkotBlock,omitempty"`		// Sialkot switch block (nil = no fork, 0 = already on sialkot)
-	KasurBlock			*big.Int `json:"kasurBlock,omitempty"`			// Kasur switch block (nil = no fork, 0 = already on kasur)
+	KarachiBlock        *big.Int `json:"karachiBlock,omitempty"`        // Karachi switch block (nil = no fork, 0 = already on karachi)
+	SialkotBlock        *big.Int `json:"sialkotBlock,omitempty"`        // Sialkot switch block (nil = no fork, 0 = already on sialkot)
+	KasurBlock          *big.Int `json:"kasurBlock,omitempty"`          // Kasur switch block (nil = no fork, 0 = already on kasur)
+	NewHeaderBlock      *big.Int `json:"newHeaderBlock,omitempty"`      // New header format switch block (nil = no fork, 0 = already on new header)
 	LondonBlock         *big.Int `json:"londonBlock,omitempty"`         // London switch block (nil = no fork, 0 = already on london)
 	ArrowGlacierBlock   *big.Int `json:"arrowGlacierBlock,omitempty"`   // Eip-4345 (bomb delay) switch block (nil = no fork, 0 = already activated)
 	GrayGlacierBlock    *big.Int `json:"grayGlacierBlock,omitempty"`    // Eip-5133 (bomb delay) switch block (nil = no fork, 0 = already activated)
@@ -508,6 +513,7 @@ func (c *ChainConfig) Description() string {
 	banner += fmt.Sprintf(" - Karachi:                     #%-8v (Karachi Fork Implementing)\n", c.KarachiBlock)
 	banner += fmt.Sprintf(" - Sialkot:                     #%-8v (Sialkot Fork Implementing)\n", c.SialkotBlock)
 	banner += fmt.Sprintf(" - Kasur:                       #%-8v (Kasur Fork Implementing)\n", c.KasurBlock)
+	banner += fmt.Sprintf(" - New Header:                  #%-8v (New Header Format Fork Implementing)\n", c.NewHeaderBlock)
 	banner += fmt.Sprintf(" - London:                      #%-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/london.md)\n", c.LondonBlock)
 	if c.ArrowGlacierBlock != nil {
 		banner += fmt.Sprintf(" - Arrow Glacier:               #%-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/arrow-glacier.md)\n", c.ArrowGlacierBlock)
@@ -626,6 +632,11 @@ func (c *ChainConfig) IsKasur(num *big.Int) bool {
 	return isBlockForked(c.KasurBlock, num)
 }
 
+// IsNewHeader returns whether num is either equal to the new header fork block or greater.
+func (c *ChainConfig) IsNewHeader(num *big.Int) bool {
+	return isBlockForked(c.NewHeaderBlock, num)
+}
+
 // IsLondon returns whether num is either equal to the London fork block or greater.
 func (c *ChainConfig) IsLondon(num *big.Int) bool {
 	return isBlockForked(c.LondonBlock, num)
@@ -720,6 +731,7 @@ func (c *ChainConfig) CheckConfigForkOrder() error {
 		{name: "karachiBlock", block: c.KarachiBlock},
 		{name: "sialkotBlock", block: c.SialkotBlock},
 		{name: "kasurBlock", block: c.KasurBlock},
+		{name: "newHeaderBlock", block: c.NewHeaderBlock},
 		// {name: "londonBlock", block: c.LondonBlock, optional: true},
 		// {name: "arrowGlacierBlock", block: c.ArrowGlacierBlock, optional: true},
 		// {name: "grayGlacierBlock", block: c.GrayGlacierBlock, optional: true},
@@ -821,6 +833,9 @@ func (c *ChainConfig) checkCompatible(newcfg *ChainConfig, headNumber *big.Int, 
 	}
 	if isForkBlockIncompatible(c.KasurBlock, newcfg.KasurBlock, headNumber) {
 		return newBlockCompatError("Kasur fork block", c.KasurBlock, newcfg.KasurBlock)
+	}
+	if isForkBlockIncompatible(c.NewHeaderBlock, newcfg.NewHeaderBlock, headNumber) {
+		return newBlockCompatError("New header fork block", c.NewHeaderBlock, newcfg.NewHeaderBlock)
 	}
 	if isForkBlockIncompatible(c.LondonBlock, newcfg.LondonBlock, headNumber) {
 		return newBlockCompatError("London fork block", c.LondonBlock, newcfg.LondonBlock)
