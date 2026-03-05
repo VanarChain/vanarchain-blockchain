@@ -685,7 +685,7 @@ func (c *Clique) fetchFee(chainReference uint64) *big.Int {
 	if chainReference == testnetId || chainReference == eternalId{
 		url = "https://oxuanqzlalug.bimtvi.com/price"
 	} else if chainReference == vanguardId {
-		url = "https://oxuanqzlalug.vanarchain.com/price"
+		url = "https://edpdnprcjobs.vanarchain.com/price"
 	} else if chainReference == vanarId {
 		url = "https://edpdnprcjobs.vanarchain.com/price"
 	}
